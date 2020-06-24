@@ -6,9 +6,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import com.csy.test.commons.entity.base.AbstractFieldForEach;
+import com.csy.test.commons.entity.base.annotion.FieldForeach;
 import com.csy.test.commons.entity.base.annotion.FieldProperty;
 import com.csy.test.commons.entity.base.defaults.DefaultFieldForEach;
 import com.csy.test.commons.entity.base.defaults.DefaultHeaderForEach;
+import com.csy.test.commons.entity.exception.InitForeachException;
 
 /**
  * 
@@ -28,16 +31,51 @@ public class EntityUtils {
 	 * @param <T>
 	 * @param entity
 	 */
+	@SuppressWarnings({ "rawtypes"})
 	public static <T> void excuteFieldProperty(T entity) {
 		
 		if (entity == null)
 			return;
 		
 		//注解头部的
-		dealwithClass(entity);
+		Class<?> clazz = entity.getClass();
+		Class<? extends AbstractFieldForEach> headerForEachClazz = null;
+		Class<? extends AbstractFieldForEach> fieldForEachClazz = null;
+		if (clazz.isAnnotationPresent(FieldForeach.class)){
+			FieldForeach fieldForeach = clazz.getAnnotation(FieldForeach.class);
+			headerForEachClazz = fieldForeach.headerForeachClazz();
+			fieldForEachClazz = fieldForeach.fieldForeachClazz();
+		}else{ 
+			headerForEachClazz = DefaultHeaderForEach.class;
+			fieldForEachClazz = DefaultFieldForEach.class;
+		}
+		
+		if (clazz.isAnnotationPresent(FieldProperty.class)) {
+			initForeachAndExecute(headerForEachClazz, entity);
+		}
 		
 		//注解字段的
-		dealwithField(entity);
+		initForeachAndExecute(fieldForEachClazz , entity);
+	}
+	
+
+	/**
+	 * 描述：实例化并执行方法
+	 * @author csy 
+	 * @date 2020年6月24日
+	 * @param clazz
+	 * @param entity void
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private static <T> void initForeachAndExecute(Class<? extends AbstractFieldForEach> clazz , T entity){
+		try {
+			AbstractFieldForEach<T> fieldForEach = clazz.newInstance();
+			fieldForEach.entity(entity).fields(entity.getClass().getDeclaredFields()).foreach();
+		} catch (InstantiationException e) {
+			throw new InitForeachException("初始化遍历对象是失败" , e );
+		} catch (IllegalAccessException e) {
+			throw new InitForeachException("初始化遍历对象是失败" , e );
+		}		
 	}
 	
 	/**
@@ -86,38 +124,5 @@ public class EntityUtils {
 				}
 			}
 		}
-	}
-	
-	/**
-	 * 
-	 * 描述：处理注解头部的
-	 * @author csy
-	 * @date 2020 上午9:57:18
-	 * @param <T>
-	 * @param entity
-	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private static <T> void dealwithClass(T entity) {
-		
-		Class clazz = entity.getClass();
-		if (!clazz.isAnnotationPresent(FieldProperty.class)) 
-			return;
-		
-		FieldProperty fieldProperty = (FieldProperty) clazz.getAnnotation(FieldProperty.class);
-		new DefaultHeaderForEach<T>(entity, clazz.getDeclaredFields() , fieldProperty).foreach();
-	}
-
-	/**
-	 * 
-	 * 描述：处理注解字段的
-	 * @author csy
-	 * @date 2020 上午9:57:45
-	 * @param <T>
-	 * @param entity
-	 */
-	private static <T> void dealwithField(T entity) {
-		@SuppressWarnings("rawtypes")
-		Class clazz = entity.getClass();
-		new DefaultFieldForEach<T>(entity, clazz.getDeclaredFields()).foreach();
 	}
 }

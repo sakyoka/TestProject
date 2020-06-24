@@ -8,11 +8,18 @@ public abstract class AbstractFieldForEach<T> {
 	
 	private Field[] fields;
 	
-	public AbstractFieldForEach(T entity , Field[] fields) {
-		this.entity = entity;
-		this.fields = fields;
-	}
+	public AbstractFieldForEach(){}
 	
+	public AbstractFieldForEach<T> entity(T entity) {
+		this.entity = entity;
+		return this;
+	}
+
+	public AbstractFieldForEach<T> fields(Field[] fields) {
+		this.fields = fields;
+		return this;
+	}
+
 	public void foreach() {
 		for(Field field:fields) {
 			

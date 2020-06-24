@@ -8,26 +8,20 @@ import com.csy.test.commons.entity.base.annotion.FieldProperty;
 import com.csy.test.commons.entity.cache.FieldExecutorCache;
 import com.csy.test.commons.entity.exception.EntityDealWithException;
 
-
+/**
+ * 头部处理
+ * @author csy
+ * @date 2020年6月24日
+ * @param <T>
+ */
 public final class DefaultHeaderForEach<T> extends AbstractFieldForEach<T>{
-
-	private FieldProperty fieldProperty;
-	
-	public DefaultHeaderForEach(T entity, Field[] fields) {
-		super(entity, fields);
-	}
-	
-	public DefaultHeaderForEach(T entity, Field[] fields ,FieldProperty fieldProperty) {
-		
-		super(entity, fields);
-		
-		this.fieldProperty = fieldProperty;
-	}
 
 	@Override
 	protected void execute(T entity, Field field) {
 		field.setAccessible(true);
 		try {
+			Class<?> clazz = entity.getClass();
+			FieldProperty fieldProperty = clazz.getAnnotation(FieldProperty.class);
 			FieldExecutorCache.getFieldExcuteByClazz(fieldProperty.fieldExcuteClazz()).execute(entity, field);
 		} catch (InstantiationException e) {
 			throw new EntityDealWithException("实例化失败!!!", e);

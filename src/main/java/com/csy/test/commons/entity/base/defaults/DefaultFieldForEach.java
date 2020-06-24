@@ -10,10 +10,6 @@ import com.csy.test.commons.entity.exception.EntityDealWithException;
 
 public final class DefaultFieldForEach<T> extends AbstractFieldForEach<T>{
 
-	public DefaultFieldForEach(T entity, Field[] fields) {
-		super(entity, fields);
-	}
-
 	@Override
 	protected void execute(T entity, Field field) {
 		FieldProperty fieldProperty = null;
