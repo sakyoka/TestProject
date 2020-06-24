@@ -90,6 +90,7 @@ public class ValidUtils {
                     result = validCaseBase.valid(field.get(entity));
                     if (! result){
                     	paramResult.paramError(fieldName , errorMessage);
+                    	break;
                     }
                 }catch (ValidException e){
                     //如果是自己抛的异常

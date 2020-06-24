@@ -20,7 +20,7 @@ public class Test {
 		projectList.add(PatchInitConstants.DEFAULT_PROJECT_NAME);
 		for (String projectName:projectList){
 			PatchInitParams pachInitParams =  PatchInitParams.getBuilder()
-					.sourcePathPrefix(PatchInitConstants.DEFAULT_SOURCE_PATH_PREFIX)
+					//.sourcePathPrefix(PatchInitConstants.DEFAULT_SOURCE_PATH_PREFIX)
 					.compilePathPrefix(PatchInitConstants.DEFAULT_WORK_PATH_PREFIX)
 					.cachePathPrefix(PatchInitConstants.DEFAULT_CACHE_PATH_PREFIX)
 					.projectChName("测试项目")

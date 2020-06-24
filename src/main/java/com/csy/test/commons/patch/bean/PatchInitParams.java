@@ -25,7 +25,7 @@ public class PatchInitParams implements Serializable{
 	/**
 	 * 项目英文名
 	 */
-	@Valid(validType = {BlankValid.class})
+	@Valid(validType = {BlankValid.class} , errorMessage = "项目英文名不能为空")
 	private String projectEnName;
 	
 	/**
@@ -36,19 +36,19 @@ public class PatchInitParams implements Serializable{
 	/**
 	 * 数据源路径前缀
 	 */
-	@Valid(validType = {BlankValid.class , FileDirValid.class})
+	@Valid(validType = {BlankValid.class , FileDirValid.class} , errorMessage = "数据源路径前缀不能为空且为系统路径")
 	private String sourcePathPrefix;
 	
 	/**
 	 * 编译文件路径前缀
 	 */
-	@Valid(validType = {BlankValid.class , FileDirValid.class})
+	@Valid(validType = {BlankValid.class , FileDirValid.class} , errorMessage = "编译文件路径前缀不能为空且为系统路径")
 	private String compilePathPrefix;
 	
 	/**
 	 * 补丁文件输出路径前缀
 	 */
-	@Valid(validType = {BlankValid.class , FileDirValid.class})
+	@Valid(validType = {BlankValid.class , FileDirValid.class} , errorMessage = "补丁文件输出路径前缀不能为空且为系统路径")
 	private String cachePathPrefix;
 	
 	/**
@@ -59,7 +59,7 @@ public class PatchInitParams implements Serializable{
 	/**
 	 * 获取文件源的命令
 	 */
-	@Valid(validType = {BlankValid.class})
+	@Valid(validType = {BlankValid.class} , errorMessage = "获取文件源的命令不能为空")
 	private String commandStr;
 	
 	/**
@@ -70,7 +70,7 @@ public class PatchInitParams implements Serializable{
 	/**
 	 * 补丁记录文件名需要加后缀
 	 */
-	@Valid(validType = {BlankValid.class})
+	@Valid(validType = {BlankValid.class} , errorMessage = "补丁记录文件名s不能为空")
 	private String patchFileName;
 	
 	/**
