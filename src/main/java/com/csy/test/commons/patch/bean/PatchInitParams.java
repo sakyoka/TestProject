@@ -82,7 +82,7 @@ public class PatchInitParams implements Serializable{
 	private Class<? extends SourcePathState> sourcePathStateClazz;
 	
 	/**
-	 * 补丁内容输出，也是属于热插拔方式，默认是TomcatWriteFileRecordFile;
+	 * 补丁内容输出，也是属于热插拔方式，默认是DefaultPatchWriteRecordFile;
 	 * <br>该类作用在于把补丁路径输出到文件里面，形成一个路径说明;
 	 * <br>可实现AbstractWriteRecordFile进行扩展;
 	 * <br>可以参照com.csy.test.commons.patch.base.defaults;
@@ -90,7 +90,7 @@ public class PatchInitParams implements Serializable{
 	private Class<? extends AbstractWriteRecordFile> writeRecordFileClazz;
 	
 	/**
-	 * 补丁生成处理，也是属于热插拔方式，默认是PachStandardGenerate;
+	 * 补丁生成处理，也是属于热插拔方式，默认是DefaultPatchStandardGenerate;
 	 * <br>可实现AbstractPachGenerate进行扩展;
 	 * <br>可以参照com.csy.test.commons.patch.base.defaults;
 	 */

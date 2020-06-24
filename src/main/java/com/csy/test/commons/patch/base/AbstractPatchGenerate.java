@@ -2,7 +2,7 @@ package com.csy.test.commons.patch.base;
 
 import java.util.List;
 
-import com.csy.test.commons.patch.base.defaults.TomcatWriteFileRecordFile;
+import com.csy.test.commons.patch.base.defaults.DefaultPatchWriteRecordFile;
 import com.csy.test.commons.patch.bean.PatchInitParams;
 import com.csy.test.commons.utils.ClassUtils;
 
@@ -53,7 +53,7 @@ public abstract class AbstractPatchGenerate {
 		PatchInitParams pachInitParams = this.patchInitParams;
 		//实现此类的autoWriteRecordFile方法
 		AbstractWriteRecordFile writeRecordFile = (pachInitParams.getWriteRecordFileClazz() == null ? 
-				                                                 new TomcatWriteFileRecordFile() 
+				                                                 new DefaultPatchWriteRecordFile() 
 				                                                 : ClassUtils.newInstance(pachInitParams.getWriteRecordFileClazz()));
 		writeRecordFile.compileFilePaths(this.compileFilePaths).pachInitParams(this.patchInitParams).autoWriteRecordFile();
 	}
