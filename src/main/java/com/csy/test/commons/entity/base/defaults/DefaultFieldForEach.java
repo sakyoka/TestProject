@@ -2,7 +2,6 @@ package com.csy.test.commons.entity.base.defaults;
 
 import java.lang.reflect.Field;
 
-import com.csy.test.commons.entity.base.AbstractFieldExecute;
 import com.csy.test.commons.entity.base.AbstractFieldForEach;
 import com.csy.test.commons.entity.base.annotion.FieldProperty;
 import com.csy.test.commons.entity.cache.FieldExecutorCache;
@@ -12,16 +11,11 @@ public final class DefaultFieldForEach<T> extends AbstractFieldForEach<T>{
 
 	@Override
 	protected void execute(T entity, Field field) {
-		FieldProperty fieldProperty = null;
-		AbstractFieldExecute fieldExecute = null;
 		try {
-			fieldProperty = field.getAnnotation(FieldProperty.class);
-			fieldExecute = FieldExecutorCache.getFieldExcuteByClazz(fieldProperty.fieldExcuteClazz());
-			
 			field.setAccessible(true);
 			
-			fieldExecute.execute(entity, field);
-			
+			FieldProperty fieldProperty = field.getAnnotation(FieldProperty.class);
+			FieldExecutorCache.getFieldExcuteByClazz(fieldProperty.fieldExcuteClazz()).execute(entity, field);
 		} catch (IllegalArgumentException e) {
 			throw new EntityDealWithException("不合法参数!!!", e);
 		} catch (IllegalAccessException e) {

@@ -18,8 +18,9 @@ public final class DefaultHeaderForEach<T> extends AbstractFieldForEach<T>{
 
 	@Override
 	protected void execute(T entity, Field field) {
-		field.setAccessible(true);
 		try {
+			field.setAccessible(true);
+			
 			Class<?> clazz = entity.getClass();
 			FieldProperty fieldProperty = clazz.getAnnotation(FieldProperty.class);
 			FieldExecutorCache.getFieldExcuteByClazz(fieldProperty.fieldExcuteClazz()).execute(entity, field);

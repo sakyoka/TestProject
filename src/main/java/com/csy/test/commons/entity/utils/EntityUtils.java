@@ -37,24 +37,19 @@ public class EntityUtils {
 		if (entity == null)
 			return;
 		
-		//注解头部的
 		Class<?> clazz = entity.getClass();
-		Class<? extends AbstractFieldForEach> headerForEachClazz = null;
-		Class<? extends AbstractFieldForEach> fieldForEachClazz = null;
-		if (clazz.isAnnotationPresent(FieldForeach.class)){
-			FieldForeach fieldForeach = clazz.getAnnotation(FieldForeach.class);
-			headerForEachClazz = fieldForeach.headerForeachClazz();
-			fieldForEachClazz = fieldForeach.fieldForeachClazz();
-		}else{ 
-			headerForEachClazz = DefaultHeaderForEach.class;
-			fieldForEachClazz = DefaultFieldForEach.class;
-		}
+		Class<FieldForeach> fieldForeachClazz = FieldForeach.class;
 		
+		//注解头部的
 		if (clazz.isAnnotationPresent(FieldProperty.class)) {
+			Class<? extends AbstractFieldForEach> headerForEachClazz = clazz.isAnnotationPresent(fieldForeachClazz) ? 
+					(clazz.getAnnotation(fieldForeachClazz).headerForeachClazz()) : DefaultHeaderForEach.class;
 			initForeachAndExecute(headerForEachClazz, entity);
 		}
 		
 		//注解字段的
+		Class<? extends AbstractFieldForEach> fieldForEachClazz = clazz.isAnnotationPresent(fieldForeachClazz) ? 
+				(clazz.getAnnotation(fieldForeachClazz).fieldForeachClazz()) : DefaultFieldForEach.class;
 		initForeachAndExecute(fieldForEachClazz , entity);
 	}
 	
