@@ -66,6 +66,12 @@ public class ExcelExportInitBaseContextHolder {
     				String fieldName = field.getName();
                     xlsStyleTempMap.put(fieldName , createStyleAndSetProperties(workbook , exportExcelField));
     			}
+
+				@Override
+				protected boolean canContinue(Field field, String group) {
+					
+					return this.defaultCanContinue(field, group);
+				}
     			
     	}.init(clazz, workbook, group);
         
@@ -84,17 +90,22 @@ public class ExcelExportInitBaseContextHolder {
 	 */
 	public <T> ExcelExportInitBaseContextHolder defaultStyle(Class<T> clazz , Workbook workbook){
 		
-		Field[] fields = clazz.getDeclaredFields();
-		String fieldName = null;
-		
 		if (this.styleMap == null)
 			this.styleMap = new HashMap<String, CellStyle>();
 		
-		for (Field field: fields){
-			fieldName = field.getName();
-			if (!this.styleMap.containsKey(fieldName))
-				this.styleMap.put(fieldName, createStyleAndSetProperties(workbook , DefaultCommon.DEFAULTE_EXPORTXLS));
-		}
+		new ExcelExportInitBase() {
+			
+			@Override
+			public void done(Field field, Workbook workbook, ExportExcelField exportExcelField) {
+				styleMap.put(field.getName(), createStyleAndSetProperties(workbook , DefaultCommon.DEFAULTE_EXPORTXLS));
+			}
+			
+			@Override
+			protected boolean canContinue(Field field, String group) {
+				return styleMap.containsKey(field.getName());
+			}
+			
+		}.init(clazz, workbook, null);
 		
 		return this;
 	}
@@ -127,6 +138,12 @@ public class ExcelExportInitBaseContextHolder {
 				}
 				
 			}
+
+			@Override
+			protected boolean canContinue(Field field , String group) {
+
+				return this.defaultCanContinue(field, group);
+			}
 			
 		}.init(clazz, null, group);
         
@@ -142,17 +159,23 @@ public class ExcelExportInitBaseContextHolder {
 	 * @return InitBaseContextHolder
 	 */
 	public <T> ExcelExportInitBaseContextHolder defaultFormat(Class<T> clazz){
-		Field[] fields = clazz.getDeclaredFields();
-		String fieldName = null;
 
 		if (this.formatMap == null)
 			this.formatMap = new HashMap<String, ExcelExportFormatBase>();
 
-		for (Field field: fields){
-			fieldName = field.getName();
-			if (!this.formatMap.containsKey(fieldName))
-				this.formatMap.put(fieldName, DefaultCommon.DEFAULT_FORMAT_IMPL);
-		}
+		new ExcelExportInitBase() {
+			
+			@Override
+			public void done(Field field, Workbook workbook, ExportExcelField exportExcelField) {
+				formatMap.put(field.getName() , DefaultCommon.DEFAULT_FORMAT_IMPL);
+			}
+			
+			@Override
+			protected boolean canContinue(Field field, String group) {
+				return formatMap.containsKey(field.getName());
+			}
+			
+		}.init(clazz, null, null);
 		
 		return this;
 	}	
@@ -176,6 +199,11 @@ public class ExcelExportInitBaseContextHolder {
 				exportExcelTempBeans.add(new ExportExcelTempBean()
 						.exportExcelField(exportExcelField)
 						.fieldName(fieldName));
+			}
+
+			@Override
+			protected boolean canContinue(Field field, String group) {
+				return this.defaultCanContinue(field, group);
 			}
 			
     	}.init(clazz, null, group);

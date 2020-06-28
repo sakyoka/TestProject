@@ -66,7 +66,7 @@ public @interface ExportExcelHeader {
      * @date 2019年11月18日
      * @return boolean
      */
-    boolean needHead() default true;
+    boolean needHead() default false;
 
     /**
      * 描述：对齐方式(默认居中)
