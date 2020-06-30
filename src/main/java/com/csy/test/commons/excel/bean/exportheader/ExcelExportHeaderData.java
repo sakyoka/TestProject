@@ -13,6 +13,8 @@ public class ExcelExportHeaderData {
 	private Integer totalRow = 1;//总行数 , 默认1
 	
 	private Boolean needIndex = false;//是否需要index 默认false
+	
+	private String headerName;//表头名字
 
 	public List<MergeOrder> getMergeOrders() {
 		return mergeOrders;
@@ -53,5 +55,12 @@ public class ExcelExportHeaderData {
 	public void setNeedIndex(Boolean needIndex) {
 		this.needIndex = needIndex;
 	}
-	
+
+	public String getHeaderName() {
+		return headerName;
+	}
+
+	public void setHeaderName(String headerName) {
+		this.headerName = headerName;
+	}
 }

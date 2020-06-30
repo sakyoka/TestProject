@@ -3,7 +3,6 @@ package com.csy.test.commons.excel.utils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormat;
-import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -475,11 +474,6 @@ public class ExcelUtils {
      * @return CellStyle
      */
     private static CellStyle getIndexStyle(Workbook workbook , ExportExcelHeader exportExcelHeader){
-        CellStyle cellStyle = workbook.createCellStyle();
-        Font font = workbook.createFont();
-        cellStyle.setAlignment(exportExcelHeader.align());
-        font.setFontName(exportExcelHeader.fontName());
-        cellStyle.setFont(font);
-        return cellStyle;
+    	return CellStyleUtils.createOrderNumberContentCellStyle(workbook, exportExcelHeader);
     }
 }

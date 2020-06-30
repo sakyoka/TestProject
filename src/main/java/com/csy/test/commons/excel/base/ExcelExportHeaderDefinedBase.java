@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -18,6 +17,7 @@ import com.csy.test.commons.excel.bean.ExportExcelTempBean;
 import com.csy.test.commons.excel.bean.exportheader.ExcelExportHeaderData;
 import com.csy.test.commons.excel.bean.exportheader.HeaderCell;
 import com.csy.test.commons.excel.bean.exportheader.MergeOrder;
+import com.csy.test.commons.excel.utils.CellStyleUtils;
 import com.csy.test.commons.excel.utils.CollectionUtils;
 
 
@@ -82,20 +82,21 @@ public abstract class ExcelExportHeaderDefinedBase {
         //创建工作簿，并命名
         Sheet sheet = ExcelOperateBase.createSheet(workbook, sheetIndex, exportExcelHeader.sheetName());
         
-		int totalRow = headerData.getTotalRow();
-		
+		boolean needHead = exportExcelHeader.needHead();
+		int totalRow = headerData.getTotalRow() + (needHead ? 1 : 0);
 		//初始化行
 		for (int i = 0 ; i < totalRow ;i++){
 			sheet.createRow(i);
 		}
 		
+		int addColsNum = needHead ? 1 : 0; //因为需要表头原因，原本行数需要额外+1
 		List<MergeOrder> mergeOrders = headerData.getMergeOrders();
 		if (CollectionUtils.isNotEmpty(mergeOrders)){
 			//执行合并行合并列命令
 			for (MergeOrder mergeOrder:mergeOrders){
 				sheet.addMergedRegion(
-						new CellRangeAddress(mergeOrder.getRowSpanStart(), 
-								mergeOrder.getRowSpanEnd(), 
+						new CellRangeAddress(mergeOrder.getRowSpanStart() + addColsNum, 
+								mergeOrder.getRowSpanEnd() + addColsNum, 
 								mergeOrder.getColSpanStart(), 
 								mergeOrder.getColSpanEnd()));
 			}
@@ -103,9 +104,11 @@ public abstract class ExcelExportHeaderDefinedBase {
 		
 
 		Map<String, CellStyle> extraCellStyleMap = this.addExtraCellStyle(workbook);
-		Map<String, CellStyle> cellStyleMap = initBaseContextHolder.getStyleMap();
-		if (extraCellStyleMap != null && extraCellStyleMap.size() > 0)
+		Map<String, CellStyle> cellStyleMap = initBaseContextHolder.getHeaderStyleMap();
+		if (extraCellStyleMap != null && extraCellStyleMap.size() > 0){
 			cellStyleMap.putAll(extraCellStyleMap);
+			initBaseContextHolder.getStyleMap().putAll(extraCellStyleMap);
+		}
 		
 		Row row;
 		Cell cell;
@@ -113,9 +116,10 @@ public abstract class ExcelExportHeaderDefinedBase {
 		if (CollectionUtils.isNotEmpty(headerCells)){
 			//初始化每一个单元格
 			String keyName = null;
+			int maxCols = 0;
 			for (HeaderCell headerCell:headerCells){
 				
-				row = sheet.getRow(headerCell.getRowNum());//获取行对象
+				row = sheet.getRow(headerCell.getRowNum() + addColsNum);//获取行对象
 				row.setHeightInPoints(headerCell.getRowHeight());
 				cell = row.createCell(headerCell.getColNum());//创建单元格
 				cell.setCellValue(headerCell.getCellValue());//设置单元格值
@@ -124,6 +128,18 @@ public abstract class ExcelExportHeaderDefinedBase {
 				keyName = headerCell.getKeyName();
 				if (keyName != null && cellStyleMap.containsKey(keyName))//如果有样式
 					cell.setCellStyle(cellStyleMap.get(keyName));//设置样式
+				
+				maxCols = (headerCell.getColNum() > maxCols) ? headerCell.getColNum() : maxCols;
+			}
+			
+			if (needHead){
+				this.createTitleColumn(exportExcelHeader, workbook, sheet, maxCols);
+				//重新命名表头名字
+				String headerName = headerData.getHeaderName();
+				if (headerName != null){
+					Row headerRow = sheet.getRow(0);
+					headerRow.getCell(0).setCellValue(headerName);					
+				}
 			}
 		}
 		
@@ -179,7 +195,7 @@ public abstract class ExcelExportHeaderDefinedBase {
      * @param sheet
      * @param cols
      */
-    private static void createTitleColumn(ExportExcelHeader exportExcelHeader , Workbook workbook , Sheet sheet , int cols){
+    private void createTitleColumn(ExportExcelHeader exportExcelHeader , Workbook workbook , Sheet sheet , int cols){
         //如果有第一行标题
         if (exportExcelHeader.needHead()){
             //创建第一行
@@ -187,19 +203,10 @@ public abstract class ExcelExportHeaderDefinedBase {
             //第一行,合并列
             sheet.addMergedRegion(new CellRangeAddress(0 , 0 , 0 , cols));
 
-            Font font = workbook.createFont();
-            font.setFontName(exportExcelHeader.fontName());//设置大标题字体类型
-            font.setFontHeightInPoints(exportExcelHeader.headerNameFontSize());//设置大标题字体大小
-
-            CellStyle cellStyle = workbook.createCellStyle();
-            cellStyle.setFont(font);
-            cellStyle.setAlignment(exportExcelHeader.align());//设置大标题单元格对齐方式
-            cellStyle.setVerticalAlignment(exportExcelHeader.verticalAlignment());//上下对齐方式
-
             Cell cell0 = row0.createCell(0);
             row0.setHeightInPoints(exportExcelHeader.headerHeight());//设置大标题行高度
             cell0.setCellValue(exportExcelHeader.headerName());//设置大标题单元格值
-            cell0.setCellStyle(cellStyle);
+            cell0.setCellStyle(CellStyleUtils.createTitleStyle(workbook, exportExcelHeader));
 
         }
     }
@@ -213,23 +220,13 @@ public abstract class ExcelExportHeaderDefinedBase {
      * @param row
      * @return int
      */
-    private static int createOrderNumberColumn(ExportExcelHeader exportExcelHeader , Workbook workbook , Row row){
+    private int createOrderNumberColumn(ExportExcelHeader exportExcelHeader , Workbook workbook , Row row){
         //如果有序号列
     	int startIndex = 0;
         if (exportExcelHeader.needIndex()){
             Cell cell = row.createCell(startIndex);
-            CellStyle cellStyle = workbook.createCellStyle();
-
-            Font font = workbook.createFont();
-            font.setFontName( exportExcelHeader.indexFontName());//序号字体格式
-            font.setBoldweight(exportExcelHeader.indexFontBoldweight());//粗体显示
-            font.setFontHeightInPoints(exportExcelHeader.indexFontSize());//字体大小
-            cellStyle.setAlignment( exportExcelHeader.indexAlign() );//序号左右对齐方式
-            cellStyle.setVerticalAlignment(exportExcelHeader.indexVerticalAlignment());//序号上下对齐方式
-            cellStyle.setFont(font);
-
             cell.setCellValue(exportExcelHeader.indexName());//设置序号单元格标题
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(CellStyleUtils.createOrderNumberStyle(workbook, exportExcelHeader));
             startIndex = 1;
         }
         return startIndex;
@@ -245,32 +242,20 @@ public abstract class ExcelExportHeaderDefinedBase {
      * @param row
      * @param startIndex 
      */
-    private static void createTitleColumns(List<ExportExcelTempBean> exportExcelTempBeans , Workbook workbook , 
+    private void createTitleColumns(List<ExportExcelTempBean> exportExcelTempBeans , Workbook workbook , 
     		Sheet sheet , Row row , int startIndex){
     	
         ExportExcelField exportExcelField = null;
-        CellStyle cellStyle = null;
         ExportExcelTempBean exportExcelTempBean = null;
         for (int i = 0 , exportXlsTempBeansSize = exportExcelTempBeans.size(); i < exportXlsTempBeansSize ; i++){
         	exportExcelTempBean = exportExcelTempBeans.get(i);
             exportExcelField = exportExcelTempBean.getExportExcelField();
 
             Cell cell = row.createCell( i + startIndex );
-            cellStyle = workbook.createCellStyle();//获取style
+            cell.setCellStyle( CellStyleUtils.createHeaderStyle(workbook, exportExcelField) );
             cell.setCellValue( exportExcelField.cellName() );//设置列标题
-
-            Font font = workbook.createFont();
-            font.setFontName( exportExcelField.headerFontName());//列标题单元格字体格式
-            font.setBoldweight(exportExcelField.headerFontBoldweight());//粗体显示
-            font.setFontHeightInPoints(exportExcelField.headerFontSize());//字体大小
-
-            cellStyle.setAlignment( exportExcelField.hearderAlign() );//表标题单元格对齐方式
-            cellStyle.setVerticalAlignment(exportExcelField.headerVerticalAlignment());
-            cellStyle.setFont( font );
-            cellStyle.setWrapText(exportExcelField.headerWarpText());
-            cell.setCellStyle( cellStyle );
-
-            sheet.setColumnWidth( (i + startIndex) , (exportExcelField.headerCellWidth() >= exportExcelField.cellWidth() ? exportExcelField.headerCellWidth() : exportExcelField.cellWidth()));
+            sheet.setColumnWidth( (i + startIndex) , (exportExcelField.headerCellWidth() >= exportExcelField.cellWidth() ? 
+            		                                                                           exportExcelField.headerCellWidth() : exportExcelField.cellWidth()));
         }	
     }
 }

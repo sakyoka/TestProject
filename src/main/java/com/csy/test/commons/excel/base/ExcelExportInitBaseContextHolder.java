@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import com.csy.test.commons.excel.annotion.ExportExcelField;
@@ -18,6 +17,7 @@ import com.csy.test.commons.excel.base.ExcelExportInitBase;
 import com.csy.test.commons.excel.base.defaults.DefaultCommon;
 import com.csy.test.commons.excel.bean.ExportExcelTempBean;
 import com.csy.test.commons.excel.bean.exportheader.HeaderField;
+import com.csy.test.commons.excel.utils.CellStyleUtils;
 
 /**
  * 初始化实现
@@ -31,6 +31,8 @@ public class ExcelExportInitBaseContextHolder {
     private Map<String, CellStyle> styleMap;//key为实体类对象的属性，对应的value为字段的CellStyle实例
 
     private List<ExportExcelTempBean> exportExcelTempBeans;//该集合为每个字段对应的ExportXls
+    
+    private Map<String, CellStyle> headerStyleMap;//key为实体类对象的属性，对应的value为字段的CellStyle实例 列标题样式
     
     private ExcelExportInitBaseContextHolder(){}
     
@@ -54,17 +56,16 @@ public class ExcelExportInitBaseContextHolder {
      */
 	public <T> ExcelExportInitBaseContextHolder initStyle(Class<T> clazz , Workbook workbook , String group) {
     	
-		if (this.styleMap == null)
-    		this.styleMap = new HashMap<String, CellStyle>();
-    	
         final Map<String, CellStyle> xlsStyleTempMap = new HashMap<String, CellStyle>();//style实例
+        final Map<String, CellStyle> xlsHeaderStyleTempMap = new HashMap<String, CellStyle>();//style实例
         new ExcelExportInitBase() {
        		
     			@Override
     			public void done(Field field, Workbook workbook, ExportExcelField exportExcelField) {
                     //每个字段对应的style实例
     				String fieldName = field.getName();
-                    xlsStyleTempMap.put(fieldName , createStyleAndSetProperties(workbook , exportExcelField));
+                    xlsStyleTempMap.put(fieldName , CellStyleUtils.createContentCellStyle(workbook, exportExcelField));
+                    xlsHeaderStyleTempMap.put(fieldName, CellStyleUtils.createHeaderStyle(workbook, exportExcelField));
     			}
 
 				@Override
@@ -75,7 +76,16 @@ public class ExcelExportInitBaseContextHolder {
     			
     	}.init(clazz, workbook, group);
         
+		
+    	if (this.styleMap == null)
+    		this.styleMap = new HashMap<String, CellStyle>();
+		
     	this.styleMap.putAll(xlsStyleTempMap);
+    	
+    	if (this.headerStyleMap == null)
+    		this.headerStyleMap = new HashMap<String, CellStyle>();
+    	
+    	this.headerStyleMap.putAll(xlsHeaderStyleTempMap);
 
     	return this;
     }
@@ -90,22 +100,32 @@ public class ExcelExportInitBaseContextHolder {
 	 */
 	public <T> ExcelExportInitBaseContextHolder defaultStyle(Class<T> clazz , Workbook workbook){
 		
-		if (this.styleMap == null)
-			this.styleMap = new HashMap<String, CellStyle>();
-		
+        final Map<String, CellStyle> xlsStyleTempMap = new HashMap<String, CellStyle>();//style实例
+        final Map<String, CellStyle> xlsHeaderStyleTempMap = new HashMap<String, CellStyle>();//style实例
 		new ExcelExportInitBase() {
 			
 			@Override
 			public void done(Field field, Workbook workbook, ExportExcelField exportExcelField) {
-				styleMap.put(field.getName(), createStyleAndSetProperties(workbook , DefaultCommon.DEFAULTE_EXPORTXLS));
+				xlsStyleTempMap.put(field.getName(), CellStyleUtils.createContentCellStyle(workbook, DefaultCommon.DEFAULTE_EXPORTXLS));
+				xlsHeaderStyleTempMap.put(field.getName(), CellStyleUtils.createHeaderStyle(workbook, DefaultCommon.DEFAULTE_EXPORTXLS));
 			}
 			
 			@Override
 			protected boolean canContinue(Field field, String group) {
-				return styleMap.containsKey(field.getName());
+				return !xlsStyleTempMap.containsKey(field.getName());
 			}
 			
 		}.init(clazz, workbook, null);
+		
+    	if (this.styleMap == null)
+    		this.styleMap = new HashMap<String, CellStyle>();
+		
+    	this.styleMap.putAll(xlsStyleTempMap);
+    	
+    	if (this.headerStyleMap == null)
+    		this.headerStyleMap = new HashMap<String, CellStyle>();
+    	
+    	this.headerStyleMap.putAll(xlsHeaderStyleTempMap);
 		
 		return this;
 	}
@@ -121,11 +141,7 @@ public class ExcelExportInitBaseContextHolder {
      */
 	public <T> ExcelExportInitBaseContextHolder initFormat(Class<T> clazz , String group) {
 		
-		if (this.formatMap == null)
-			this.formatMap = new HashMap<String, ExcelExportFormatBase>();
-    
         final Map<String, ExcelExportFormatBase> xlsFormatTempMap = new HashMap<String, ExcelExportFormatBase>();//format实例
-        
         new ExcelExportInitBase() {
     		
 			@Override
@@ -147,8 +163,12 @@ public class ExcelExportInitBaseContextHolder {
 			
 		}.init(clazz, null, group);
         
-		this.formatMap.putAll(xlsFormatTempMap);;
-        return this;
+		if (this.formatMap == null)
+			this.formatMap = new HashMap<String, ExcelExportFormatBase>();
+		
+		this.formatMap.putAll(xlsFormatTempMap);
+        
+		return this;
     }
 	
 	/**
@@ -160,22 +180,26 @@ public class ExcelExportInitBaseContextHolder {
 	 */
 	public <T> ExcelExportInitBaseContextHolder defaultFormat(Class<T> clazz){
 
-		if (this.formatMap == null)
-			this.formatMap = new HashMap<String, ExcelExportFormatBase>();
-
+		final Map<String, ExcelExportFormatBase> xlsFormatTempMap = new HashMap<String, ExcelExportFormatBase>();//format实例
+		
 		new ExcelExportInitBase() {
 			
 			@Override
 			public void done(Field field, Workbook workbook, ExportExcelField exportExcelField) {
-				formatMap.put(field.getName() , DefaultCommon.DEFAULT_FORMAT_IMPL);
+				xlsFormatTempMap.put(field.getName() , DefaultCommon.DEFAULT_FORMAT_IMPL);
 			}
 			
 			@Override
 			protected boolean canContinue(Field field, String group) {
-				return formatMap.containsKey(field.getName());
+				return !xlsFormatTempMap.containsKey(field.getName());
 			}
 			
 		}.init(clazz, null, null);
+		
+		if (this.formatMap == null)
+			this.formatMap = new HashMap<String, ExcelExportFormatBase>();
+		
+		this.formatMap.putAll(xlsFormatTempMap);
 		
 		return this;
 	}	
@@ -218,7 +242,12 @@ public class ExcelExportInitBaseContextHolder {
 
         });
         
-        this.exportExcelTempBeans = exportExcelTempBeans;
+        if (this.exportExcelTempBeans == null){
+        	this.exportExcelTempBeans = new ArrayList<ExportExcelTempBean>();
+        }
+        
+        this.exportExcelTempBeans.addAll(exportExcelTempBeans);
+        
         return this;
     }
 	
@@ -237,7 +266,7 @@ public class ExcelExportInitBaseContextHolder {
         Field field = null;
         ExportExcelField exportExcelField = null;
         String fieldName = null;
-        List<ExportExcelTempBean> exportExcelTempBeans = new ArrayList<ExportExcelTempBean>();
+        final List<ExportExcelTempBean> exportExcelTempBeans = new ArrayList<ExportExcelTempBean>();
         for (HeaderField headerField:headerFields){
     		try {
     			fieldName = headerField.getFieldName();
@@ -258,7 +287,12 @@ public class ExcelExportInitBaseContextHolder {
 			}
         }
         
-        this.exportExcelTempBeans = exportExcelTempBeans;
+        if (this.exportExcelTempBeans == null){
+        	this.exportExcelTempBeans = new ArrayList<ExportExcelTempBean>();
+        }
+        
+        this.exportExcelTempBeans.addAll(exportExcelTempBeans);
+        
         return this;
     }
 	
@@ -291,26 +325,14 @@ public class ExcelExportInitBaseContextHolder {
 	public List<ExportExcelTempBean> getExportExcelTempBeans() {
 		return exportExcelTempBeans;
 	}
-
+	
 	/**
-     * 描述：創建style並設置屬性
-     * @author csy
-     * @date 2019年12月4日
-     * @param workbook
-     * @param exportExcelField
-     * @return CellStyle
-     */
-    private CellStyle createStyleAndSetProperties(Workbook workbook , ExportExcelField exportExcelField){
-        CellStyle cellStyle = workbook.createCellStyle();
-        Font font = workbook.createFont();
-        font.setFontName( exportExcelField.fontName());//列标题单元格字体格式
-        font.setFontHeightInPoints(exportExcelField.fontSize());//字体大小
-
-        cellStyle.setAlignment( exportExcelField.align() );//表标题单元格对齐方式
-        cellStyle.setVerticalAlignment(exportExcelField.verticalAlignment());
-        cellStyle.setFont( font );
-        cellStyle.setWrapText(exportExcelField.warpText());
-        return cellStyle;
-    }
-    
+	 * 描述：获取列标题对应样式
+	 * @author csy 
+	 * @date 2020年6月30日
+	 * @return Map<String,CellStyle>
+	 */
+	public Map<String, CellStyle> getHeaderStyleMap() {
+		return headerStyleMap;
+	}
 }
