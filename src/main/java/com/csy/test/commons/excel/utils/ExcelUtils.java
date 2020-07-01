@@ -13,6 +13,7 @@ import com.csy.test.commons.excel.annotion.ImportExcelField;
 import com.csy.test.commons.excel.base.ExcelExportFormatBase;
 import com.csy.test.commons.excel.base.ExcelExportHeaderDefinedBase;
 import com.csy.test.commons.excel.base.ExcelExportInitBaseContextHolder;
+import com.csy.test.commons.excel.base.ExcelImportInitBase;
 import com.csy.test.commons.excel.base.ExcelOperateBase;
 import com.csy.test.commons.excel.base.defaults.DefaultCommon;
 import com.csy.test.commons.excel.base.defaults.DefaultExcelExportHeaderDefinedBase;
@@ -62,18 +63,22 @@ public class ExcelUtils {
      * @return java.util.List<T>
      **/
     public static <T> List<T> xlsDataToBeans(int startRowIndex , File file , Class<T> clazz){
-        Workbook workbook = ExcelOperateBase.getWorkbook(file);
-        Sheet sheet = workbook.getSheetAt(0);
+        Sheet sheet;
         Row row;
         List<T> list = new ArrayList<T>();
-        for (int rowIndex = startRowIndex , rowLen = sheet.getLastRowNum() ; rowIndex < rowLen ; rowIndex++){
-            row = sheet.getRow(rowIndex);
-            list.add(rowToBean(row , clazz));
+        Workbook workbook = ExcelOperateBase.getWorkbook(file);
+        ExcelImportInitBase excelImportInitBase = ExcelImportInitBase.getInstance().initConvert(clazz);
+        for (int i = 0 , sheetsNum = workbook.getNumberOfSheets(); i < sheetsNum ; i++){
+        	sheet = workbook.getSheetAt(i);
+        	for (int rowIndex = startRowIndex , rowLen = sheet.getLastRowNum() ; rowIndex < rowLen ; rowIndex++){
+                row = sheet.getRow(rowIndex);
+                list.add(rowToBean(row , clazz , excelImportInitBase));
+            }       	
         }
         return list;
     }
 
-    /**
+	/**
      * @Description //导出excel
      * @Author csy
      * @Date 2019/9/30 15:46
@@ -393,17 +398,18 @@ public class ExcelUtils {
     }
 
     /**
-     * @Description对象 //行转
-     * @Author csy
-     * @Date 2019/9/30 13:16
-     * @Param [row, clazz]
+     * 描述：行转对象
+     * @author csy 
+     * @date 2019/9/30 13:16
+     * @param row
+     * @param clazz
+     * @param excelImportInitBase
      * @return T
-     **/
-    private static <T> T rowToBean(Row row , Class<T> clazz){
+     */
+    private static <T> T rowToBean(Row row , Class<T> clazz , ExcelImportInitBase excelImportInitBase){
 
         Field[] fields = clazz.getDeclaredFields();
         Class<ImportExcelField> importExcelFieldClazz = ImportExcelField.class;
-
         T entity = null;
         try {
             entity = clazz.newInstance();
@@ -422,9 +428,7 @@ public class ExcelUtils {
             int order = importXls.order();
             try {
                 field.setAccessible(true);
-                field.set(entity , ExcelOperateBase.cellToData(row.getCell(order)));
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException("设置bean值失败" , e);
+                excelImportInitBase.getConvertMap().get(field.getName()).convert(entity, field, row.getCell(order));
             }finally {
                 field.setAccessible(false);
             }
