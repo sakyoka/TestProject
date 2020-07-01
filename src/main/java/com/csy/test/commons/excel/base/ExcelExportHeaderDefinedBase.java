@@ -172,7 +172,9 @@ public abstract class ExcelExportHeaderDefinedBase {
         }
         
         //创建大标题行
-        createTitleColumn(exportExcelHeader , workbook ,sheet , cells);
+       //调整1、ExportExcelField有注解字段时候需要总个数-1 2、没有注解字段时候，给个默认长度7
+        int titleSize = cells > 0 ? cells - 1 : 7;
+        createTitleColumn(exportExcelHeader , workbook ,sheet , titleSize);
 
         Row cellNameRow = sheet.createRow(exportExcelHeader.needHead() ? 1 : 0);
         cellNameRow.setHeightInPoints(exportExcelHeader.headerCellHeight());//设置列标题行高
