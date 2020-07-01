@@ -9,15 +9,15 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.util.Assert;
 
 import com.csy.test.commons.excel.annotion.ExportExcelHeader;
-import com.csy.test.commons.excel.annotion.ImportExcelField;
 import com.csy.test.commons.excel.base.ExcelExportFormatBase;
 import com.csy.test.commons.excel.base.ExcelExportHeaderDefinedBase;
 import com.csy.test.commons.excel.base.ExcelExportInitBaseContextHolder;
-import com.csy.test.commons.excel.base.ExcelImportInitBase;
+import com.csy.test.commons.excel.base.ExcelImportInitBaseContextHolder;
 import com.csy.test.commons.excel.base.ExcelOperateBase;
 import com.csy.test.commons.excel.base.defaults.DefaultCommon;
 import com.csy.test.commons.excel.base.defaults.DefaultExcelExportHeaderDefinedBase;
 import com.csy.test.commons.excel.bean.ExportExcelTempBean;
+import com.csy.test.commons.excel.bean.ImportExcelTempBean;
 import com.csy.test.commons.excel.bean.Params;
 import com.csy.test.commons.excel.bean.exportheader.ExcelExportHeaderData;
 
@@ -67,7 +67,9 @@ public class ExcelUtils {
         Row row;
         List<T> list = new ArrayList<T>();
         Workbook workbook = ExcelOperateBase.getWorkbook(file);
-        ExcelImportInitBase excelImportInitBase = ExcelImportInitBase.getInstance().initConvert(clazz);
+        ExcelImportInitBaseContextHolder excelImportInitBase = ExcelImportInitBaseContextHolder.getInstance()
+        		.initConvert(clazz)
+        		.initTempBeans(clazz);
         for (int i = 0 , sheetsNum = workbook.getNumberOfSheets(); i < sheetsNum ; i++){
         	sheet = workbook.getSheetAt(i);
         	for (int rowIndex = startRowIndex , rowLen = sheet.getLastRowNum() ; rowIndex < rowLen ; rowIndex++){
@@ -210,7 +212,7 @@ public class ExcelUtils {
                 clazz.getAnnotation(ExportExcelHeader.class) : DefaultCommon.DEFAULTE_EXPORTXLSHEADER;
 
         //获取序号列样式
-        CellStyle cellStyle = getIndexStyle(workbook , exportExcelHeader);
+        CellStyle cellStyle = CellStyleUtils.createOrderNumberContentCellStyle(workbook , exportExcelHeader);
 
         boolean needIndex = exportExcelHeader.needIndex();
         int useRow = exportExcelHeader.needHead() ? 2 : 1;
@@ -219,13 +221,13 @@ public class ExcelUtils {
         List<List<T>> list = CollectionUtils.cutListByLength(beanList, MAX_ROW);
         //如果集合为0初始化一个工作簿
         if (list.size() == 0)
-            getSheetByClass(workbook , clazz , 0 , initBaseContextHolder , headerDefinedBase);
+        	headerDefinedBase.initHeaderByClass(workbook , clazz , 0 , initBaseContextHolder );
 
         if (list.size() > 0){
             List<T> subList = null;
             Sheet sheet = null;
             for (int i = 0 , listSize = list.size() ; i < listSize ; i ++){
-                sheet = getSheetByClass(workbook , clazz , i , initBaseContextHolder , headerDefinedBase);
+                sheet = headerDefinedBase.initHeaderByClass(workbook , clazz , i , initBaseContextHolder);
                 subList = list.get(i);
                 foreachBeanList(Params.getBuilder()
                         .cellStyle(cellStyle)
@@ -286,20 +288,20 @@ public class ExcelUtils {
                 clazz.getAnnotation(ExportExcelHeader.class) : DefaultCommon.DEFAULTE_EXPORTXLSHEADER;
 
         //获取序号列样式
-        CellStyle cellStyle = getIndexStyle(workbook , exportExcelHeader);
+        CellStyle cellStyle = CellStyleUtils.createOrderNumberContentCellStyle(workbook , exportExcelHeader);
 
         boolean needIndex = headerData.getNeedIndex();
         int useRow = headerData.getTotalRow();
         List<List<T>> list = CollectionUtils.cutListByLength(beanList, MAX_ROW);
         //如果集合为0初始化一个工作簿
         if (list.size() == 0)
-        	getSheetByHeaderData(workbook , clazz , 0 , initBaseContextHolder , headerDefinedBase , headerData);
+        	headerDefinedBase.initHeaderByHeaderData(workbook , clazz , 0 , initBaseContextHolder , headerData);
 
         if (list.size() > 0){
             List<T> subList = null;
             Sheet sheet = null;
             for (int i = 0 , listSize = list.size() ; i < listSize ; i ++){
-                sheet = getSheetByHeaderData(workbook , clazz , i , initBaseContextHolder , headerDefinedBase , headerData);
+                sheet = headerDefinedBase.initHeaderByHeaderData(workbook , clazz , i , initBaseContextHolder , headerData);
                 subList = list.get(i);
                 foreachBeanList(Params.getBuilder()
                         .cellStyle(cellStyle)
@@ -406,10 +408,8 @@ public class ExcelUtils {
      * @param excelImportInitBase
      * @return T
      */
-    private static <T> T rowToBean(Row row , Class<T> clazz , ExcelImportInitBase excelImportInitBase){
-
-        Field[] fields = clazz.getDeclaredFields();
-        Class<ImportExcelField> importExcelFieldClazz = ImportExcelField.class;
+    private static <T> T rowToBean(Row row , Class<T> clazz , ExcelImportInitBaseContextHolder excelImportInitBase){
+    	
         T entity = null;
         try {
             entity = clazz.newInstance();
@@ -418,66 +418,21 @@ public class ExcelUtils {
         } catch (IllegalAccessException e) {
             throw new RuntimeException("newInstance：不合法访问" , e);
         }
-
-        for (Field field:fields){
-
-            if (!field.isAnnotationPresent(importExcelFieldClazz))
-                continue;
-
-            ImportExcelField importXls = field.getAnnotation(importExcelFieldClazz);
-            int order = importXls.order();
+        
+        List<ImportExcelTempBean> importExcelTempBeans = excelImportInitBase.getTempBeans();
+        Field field = null;
+        for (int i = 0 , len = importExcelTempBeans.size() ; i < len ; i++) {
             try {
+            	field = clazz.getDeclaredField(importExcelTempBeans.get(i).getFieldName());
                 field.setAccessible(true);
-                excelImportInitBase.getConvertMap().get(field.getName()).convert(entity, field, row.getCell(order));
-            }finally {
+                excelImportInitBase.getConvertMap()
+                                                   .get(field.getName()).convert(entity, field, row.getCell(i));
+            } catch (NoSuchFieldException | SecurityException e) {
+            	throw new RuntimeException("row to entity error " , e);
+			}finally {
                 field.setAccessible(false);
-            }
+            }        	
         }
         return entity;
-    }
-
-    /**
-     * 描述：获取工作簿
-     * @author csy
-     * @date 2019年12月19日
-     * @param workbook
-     * @param clazz
-     * @param sheetIndex
-     * @param initBaseContextHolder
-     * @param headerDefinedBase
-     * @param headerData
-     * @return Sheet
-     */
-    private static <T> Sheet getSheetByHeaderData(Workbook workbook , Class<T> clazz , int sheetIndex ,
-                                                  ExcelExportInitBaseContextHolder initBaseContextHolder , ExcelExportHeaderDefinedBase headerDefinedBase, ExcelExportHeaderData headerData){
-        return headerDefinedBase.initHeaderByHeaderData(workbook , clazz , sheetIndex , initBaseContextHolder , headerData);
-    }
-
-    /**
-     * 描述：获取工作簿
-     * @author csy
-     * @date 2019年12月19日
-     * @param workbook
-     * @param clazz
-     * @param sheetIndex
-     * @param initBaseContextHolder
-     * @param headerDefinedBase
-     * @return Sheet
-     */
-    private static <T> Sheet getSheetByClass(Workbook workbook , Class<T> clazz , int sheetIndex ,
-                                             ExcelExportInitBaseContextHolder initBaseContextHolder , ExcelExportHeaderDefinedBase headerDefinedBase) {
-        return headerDefinedBase.initHeaderByClass(workbook, clazz, sheetIndex, initBaseContextHolder);
-    }
-
-    /**
-     * 描述：获取序号列样式
-     * @author csy
-     * @date 2019年12月19日
-     * @param workbook
-     * @param exportXlsHeader
-     * @return CellStyle
-     */
-    private static CellStyle getIndexStyle(Workbook workbook , ExportExcelHeader exportExcelHeader){
-    	return CellStyleUtils.createOrderNumberContentCellStyle(workbook, exportExcelHeader);
     }
 }
