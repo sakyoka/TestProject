@@ -7,7 +7,9 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import com.csy.test.commons.excel.annotion.ExportExcelHeader;
+import com.csy.test.commons.excel.base.ExcelExportHeaderDefinedBase;
 import com.csy.test.commons.excel.base.ExcelExportInitBaseContextHolder;
+import com.csy.test.commons.excel.bean.exportheader.ExcelExportHeaderData;
 
 /**
  * 参数对象
@@ -23,6 +25,8 @@ public class Params<T> {
 	
 	private List<T> beanList;
 	
+	private List<T> subList;
+	
 	private int useRow;
 	
 	private ExportExcelHeader exportExcelHeader;
@@ -33,9 +37,37 @@ public class Params<T> {
 	
 	private CellStyle cellStyle;
 	
+	private Class<? extends ExcelExportHeaderDefinedBase> headerDefinedBaseClazz;
+	
+	private ExcelExportHeaderData headerData;
+	
+	private String xlsType; 
+	
+	private Class<T> clazz;
+	
 	@SuppressWarnings("rawtypes")
 	public static <T> Params getBuilder(){
 		return new Params<T>();
+	}
+
+	public Params<T> headerDefinedBaseClazz(Class<? extends ExcelExportHeaderDefinedBase> clazz) {
+		this.headerDefinedBaseClazz = clazz;
+		return this;
+	}
+	
+	public Params<T> headerData(ExcelExportHeaderData headerData) {
+		this.headerData = headerData;
+		return this;
+	}
+	
+	public Params<T> xlsType(String xlsType) {
+		this.xlsType = xlsType;
+		return this;
+	}
+	
+	public Params<T> clazz(Class<T> clazz) {
+		this.clazz = clazz;
+		return this;
 	}
 
 	public Params<T> workbook(Workbook workbook) {
@@ -48,8 +80,13 @@ public class Params<T> {
 		return this;
 	}
 
-	public Params<T> beanList(List<T> subList) {
-		this.beanList = subList;
+	public Params<T> beanList(List<T> beanList) {
+		this.beanList = beanList;
+		return this;
+	}
+	
+	public Params<T> subList(List<T> subList) {
+		this.subList = subList;
 		return this;
 	}
 
@@ -108,5 +145,25 @@ public class Params<T> {
 
 	public CellStyle getCellStyle() {
 		return cellStyle;
+	}
+
+	public Class<? extends ExcelExportHeaderDefinedBase> getHeaderDefinedBaseClazz() {
+		return headerDefinedBaseClazz;
+	}
+
+	public ExcelExportHeaderData getHeaderData() {
+		return headerData;
+	}
+
+	public String getXlsType() {
+		return xlsType;
+	}
+
+	public Class<T> getClazz() {
+		return clazz;
+	}
+
+	public List<T> getSubList() {
+		return subList;
 	}
 }

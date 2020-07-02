@@ -20,6 +20,7 @@ import com.csy.test.commons.excel.bean.ExportExcelTempBean;
 import com.csy.test.commons.excel.bean.ImportExcelTempBean;
 import com.csy.test.commons.excel.bean.Params;
 import com.csy.test.commons.excel.bean.exportheader.ExcelExportHeaderData;
+import com.csy.test.commons.utils.ClassUtils;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -91,7 +92,6 @@ public class ExcelUtils {
      * @Author csy
      * @Date 2019/9/30 15:46
      * @Param [filePath,beanList, clazz]
-     * @return void
      **/
     public static <T> void exportExcel(String filePath , List<T> beanList , Class<T> clazz){
         exportExcel(filePath, beanList, clazz , null);
@@ -105,7 +105,7 @@ public class ExcelUtils {
      * @param filePath
      * @param beanList
      * @param clazz
-     * @param group void
+     * @param group 
      */
     public static <T> void exportExcel(String filePath , List<T> beanList , Class<T> clazz , String group){
 
@@ -125,7 +125,6 @@ public class ExcelUtils {
      * @param fileName
      * @param beanList
      * @param clazz
-     * @return void
      */
     public static <T> void exportExcel(HttpServletResponse response , String fileName , List<T> beanList ,
                                        Class<T> clazz){
@@ -141,7 +140,6 @@ public class ExcelUtils {
      * @param beanList 数据集合
      * @param clazz    目标对象的class
      * @param group    分组值
-     * @return void
      */
     public static <T> void exportExcel(HttpServletResponse response , String fileName , List<T> beanList ,
                                        Class<T> clazz , String group){
@@ -162,7 +160,7 @@ public class ExcelUtils {
      * @param fileName
      * @param beanList
      * @param clazz
-     * @param headerData void
+     * @param headerData 
      */
     public static <T> void exportExcel(HttpServletResponse response , String fileName , List<T> beanList ,
     		ExcelExportHeaderData headerData , Class<T> clazz ){
@@ -187,24 +185,7 @@ public class ExcelUtils {
      */
     public static <T> Workbook beanListToXlsData(List<T> beanList , String xlsType , Class<T> clazz ,
                                                  String group){
-        return beanListToXlsData(beanList, xlsType, clazz, group , new DefaultExcelExportHeaderDefinedBase());
-    }
-
-    /**
-     * 描述：beanList写入Workbook
-     * @author csy
-     * @date 2019年12月19日
-     * @param beanList
-     * @param xlsType
-     * @param clazz
-     * @param group
-     * @param headerDefinedBase
-     * @return Workbook
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> Workbook beanListToXlsData(List<T> beanList , String xlsType , Class<T> clazz ,
-                                                 String group , ExcelExportHeaderDefinedBase headerDefinedBase){
-
+    	
         Assert.notNull(beanList , "导出数据源不能为空");
 
         Workbook workbook = ExcelOperateBase.getWorkbookByXlsType(xlsType);
@@ -214,39 +195,23 @@ public class ExcelUtils {
                 .initFormat(clazz, group)//初始化Format
                 .initStyle(clazz, workbook, group);//初始化Style
 
+
         ExportExcelHeader exportExcelHeader = clazz.isAnnotationPresent(ExportExcelHeader.class) ?
                 clazz.getAnnotation(ExportExcelHeader.class) : DefaultCommon.DEFAULTE_EXPORTXLSHEADER;
-
-        //获取序号列样式
-        CellStyle cellStyle = CellStyleUtils.createOrderNumberContentCellStyle(workbook , exportExcelHeader);
-
+                
         boolean needIndex = exportExcelHeader.needIndex();
         int useRow = exportExcelHeader.needHead() ? 2 : 1;
-
-        //MAX_ROW
-        List<List<T>> list = CollectionUtils.cutListByLength(beanList, MAX_ROW);
-        //如果集合为0初始化一个工作簿
-        if (list.size() == 0)
-        	headerDefinedBase.initHeaderByClass(workbook , clazz , 0 , initBaseContextHolder );
-
-        if (list.size() > 0){
-            List<T> subList = null;
-            Sheet sheet = null;
-            for (int i = 0 , listSize = list.size() ; i < listSize ; i ++){
-                sheet = headerDefinedBase.initHeaderByClass(workbook , clazz , i , initBaseContextHolder);
-                subList = list.get(i);
-                foreachBeanList(Params.getBuilder()
-                        .cellStyle(cellStyle)
-                        .beanList(subList)
-                        .exportExcelHeader(exportExcelHeader)
-                        .initBaseContextHolder(initBaseContextHolder)
-                        .needIndex(needIndex)
-                        .sheet(sheet)
-                        .useRow(useRow)
-                        .workbook(workbook));
-            }
-        }
-        return workbook;
+        @SuppressWarnings("unchecked")
+		Params<T> params = Params.getBuilder()
+									        .beanList(beanList)
+									        .initBaseContextHolder(initBaseContextHolder)
+									        .needIndex(needIndex)
+									        .useRow(useRow)
+									        .workbook(workbook)
+									        .clazz(clazz)
+									        .headerDefinedBaseClazz(DefaultExcelExportHeaderDefinedBase.class);
+									        
+        return beanListToXlsData(params);
     }
 
     /**
@@ -261,7 +226,33 @@ public class ExcelUtils {
      */
     public static <T> Workbook beanListToXlsData(List<T> beanList , String xlsType , Class<T> clazz ,
                                                  ExcelExportHeaderData headerData){
-        return beanListToXlsData(beanList , xlsType , clazz , new DefaultExcelExportHeaderDefinedBase() , headerData);
+    	
+        Assert.notNull(beanList , "导出数据源不能为空");
+
+        Workbook workbook = ExcelOperateBase.getWorkbookByXlsType(xlsType);
+
+        ExcelExportInitBaseContextHolder initBaseContextHolder = ExcelExportInitBaseContextHolder.getInstance()
+                .initExportBean(clazz, headerData.getHeaderFields())//初始化exportBean
+                .initFormat(clazz, null)//初始化Format
+                .defaultFormat(clazz)
+                .initStyle(clazz, workbook, null)//初始化Style
+                .defaultStyle(clazz , workbook);
+
+        boolean needIndex = headerData.getNeedIndex();
+        int useRow = headerData.getTotalRow();
+    	
+        
+        @SuppressWarnings("unchecked")
+		Params<T> params = Params.getBuilder()
+									        .beanList(beanList)
+									        .initBaseContextHolder(initBaseContextHolder)
+									        .needIndex(needIndex)
+									        .useRow(useRow)
+									        .workbook(workbook)
+									        .clazz(clazz)
+									        .headerData(headerData)
+									        .headerDefinedBaseClazz(DefaultExcelExportHeaderDefinedBase.class);
+        return beanListToXlsData(params);
     }
 
     /**
@@ -275,49 +266,35 @@ public class ExcelUtils {
      * @param headerData
      * @return Workbook
      */
-    @SuppressWarnings("unchecked")
-    public static <T> Workbook beanListToXlsData(List<T> beanList , String xlsType , Class<T> clazz ,
-    		ExcelExportHeaderDefinedBase headerDefinedBase , ExcelExportHeaderData headerData){
-
-        Assert.notNull(beanList , "导出数据源不能为空");
-
-        Workbook workbook = ExcelOperateBase.getWorkbookByXlsType(xlsType);
-
-        ExcelExportInitBaseContextHolder initBaseContextHolder = ExcelExportInitBaseContextHolder.getInstance()
-                .initExportBean(clazz, headerData.getHeaderFields())//初始化exportBean
-                .initFormat(clazz, null)//初始化Format
-                .defaultFormat(clazz)
-                .initStyle(clazz, workbook, null)//初始化Style
-                .defaultStyle(clazz , workbook);
+	public static <T> Workbook beanListToXlsData(Params<T> params){
+		
+    	Workbook workbook = params.getWorkbook();
+    	List<T> beanList = params.getBeanList();
+    	Class<T> clazz = params.getClazz();
+    	ExcelExportHeaderDefinedBase headerDefinedBase = ClassUtils.newInstance(params.getHeaderDefinedBaseClazz());
+    	ExcelExportInitBaseContextHolder initBaseContextHolder = params.getInitBaseContextHolder();
+    	ExcelExportHeaderData headerData = params.getHeaderData();
 
         ExportExcelHeader exportExcelHeader = clazz.isAnnotationPresent(ExportExcelHeader.class) ?
-                clazz.getAnnotation(ExportExcelHeader.class) : DefaultCommon.DEFAULTE_EXPORTXLSHEADER;
-
+        clazz.getAnnotation(ExportExcelHeader.class) : DefaultCommon.DEFAULTE_EXPORTXLSHEADER;
         //获取序号列样式
         CellStyle cellStyle = CellStyleUtils.createOrderNumberContentCellStyle(workbook , exportExcelHeader);
-
-        boolean needIndex = headerData.getNeedIndex();
-        int useRow = headerData.getTotalRow();
         List<List<T>> list = CollectionUtils.cutListByLength(beanList, MAX_ROW);
         //如果集合为0初始化一个工作簿
         if (list.size() == 0)
-        	headerDefinedBase.initHeaderByHeaderData(workbook , clazz , 0 , initBaseContextHolder , headerData);
+        	headerDefinedBase.initHeader(workbook , clazz , 0 , initBaseContextHolder , headerData);
 
         if (list.size() > 0){
             List<T> subList = null;
             Sheet sheet = null;
             for (int i = 0 , listSize = list.size() ; i < listSize ; i ++){
-                sheet = headerDefinedBase.initHeaderByHeaderData(workbook , clazz , i , initBaseContextHolder , headerData);
+                sheet = headerDefinedBase.initHeader(workbook , clazz , i , initBaseContextHolder , headerData);
                 subList = list.get(i);
-                foreachBeanList(Params.getBuilder()
-                        .cellStyle(cellStyle)
-                        .beanList(subList)
-                        .exportExcelHeader(exportExcelHeader)
-                        .initBaseContextHolder(initBaseContextHolder)
-                        .needIndex(needIndex)
-                        .sheet(sheet)
-                        .useRow(useRow)
-                        .workbook(workbook));
+                foreachBeanList(params
+			                        .cellStyle(cellStyle)
+			                        .subList(subList)
+			                        .exportExcelHeader(exportExcelHeader)
+			                        .sheet(sheet));
             }
         }
 
@@ -328,12 +305,12 @@ public class ExcelUtils {
      * 描述：处理beanList
      * @author csy
      * @date 2020年1月6日
-     * @param param void
+     * @param param 
      */
     private static <T> void foreachBeanList(Params<T> param){
         Workbook workbook = param.getWorkbook();
         Sheet sheet = param.getSheet();
-        List<T> beanList = param.getBeanList();
+        List<T> beanList = param.getSubList();
         int useRow = param.getUseRow();
         ExportExcelHeader exportExcelHeader = param.getExportExcelHeader();
         ExcelExportInitBaseContextHolder initBaseContextHolder = param.getInitBaseContextHolder();
@@ -364,7 +341,7 @@ public class ExcelUtils {
      * @param row
      * @param needIndex
      * @param workbook
-     * @param initBaseContextHolder void
+     * @param initBaseContextHolder
      */
     private static <T> void beanToRow(T entity, Row row, boolean needIndex , Workbook workbook ,
                                       ExcelExportInitBaseContextHolder initBaseContextHolder) {

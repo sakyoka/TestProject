@@ -55,6 +55,25 @@ public abstract class ExcelExportHeaderDefinedBase {
 	public abstract <T> Sheet initHeaderByClass(Workbook workbook , Class<T> clazz , int sheetIndex ,ExcelExportInitBaseContextHolder initBaseContextHolder);
 	
 	/**
+	 * 描述：初始化头部信息(如果headerData 不为空调用initHeaderByHeaderData实例化，否者用initHeaderByClass)
+	 * @author csy 
+	 * @date 2020年7月2日 下午2:23:18
+	 * @param workbook 工作簿
+	 * @param clazz 目标类
+	 * @param sheetIndex 需要创建的sheet下标对象
+	 * @param initBaseContextHolder 初始化内容
+	 * @param headerData 头部信息
+	 * @return Sheet
+	 */
+	public <T> Sheet initHeader(Workbook workbook , Class<T> clazz , int sheetIndex , ExcelExportInitBaseContextHolder initBaseContextHolder , 
+			ExcelExportHeaderData headerData){
+		
+		return headerData == null ? 
+				this.initHeaderByClass(workbook, clazz, sheetIndex, initBaseContextHolder) : 
+			    this.initHeaderByHeaderData(workbook, clazz, sheetIndex, initBaseContextHolder, headerData);
+	}
+	
+	/**
 	 * 描述：初始化头部信息(根据自定义传来的header信息)的额外样式设置
 	 * @author csy 
 	 * @date 2019年12月19日
