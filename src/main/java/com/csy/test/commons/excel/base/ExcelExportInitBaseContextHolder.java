@@ -16,6 +16,7 @@ import com.csy.test.commons.excel.base.defaults.DefaultCommon;
 import com.csy.test.commons.excel.bean.ExportExcelTempBean;
 import com.csy.test.commons.excel.bean.exportheader.HeaderField;
 import com.csy.test.commons.excel.utils.CellStyleUtils;
+import com.csy.test.commons.utils.ClassUtils;
 
 /**
  * 初始化实现
@@ -146,7 +147,7 @@ public class ExcelExportInitBaseContextHolder {
 			public void done(Field field, Workbook workbook, ExportExcelField exportExcelField) {
 				String fieldName = field.getName();
 				try {
-					xlsFormatTempMap.put(fieldName, exportExcelField.formatClass().newInstance());
+					xlsFormatTempMap.put(fieldName, ClassUtils.newInstance(exportExcelField.formatClass()));
 				} catch (Exception e) {
 					throw new RuntimeException("实例化format对象失败!" , e);
 				}

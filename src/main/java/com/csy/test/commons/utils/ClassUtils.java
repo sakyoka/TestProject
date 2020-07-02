@@ -2,6 +2,7 @@ package com.csy.test.commons.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -85,13 +86,21 @@ public class ClassUtils {
 	 * @param clazz
 	 * @return T
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T newInstance(Class<? extends T> clazz){
 		try {
+			String className = clazz.getName();
+			//如果是内部类
+			if (className.contains("$")){
+				String parentClassName = className.substring(0, className.lastIndexOf("$"));
+				Class<?> parentClazz = Class.forName(parentClassName);
+				Object parentInstance = parentClazz.newInstance();
+				Constructor<?> ctor = clazz.getDeclaredConstructor(parentClazz);
+				return (T) ctor.newInstance(parentInstance);
+			}
 			return clazz.newInstance();
-		} catch (InstantiationException e) {
+		} catch (Exception e) {
 			throw new RuntimeException("创建实例失败" , e);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException("创建实例失败，不合法访问" , e);
-		}
+		} 
 	}
 }

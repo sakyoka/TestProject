@@ -10,6 +10,7 @@ import java.util.Map;
 
 import com.csy.test.commons.excel.annotion.ImportExcelField;
 import com.csy.test.commons.excel.bean.ImportExcelTempBean;
+import com.csy.test.commons.utils.ClassUtils;
 
 /**
  * 
@@ -60,9 +61,9 @@ public class ExcelImportInitBaseContextHolder {
 			
 			importExcelField = field.getAnnotation(ImportExcelField.class);
 			try {
-				convertBase = importExcelField.convertClazz().newInstance();
+				convertBase = ClassUtils.newInstance(importExcelField.convertClazz());
 			} catch (Exception e) {
-				throw new RuntimeException("初始化ImportExcelField convert失败" , e);
+				throw new RuntimeException("初始化ImportExcelField convert失败 , fieldName ===>>> " + field.getName() , e);
 			}
 			
 			this.convertMap.put(field.getName(), convertBase);

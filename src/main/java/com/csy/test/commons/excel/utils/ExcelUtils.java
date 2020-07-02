@@ -45,24 +45,30 @@ public class ExcelUtils {
     public static final int MAX_ROW = (65536 / 2);
 
     /**
-     * @Description //读取xls转换成bean List
-     * @Author csy
-     * @Date 2019/9/30 12:00
-     * @Param [startRowIndex,filePath, clazz]
-     * @return java.util.List<T>
-     **/
-    public static <T> List<T> xlsDataToBeans(int startRowIndex , String filePath , Class<T> clazz){
-        return xlsDataToBeans(startRowIndex , new File(filePath) , clazz);
+     * 描述：读取excel row转换成bean List
+     * @author csy 
+     * @date 2020年7月2日 上午9:22:34
+     * @param startRowIndex 开始行
+     * @param startColsIndex 开始列
+     * @param filePath excel路径
+     * @param clazz 目标对象
+     * @return List<T>
+     */
+    public static <T> List<T> xlsDataToBeans(int startRowIndex , int  startColsIndex, String filePath , Class<T> clazz){
+        return xlsDataToBeans(startRowIndex , startColsIndex , new File(filePath) , clazz);
     }
 
     /**
-     * @Description //读取xls转换成bean List
-     * @Author csy
-     * @Date 2019/9/30 12:00
-     * @Param [startRowIndex,filePath, clazz]
-     * @return java.util.List<T>
-     **/
-    public static <T> List<T> xlsDataToBeans(int startRowIndex , File file , Class<T> clazz){
+     * 描述：读取excel row转换成bean List
+     * @author csy 
+     * @date 2020年7月2日 上午9:22:03
+     * @param startRowIndex 开始行
+     * @param startColsIndex 开始列
+     * @param file  excel文件
+     * @param clazz 目标对象
+     * @return List<T>
+     */
+    public static <T> List<T> xlsDataToBeans(int startRowIndex ,int startColsIndex , File file , Class<T> clazz){
         Sheet sheet;
         Row row;
         List<T> list = new ArrayList<T>();
@@ -74,7 +80,7 @@ public class ExcelUtils {
         	sheet = workbook.getSheetAt(i);
         	for (int rowIndex = startRowIndex , rowLen = sheet.getLastRowNum() ; rowIndex < rowLen ; rowIndex++){
                 row = sheet.getRow(rowIndex);
-                list.add(rowToBean(row , clazz , excelImportInitBase));
+                list.add(rowToBean(startColsIndex , row , clazz , excelImportInitBase ));
             }       	
         }
         return list;
@@ -403,12 +409,13 @@ public class ExcelUtils {
      * 描述：行转对象
      * @author csy 
      * @date 2019/9/30 13:16
+     * @param startColsIndex
      * @param row
      * @param clazz
      * @param excelImportInitBase
      * @return T
      */
-    private static <T> T rowToBean(Row row , Class<T> clazz , ExcelImportInitBaseContextHolder excelImportInitBase){
+    private static <T> T rowToBean(int startColsIndex,Row row , Class<T> clazz , ExcelImportInitBaseContextHolder excelImportInitBase){
     	
         T entity = null;
         try {
@@ -426,7 +433,7 @@ public class ExcelUtils {
             	field = clazz.getDeclaredField(importExcelTempBeans.get(i).getFieldName());
                 field.setAccessible(true);
                 excelImportInitBase.getConvertMap()
-                                                   .get(field.getName()).convert(entity, field, row.getCell(i));
+                                                   .get(field.getName()).convert(entity, field, row.getCell(i + startColsIndex));
             } catch (NoSuchFieldException | SecurityException e) {
             	throw new RuntimeException("row to entity error " , e);
 			}finally {
