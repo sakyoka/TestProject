@@ -5,14 +5,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
-import java.nio.channels.WritableByteChannel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 /**
  * 文件处理
@@ -22,6 +18,38 @@ import java.util.zip.ZipOutputStream;
 public class FileUtils {
 	
 	private FileUtils(){}
+	
+	/**
+	 * 
+	 * 描述：ZI压缩P文件
+	 * @author csy
+	 * @date 2020年7月2日 下午10:50:14
+	 * @param filePath 压缩文件名 ，全路径
+	 * @param sourceFilePath 数据源，文件或文件夹
+	 * @return
+	 */
+	public static File compressZip(String filePath , String sourceFilePath) {
+		return ZipOperate.getBuilder()
+				                    .filePath(filePath)
+				                    .sourceFilePath(sourceFilePath)
+				                    .compressZip()
+				                    .getOutFile();
+	}
+	
+	/**
+	 * 
+	 * 描述：ZIP解压文件
+	 * @author csy
+	 * @date 2020年7月2日 下午10:52:33
+	 * @param filePath
+	 * @param outDir
+	 */
+	public static void uncompressZip(String filePath , String outDir) {
+		ZipOperate.getBuilder()
+		                     .filePath(filePath)
+		                     .outDir(outDir)
+		                     .uncompressZip();
+	}
 
 	/**
 	 * 描述：复制文件
@@ -177,111 +205,9 @@ public class FileUtils {
 		}		
 	}
 	
-//	/**
-//	 * 描述：压缩文件
-//	 * @author csy 
-//	 * @date 2020年7月2日 下午5:21:26
-//	 * @param outFilePath 全路径 压缩文件名，需要带后缀
-//	 * @param filePath 文件/目录
-//	 * @return 压缩文件
-//	 */
-//	public static File zipFile(String outFilePath, String filePath){
-//		return zipFile( outFilePath , new File(filePath));
-//	}
-//
-//	/**
-//	 * 描述：压缩文件
-//	 * @author csy 
-//	 * @date 2020年7月2日 下午5:21:26
-//	 * @param outFilePath 全路径 压缩文件名，需要带后缀
-//	 * @param file 文件/目录
-//	 * @return 压缩文件
-//	 */
-//	private static File zipFile(String outFilePath , File file) {
-//		
-//		if (!file.exists())
-//			throw new RuntimeException("要压缩文件或目录不存在 , filePath ===>>>> " + file.getAbsolutePath());
-//		
-//		File zipFile = new File(outFilePath);
-//		ZipOutputStream zipOutputStream = null;
-//		WritableByteChannel writableByteChannel = null;
-//		try {
-//			
-//			if (! zipFile.exists()){
-//				zipFile.createNewFile();
-//			}
-//			zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFile));
-//			writableByteChannel = Channels.newChannel(zipOutputStream);
-//			compressZip(zipOutputStream , writableByteChannel , file , file.getName());
-//		} catch (Exception e) {
-//			
-//			zipFile.delete();
-//			
-//			throw new RuntimeException("压缩文件失败" , e);
-//			
-//		}finally {
-//			if (zipOutputStream != null){
-//				try {
-//					zipOutputStream.close();
-//					zipOutputStream.closeEntry();
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
-//			
-//			if (writableByteChannel != null){
-//				try {
-//					writableByteChannel.close();
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
-//			
-//		}
-//		return zipFile;
-//	}
-//	
-//	private static void compressZip(ZipOutputStream zipOutputStream , WritableByteChannel writableByteChannel, File file , String base){
-//		FileChannel fileChannel = null;
-//		try {
-//			if (file.isFile()){
-//				fileChannel = new FileInputStream(file).getChannel();
-//				zipOutputStream.putNextEntry(new ZipEntry(file.getName()));
-//	            fileChannel.transferTo(0, file.length(), writableByteChannel);					
-//			}else{
-//				File[] files = file.listFiles();
-//				for (File subfile : files){
-//					compressZip(zipOutputStream , writableByteChannel , subfile , base + File.separator + subfile.getName());
-//				}
-//			}
-//		} catch (Exception e) {
-//	
-//			throw new RuntimeException("压缩文件失败" , e);
-//		}finally {
-//
-//			if (writableByteChannel != null){
-//				try {
-//					writableByteChannel.close();
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
-//			
-//			if (fileChannel != null){
-//				try {
-//					fileChannel.close();
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
-//		}	
-//	}
-	
 //	public static void main(String[] args) {
-//		zipFile("D:\\compile_cache\\test.zip", "D:\\compile_cache\\补丁\\");
+//		//compressZip("D:\\compile_cache\\test.zip", "D:\\compile_cache\\a216437002894b19929d2bb01d7cfc0c");
+//		uncompressZip("D:\\compile_cache\\test.zip", "D:\\compile_cache\\test1");
+//		
 //	}
 }
