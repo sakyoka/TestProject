@@ -1,15 +1,14 @@
 package com.csy.test.commons.patch.utils;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.csy.test.commons.patch.base.defaults.DefaultPackPatchFile;
 import com.csy.test.commons.patch.base.defaults.DefaultPatchStandardGenerate;
 import com.csy.test.commons.patch.base.defaults.TomcatWriteFileRecordFile;
 import com.csy.test.commons.patch.bean.PatchInitParams;
 import com.csy.test.commons.patch.constatns.PatchInitConstants;
 import com.csy.test.commons.patch.state.sourcepath.state.defaults.tomcat.TomcatSrcJavaPathState;
-import com.csy.test.commons.utils.file.FileUtils;
 import com.csy.test.commons.valid.bean.ParamValidResult;
 import com.csy.test.commons.valid.utils.ValidUtils;
 
@@ -33,6 +32,7 @@ public class Test {
 					.sourcePathStateClazz(TomcatSrcJavaPathState.class)
 					.patchGenerateClazz(DefaultPatchStandardGenerate.class)
 					.writeRecordFileClazz(TomcatWriteFileRecordFile.class)
+					.packPatchFileClazz(DefaultPackPatchFile.class)
 					.build();
 			
 			ParamValidResult validResult = ValidUtils.valid(pachInitParams);
@@ -41,12 +41,6 @@ public class Test {
 			}
 			
 			PatchUtils.generate(pachInitParams);//生成补丁文件
-			
-			//执行压缩打包
-			String sourceFilePath = pachInitParams.getCachePathPrefix() + File.separator + pachInitParams.getCachePathUuid();
-			File dir = new File(sourceFilePath);
-			if (dir.exists())
-				FileUtils.compressZip(PatchInitConstants.DEFAULT_CACHE_PATH_PREFIX + File.separator + "补丁.rar", sourceFilePath);
 		}
 
 	}

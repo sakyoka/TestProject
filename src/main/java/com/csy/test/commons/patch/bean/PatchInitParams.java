@@ -2,6 +2,7 @@ package com.csy.test.commons.patch.bean;
 
 import java.io.Serializable;
 
+import com.csy.test.commons.patch.base.AbstractPackPatchFile;
 import com.csy.test.commons.patch.base.AbstractPatchCommandExecutor;
 import com.csy.test.commons.patch.base.AbstractPatchGenerate;
 import com.csy.test.commons.patch.base.AbstractWriteRecordFile;
@@ -103,6 +104,15 @@ public class PatchInitParams implements Serializable{
 	 */
 	private Class<? extends AbstractPatchCommandExecutor> patchCommandExecutorClazz;
 	
+	/**
+	 * 命令执行器，也是属于热插拔方式，默认是AbstractPackPatchFile
+	 * <br>可实现AbstractPackPatchFile进行扩展
+	 * <br>可以参照com.csy.test.commons.patch.base.defaults;
+	 */
+	private Class<? extends AbstractPackPatchFile> packPatchFileClazz;
+	
+	private String packFilePath;
+	
 	public static PatchInitParams getBuilder(){
 		return new PatchInitParams();
 	}
@@ -191,6 +201,16 @@ public class PatchInitParams implements Serializable{
 	
 	public PatchInitParams patchCommandExecutorClazz(Class<? extends AbstractPatchCommandExecutor> patchCommandExecutorClazz) {
 		this.patchCommandExecutorClazz = patchCommandExecutorClazz;
+		return this;
+	}
+	
+	public PatchInitParams packPatchFileClazz(Class<? extends AbstractPackPatchFile> packPatchFileClazz) {
+		this.packPatchFileClazz = packPatchFileClazz;
+		return this;
+	}
+	
+	public PatchInitParams packFilePath(String packFilePath){
+		this.packFilePath = packFilePath;
 		return this;
 	}
 	
@@ -284,4 +304,13 @@ public class PatchInitParams implements Serializable{
 	public Class<? extends AbstractPatchCommandExecutor> getPatchCommandExecutorClazz() {
 		return patchCommandExecutorClazz;
 	}
+
+	public Class<? extends AbstractPackPatchFile> getPackPatchFileClazz() {
+		return packPatchFileClazz;
+	}
+
+	public String getPackFilePath() {
+		return packFilePath;
+	}
+	
 }

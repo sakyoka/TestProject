@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
 import com.csy.test.commons.entity.utils.EntityUtils;
+import com.csy.test.commons.patch.base.AbstractPackPatchFile;
 import com.csy.test.commons.patch.base.AbstractPatchCommandExecutor;
 import com.csy.test.commons.patch.base.AbstractPatchGenerate;
 import com.csy.test.commons.patch.base.defaults.DefaultPatchStandardGenerate;
@@ -56,7 +57,12 @@ public class PatchUtils {
             System.out.println("starting to transfer sourcePath to compilePath...");
         	List<String> compileFilePaths = sourceListToCompileList(patchInitParams , sourceFilePaths);
         	
-        	transfer(patchInitParams, compileFilePaths);			
+        	transfer(patchInitParams, compileFilePaths);
+        	
+        	//执行打包
+        	Class<? extends AbstractPackPatchFile> packPatchFileClass = patchInitParams.getPackPatchFileClazz();
+        	if (packPatchFileClass != null)
+        		ClassUtils.newInstance(packPatchFileClass).packFile(patchInitParams);
 		} finally {
 			CompileRefSourcePathCache.remove();
 		}
