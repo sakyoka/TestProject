@@ -4,18 +4,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.WritableByteChannel;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.charset.Charset;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 /**
@@ -37,6 +32,8 @@ public class ZipOperate {
 	private File outFile;//压缩文件对象
 	
 	private String ompressName;
+	
+	private String charset;
 	
 	private ZipOperate() {}
 	
@@ -79,6 +76,11 @@ public class ZipOperate {
 		this.ompressName = ompressName;
 		return this;
 	}
+	
+	public ZipOperate charset(String charset){
+		this.charset = charset;
+		return this;
+	}
 
 	/**
 	 * 描述：压缩文件
@@ -103,6 +105,7 @@ public class ZipOperate {
 		WritableByteChannel writableByteChannel = null;
 		try {
 			System.out.println("starting to compress...");
+			System.out.println();
 			if (! zipFile.exists())
 				zipFile.createNewFile();
 			
@@ -155,35 +158,51 @@ public class ZipOperate {
 		
 		if (this.outDir == null)
 			throw new RuntimeException("解压存放路径为空");
-		File outFileDir = new File(this.outDir);
-			
-		if (!outFileDir.exists()) 
-			outFileDir.mkdirs();
 		
-		Path path = Paths.get(this.filePath);
-		final String targetPath = this.outDir;
-		FileSystem fileSystem = null;
+		ZipInputStream zipInputStream = null;
+        ZipEntry zipEntry = null;
 		try {
 			System.out.println("starting to uncompress...");
-			fileSystem = FileSystems.newFileSystem(path, null);
-			Files.walkFileTree(fileSystem.getPath("/"), new SimpleFileVisitor<Path>() {
-				
-	            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-	                Path destPath = Paths.get(targetPath , file.toString());
-	                Files.deleteIfExists(destPath);
-	                Files.createDirectories(destPath.getParent());
-	                Files.move(file, destPath);
-	                return FileVisitResult.CONTINUE;
-	            }
-	            
-			});
-		} catch (IOException e) {
+			System.out.println();
+
+            zipInputStream = new ZipInputStream(new FileInputStream(this.filePath) , 
+            		                                                this.charset == null ? Charset.forName("GBK") : Charset.forName(this.charset));
+            byte[] buffer = new byte[1024];
+            int readLength = 0;
+            while ( (zipEntry = zipInputStream.getNextEntry()) != null){
+            	if (zipEntry.isDirectory()){
+            		String dir = this.outDir + File.separator + zipEntry.getName();
+            		this.createDir(dir);
+            	}else{
+            		File file = new File(this.outDir + File.separator + zipEntry.getName());
+            		String path = file.getAbsolutePath();
+            		this.createDir(path.substring(0 , path.lastIndexOf(File.separator)));
+            		
+            		if (this.showPackFile){
+            			System.out.println("compress file ==> " + file.getAbsolutePath());
+            			System.out.println();
+            		}
+            		OutputStream os = null;
+            		try {
+                		os = new FileOutputStream(file);
+                		while( (readLength = zipInputStream.read(buffer, 0 , 1024)) != -1){
+                			os.write(buffer, 0 , readLength);
+                		}					
+					} finally {
+						if (os != null){
+							os.close();
+						}
+					}
+
+            	}
+            }
+		} catch (Exception e) {
 			
 			throw new RuntimeException("解压失败" , e);
 		}finally {
-			if (fileSystem != null) {
+			if (zipInputStream != null){
 				try {
-					fileSystem.close();
+					zipInputStream.close();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -194,14 +213,25 @@ public class ZipOperate {
 		return this;
 	}
 
-	@SuppressWarnings("resource")
+	/**
+	 * 描述：递归压缩文件
+	 * @author csy 
+	 * @date 2020年7月3日 上午11:26:41
+	 * @param zipOutputStream
+	 * @param writableByteChannel
+	 * @param file
+	 * @param path
+	 * @throws IOException
+	 */
 	private void compressZip(ZipOutputStream zipOutputStream , WritableByteChannel writableByteChannel, File file , String path) throws IOException{
 		FileChannel fileChannel = null;
 		try {
 			if (file.isFile()){
 				
-				if (this.showPackFile)
-					System.out.println("compress file ==> " + path + File.separator + file.getName());
+				if (this.showPackFile){
+					System.out.println("compress file ==> " + path + File.separator + file.getName() );
+					System.out.println();
+				}
 				
 				fileChannel = new FileInputStream(file).getChannel();
 				zipOutputStream.putNextEntry(new ZipEntry(path));
@@ -223,5 +253,17 @@ public class ZipOperate {
 				}
 			}
 		}	
+	}
+	
+	/**
+	 * 描述：创建文件夹
+	 * @author csy 
+	 * @date 2020年7月3日 上午10:50:46
+	 * @param dir
+	 */
+	private void createDir(String dir){
+		File dirFile = new File(dir);
+		if (!dirFile.exists())
+			dirFile.mkdirs();		
 	}
 }

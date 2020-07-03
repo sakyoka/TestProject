@@ -6,6 +6,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -180,34 +186,23 @@ public class FileUtils {
 			return Collections.EMPTY_LIST;
 		}
 		
-		List<String> filePaths = new ArrayList<String>();
-		getDirFilePaths(dirFile , filePaths);
+		final List<String> filePaths = new ArrayList<String>();
+		
+		try {
+			Path path = Paths.get(dirPath);
+			Files.walkFileTree(path, new SimpleFileVisitor<Path> (){
+				
+				@Override
+				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+					filePaths.add(file.toAbsolutePath().toString());
+					return FileVisitResult.CONTINUE;
+				}
+				
+			});
+		} catch (IOException e) {
+			throw new RuntimeException("获取文件路径失败" , e);
+		}
 		
 		return filePaths;
 	}
-	
-	/**
-	 * 
-	 * 描述：获取文件夹下面的所有文件路径
-	 * @author csy
-	 * @date 2020年6月21日 下午6:46:32
-	 * @param dirFile 文件夹路径
-	 * @param filePaths 存储文件夹路径
-	 */
-	private static void getDirFilePaths(File dirFile , List<String> filePaths) {
-		File[] files = dirFile.listFiles();
-		for (File file:files) {
-			if (file.isDirectory()) {
-				getDirFilePaths(file , filePaths);
-			}else {
-				filePaths.add(file.getAbsolutePath());
-			}
-		}		
-	}
-	
-//	public static void main(String[] args) {
-//		//compressZip("D:\\compile_cache\\test.zip", "D:\\compile_cache\\a216437002894b19929d2bb01d7cfc0c");
-//		uncompressZip("D:\\compile_cache\\test.zip", "D:\\compile_cache\\test1");
-//		
-//	}
 }
