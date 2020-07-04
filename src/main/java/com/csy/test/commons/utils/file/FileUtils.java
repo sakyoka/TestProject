@@ -141,6 +141,7 @@ public class FileUtils {
 		return writeFile(file, contents);
 	}
 	
+	
 	/**
 	 * 
 	 * 描述：内容写进文件
@@ -150,11 +151,26 @@ public class FileUtils {
 	 * @param contents 内容
 	 * @return  File
 	 */
-	@SuppressWarnings("resource")
 	public static File writeFile(File file , String contents) {
+		return writeFile(file, contents, false);
+	}
+	
+
+	/**
+	 * 描述：内容写进文件
+	 * @author csy 
+	 * @date 2020年7月4日 上午11:01:22
+	 * @param file
+	 * @param contents
+	 * @param append 是否在原本文件中追加内容
+	 * @return File
+	 */
+	public static File writeFile(File file , String contents , boolean append) {
 		FileChannel fileChannel = null;
+		FileOutputStream fileOutputStream = null;
 		try {
-			fileChannel = new FileOutputStream(file).getChannel();
+			fileOutputStream = new FileOutputStream(file , append);
+			fileChannel = fileOutputStream.getChannel();
 			ByteBuffer buffer = ByteBuffer.wrap(contents.getBytes());
 			fileChannel.write(buffer);
 		} catch (IOException e) {
@@ -164,6 +180,15 @@ public class FileUtils {
 				try {
 					fileChannel.close();
 				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if (fileOutputStream != null){
+				try {
+					fileOutputStream.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

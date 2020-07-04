@@ -45,12 +45,13 @@ public abstract class AbstractWriteRecordFile {
 				.toString();
 		
 		File outFile = new File(outFilePath);
-		if (outFile.exists()){
+		if (!pachInitParams.getUseSamePatchRecordFile() && outFile.exists()){
 			outFilePath = new StringBuilder().append(cachePathPrefix)
 					.append(File.separator)
 					.append(pachInitParams.getCachePathUuid())
+					.append(File.separator)
 					.append(UUID.getString())
-					.append(this.pachInitParams.getPatchFileName().substring(pachInitParams.getPatchFileName().lastIndexOf(".") +1))
+					.append(this.pachInitParams.getPatchFileName().substring(pachInitParams.getPatchFileName().lastIndexOf(".")))
 					.toString();
 			outFile = new File(outFilePath);
 		}

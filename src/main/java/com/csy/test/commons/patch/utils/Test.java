@@ -18,22 +18,24 @@ public class Test {
 	public static void main(String[] args) {
 		List<String> projectList = new ArrayList<String>();
 		//projectList.add("ApprSynthesis");
-		//projectList.add("ApprControl");
+		projectList.add("ApprControl");
 		//projectList.add("ApprSupport");
 		projectList.add(PatchInitConstants.DEFAULT_PROJECT_NAME);
+
+		PatchInitParams pachInitParams =  PatchInitParams.getBuilder()
+				.sourcePathPrefix(PatchInitConstants.DEFAULT_SOURCE_PATH_PREFIX)
+				.compilePathPrefix(PatchInitConstants.DEFAULT_WORK_PATH_PREFIX)
+				.cachePathPrefix(PatchInitConstants.DEFAULT_CACHE_PATH_PREFIX)
+				.projectChName("测试项目")
+				.sourcePathStateClazz(TomcatSrcJavaPathState.class)
+				.patchGenerateClazz(DefaultPatchStandardGenerate.class)
+				.writeRecordFileClazz(TomcatWriteFileRecordFile.class)
+				//.packPatchFileClazz(DefaultPackPatchFile.class)
+				.useSamePatchRecordFile(true)
+				.build();
 		for (String projectName:projectList){
-			PatchInitParams pachInitParams =  PatchInitParams.getBuilder()
-					.sourcePathPrefix(PatchInitConstants.DEFAULT_SOURCE_PATH_PREFIX)
-					.compilePathPrefix(PatchInitConstants.DEFAULT_WORK_PATH_PREFIX)
-					.cachePathPrefix(PatchInitConstants.DEFAULT_CACHE_PATH_PREFIX)
-					.projectChName("测试项目")
-					.projectEnName(projectName)//PatchInitConstants.DEFAULT_PROJECT_NAME
-					.useGitCommand()
-					.sourcePathStateClazz(TomcatSrcJavaPathState.class)
-					.patchGenerateClazz(DefaultPatchStandardGenerate.class)
-					.writeRecordFileClazz(TomcatWriteFileRecordFile.class)
-					.packPatchFileClazz(DefaultPackPatchFile.class)
-					.build();
+			pachInitParams.projectEnName(projectName)
+			              .useGitCommand();//PatchInitConstants.DEFAULT_PROJECT_NAME
 			
 			ParamValidResult validResult = ValidUtils.valid(pachInitParams);
 			if(validResult.getHasError()) {

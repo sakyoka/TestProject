@@ -71,7 +71,7 @@ public class PatchInitParams implements Serializable{
 	/**
 	 * 补丁记录文件名需要加后缀
 	 */
-	@Valid(validType = {BlankValid.class} , errorMessage = "补丁记录文件名s不能为空")
+	@Valid(validType = {BlankValid.class} , errorMessage = "补丁记录文件名不能为空")
 	private String patchFileName;
 	
 	/**
@@ -111,7 +111,15 @@ public class PatchInitParams implements Serializable{
 	 */
 	private Class<? extends AbstractPackPatchFile> packPatchFileClazz;
 	
+	/**
+	 * 打包文件输出路径
+	 */
 	private String packFilePath;
+	
+	/**
+	 * 如果目录下有了同名补丁名是否用同一个文件记录。默认否
+	 */
+	private Boolean useSamePatchRecordFile = false;
 	
 	public static PatchInitParams getBuilder(){
 		return new PatchInitParams();
@@ -155,6 +163,13 @@ public class PatchInitParams implements Serializable{
 	}
 	
 	public PatchInitParams useGitCommand() {
+		
+		if (this.projectEnName == null)
+			throw new RuntimeException("useGitCommand before the projectEnName is not allow null");
+		
+		if (this.sourcePathPrefix == null)
+			throw new RuntimeException("useGitCommand before the sourcePathPrefix is not allow null");
+		
 		this.commandStr = new StringBuilder()
 	              .append("cmd /c cd ")
 	              .append(this.sourcePathPrefix)
@@ -165,6 +180,13 @@ public class PatchInitParams implements Serializable{
 	}
 	
 	public PatchInitParams useSvnCommand() {
+		
+		if (this.projectEnName == null)
+			throw new RuntimeException("useSvnCommand before the projectEnName is not allow null");
+		
+		if (this.sourcePathPrefix == null)
+			throw new RuntimeException("useSvnCommand before the sourcePathPrefix is not allow null");
+		
 		this.commandStr = new StringBuilder()
 	              .append("cmd /c cd ")
 	              .append(this.sourcePathPrefix)
@@ -214,9 +236,15 @@ public class PatchInitParams implements Serializable{
 		return this;
 	}
 	
+	public PatchInitParams useSamePatchRecordFile(Boolean useSamePatchRecordFile){
+		this.useSamePatchRecordFile = useSamePatchRecordFile;
+		return this;
+	}
+	
 	public PatchInitParams build(){
 		
-		this.cachePathUuid = UUID.getString();
+		if (this.cachePathUuid == null)
+			this.cachePathUuid = UUID.getString();
 		
 		if (this.defaultGitComnand) {
 			this.useGitCommand();
@@ -312,5 +340,8 @@ public class PatchInitParams implements Serializable{
 	public String getPackFilePath() {
 		return packFilePath;
 	}
-	
+
+	public Boolean getUseSamePatchRecordFile() {
+		return useSamePatchRecordFile;
+	}
 }

@@ -20,7 +20,7 @@ public class TomcatWriteFileRecordFile extends AbstractWriteRecordFile{
 		
 		File outFile = this.createDefaultRecodFile();
 		
-		FileUtils.writeFile(outFile, stringBuilder.toString());
+		FileUtils.writeFile(outFile, stringBuilder.toString() , pachInitParams.getUseSamePatchRecordFile());
 		
 		System.out.println("pach record file path:" + outFile.getAbsolutePath());
 	}
