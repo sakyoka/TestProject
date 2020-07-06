@@ -125,9 +125,10 @@ public class PatchUtils {
     		AbstractPatchGenerate abstractPachGenerate = ( patchInitParams.getPatchGenerateClazz() == null ? 
     				                                               new DefaultPatchStandardGenerate() 
     				                                               : ClassUtils.newInstance(patchInitParams.getPatchGenerateClazz()) );
-    		abstractPachGenerate.compileFilePaths(compileFilePaths).patchInitParams(EntityUtils.deepCopy(patchInitParams))
-													    		   .foreach()
-													    		   .writeRecordFile();
+    		abstractPachGenerate.compileFilePaths(compileFilePaths)
+    		                    .patchInitParams(EntityUtils.deepCopy(patchInitParams))
+				    		    .foreach()
+				    		    .writeRecordFile();
     		System.out.println("generate patch file finished.");
 		} catch (Exception e) {
 			if (cacheDir != null){

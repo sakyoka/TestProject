@@ -179,7 +179,7 @@ public class ZipOperate {
             		this.createDir(path.substring(0 , path.lastIndexOf(File.separator)));
             		
             		if (this.showPackFile){
-            			System.out.println("compress file ==> " + file.getAbsolutePath());
+            			System.out.println("\t uncompress file ==> " + file.getAbsolutePath());
             			System.out.println();
             		}
             		OutputStream os = null;
@@ -229,7 +229,7 @@ public class ZipOperate {
 			if (file.isFile()){
 				
 				if (this.showPackFile){
-					System.out.println("compress file ==> " + path + File.separator + file.getName() );
+					System.out.println("\t compress file ==> " + path + File.separator + file.getName() );
 					System.out.println();
 				}
 				

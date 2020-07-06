@@ -86,7 +86,6 @@ public class ClassUtils {
 	 * @param clazz
 	 * @return T
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T> T newInstance(Class<? extends T> clazz){
 		try {
 			String className = clazz.getName();
@@ -95,8 +94,8 @@ public class ClassUtils {
 				String parentClassName = className.substring(0, className.lastIndexOf("$"));
 				Class<?> parentClazz = Class.forName(parentClassName);
 				Object parentInstance = parentClazz.newInstance();
-				Constructor<?> ctor = clazz.getDeclaredConstructor(parentClazz);
-				return (T) ctor.newInstance(parentInstance);
+				Constructor<? extends T> ctor = clazz.getDeclaredConstructor(parentClazz);
+				return ctor.newInstance(parentInstance);
 			}
 			return clazz.newInstance();
 		} catch (Exception e) {
