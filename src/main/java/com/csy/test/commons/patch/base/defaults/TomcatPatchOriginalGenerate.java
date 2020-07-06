@@ -30,7 +30,7 @@ public class TomcatPatchOriginalGenerate extends AbstractPatchGenerate{
 			throw new NotFoundCompileClassException("文件找不到:" + compilePath);
 		}
 		
-		String path = compilePath.replace(pachInitParams.getSourcePathPrefix(), PatchDefinedConstants.EMPTY_STRING)
+		String path = compilePath.replace(pachInitParams.getCompilePathPrefix(), PatchDefinedConstants.EMPTY_STRING)
 		           .replace(PatchDefinedConstants.TARGET_CLASS, PatchDefinedConstants.EMPTY_STRING);
 		
 		String outPath = new StringBuilder()
@@ -38,7 +38,6 @@ public class TomcatPatchOriginalGenerate extends AbstractPatchGenerate{
                             .append(File.separator)
                             .append(path)
                             .toString();
-		
 		try {
 			FileUtils.coppyTo(file, outPath);
 		} catch (IOException e) {
