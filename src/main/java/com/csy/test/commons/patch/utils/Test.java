@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.csy.test.commons.patch.base.defaults.DefaultPackPatchFile;
 import com.csy.test.commons.patch.base.defaults.DefaultPatchStandardGenerate;
-import com.csy.test.commons.patch.base.defaults.TomcatPatchOriginalGenerate;
 import com.csy.test.commons.patch.base.defaults.TomcatWriteFileRecordFile;
 import com.csy.test.commons.patch.bean.PatchInitParams;
 import com.csy.test.commons.patch.constatns.PatchInitConstants;
@@ -29,7 +28,7 @@ public class Test {
 				.cachePathPrefix(PatchInitConstants.DEFAULT_CACHE_PATH_PREFIX)
 				.projectChName("测试项目")
 				.sourcePathStateClazz(TomcatSrcJavaPathState.class)
-				.patchGenerateClazz(TomcatPatchOriginalGenerate.class)//DefaultPatchStandardGenerate
+				.patchGenerateClazz(DefaultPatchStandardGenerate.class)//DefaultPatchStandardGenerate 、TomcatPatchOriginalGenerate
 				.writeRecordFileClazz(TomcatWriteFileRecordFile.class)
 				.packPatchFileClazz(DefaultPackPatchFile.class)
 				.useSamePatchRecordFile(true)
