@@ -35,7 +35,7 @@ public class ExcelImportInitBaseContextHolder {
 	 * @date 2020年7月1日 下午6:21:41
 	 * @return ExcelImportInitBase
 	 */
-	public static ExcelImportInitBaseContextHolder getInstance(){
+	public static ExcelImportInitBaseContextHolder newInstance(){
 		return new ExcelImportInitBaseContextHolder();
 	}
 	

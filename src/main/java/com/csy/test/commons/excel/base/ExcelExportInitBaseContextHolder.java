@@ -41,7 +41,7 @@ public class ExcelExportInitBaseContextHolder {
      * @date 2019年12月19日
      * @return InitBaseContextHolder
      */
-    public static ExcelExportInitBaseContextHolder getInstance(){
+    public static ExcelExportInitBaseContextHolder newInstance(){
     	return new ExcelExportInitBaseContextHolder();
     }
 

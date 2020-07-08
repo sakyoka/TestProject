@@ -74,7 +74,7 @@ public class ExcelUtils {
         Row row;
         List<T> list = new ArrayList<T>();
         Workbook workbook = ExcelOperateBase.getWorkbook(file);
-        ExcelImportInitBaseContextHolder excelImportInitBase = ExcelImportInitBaseContextHolder.getInstance()
+        ExcelImportInitBaseContextHolder excelImportInitBase = ExcelImportInitBaseContextHolder.newInstance()
         		.initConvert(clazz)
         		.initTempBeans(clazz);
         for (int i = 0 , sheetsNum = workbook.getNumberOfSheets(); i < sheetsNum ; i++){
@@ -190,7 +190,7 @@ public class ExcelUtils {
 
         Workbook workbook = ExcelOperateBase.getWorkbookByXlsType(xlsType);
 
-        ExcelExportInitBaseContextHolder initBaseContextHolder = ExcelExportInitBaseContextHolder.getInstance()
+        ExcelExportInitBaseContextHolder initBaseContextHolder = ExcelExportInitBaseContextHolder.newInstance()
                 .initExportBean(clazz, group)//初始化ExportBean
                 .initFormat(clazz, group)//初始化Format
                 .initStyle(clazz, workbook, group);//初始化Style
@@ -231,7 +231,7 @@ public class ExcelUtils {
 
         Workbook workbook = ExcelOperateBase.getWorkbookByXlsType(xlsType);
 
-        ExcelExportInitBaseContextHolder initBaseContextHolder = ExcelExportInitBaseContextHolder.getInstance()
+        ExcelExportInitBaseContextHolder initBaseContextHolder = ExcelExportInitBaseContextHolder.newInstance()
                 .initExportBean(clazz, headerData.getHeaderFields())//初始化exportBean
                 .initFormat(clazz, null)//初始化Format
                 .defaultFormat(clazz)
