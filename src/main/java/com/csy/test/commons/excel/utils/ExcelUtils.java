@@ -79,7 +79,7 @@ public class ExcelUtils {
         		.initTempBeans(clazz);
         for (int i = 0 , sheetsNum = workbook.getNumberOfSheets(); i < sheetsNum ; i++){
         	sheet = workbook.getSheetAt(i);
-        	for (int rowIndex = startRowIndex , rowLen = sheet.getLastRowNum() ; rowIndex < rowLen ; rowIndex++){
+        	for (int rowIndex = startRowIndex , rowLen = sheet.getLastRowNum() ; rowIndex <= rowLen ; rowIndex++){
                 row = sheet.getRow(rowIndex);
                 list.add(rowToBean(startColsIndex , row , clazz , excelImportInitBase ));
             }       	
