@@ -15,6 +15,7 @@ import com.csy.test.commons.patch.bean.PatchInitParams;
 import com.csy.test.commons.patch.cache.CompileRefSourcePathCache;
 import com.csy.test.commons.patch.state.sourcepath.executor.SourcePathExecutor;
 import com.csy.test.commons.utils.ClassUtils;
+import com.csy.test.commons.utils.file.FileUtils;
 
 /**
  * 
@@ -131,10 +132,8 @@ public class PatchUtils {
 				    		    .writeRecordFile();
     		System.out.println("generate patch file finished.");
 		} catch (Exception e) {
-			if (cacheDir != null){
-				System.out.println(String.format("error generate patch and then delete cache dir uuid key:%s", uuid));
-				cacheDir.delete();
-			}
+			System.out.println(String.format("error generate patch and then delete cache dir uuid key:%s", uuid));
+			FileUtils.deletes(cachePath);
 			throw new RuntimeException(e);
 		}		
 	}

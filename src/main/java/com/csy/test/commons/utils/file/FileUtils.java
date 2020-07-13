@@ -75,7 +75,7 @@ public class FileUtils {
 			outFileChannel = new FileOutputStream(outFile).getChannel();
 			outFileChannel.transferFrom(inputFileChannel , 0 , inputFileChannel.size());
 		} catch (Exception e) {
-			throw new RuntimeException("复制文件失败!!" , e);
+			throw new RuntimeException("复制文件失败,FileUtils ==> coppyTo" , e);
 		}finally {
 			if (inputFileChannel != null){
 				try {
@@ -111,10 +111,8 @@ public class FileUtils {
 			outFile = new File(outFilePath + File.separator + inputFileName);
 		}else{
 			if (outFilePath.contains(".")) {
-				File outFileDir = new File( outFilePath.substring(0, outFilePath.lastIndexOf('/') + 1) );
-				if (! outFileDir.exists()) {
-					outFileDir.mkdirs();
-				}
+				String outFileDirPath = outFilePath.substring(0, outFilePath.lastIndexOf(File.separator));
+				Files.createDirectories(Paths.get(outFileDirPath));
 			}
 			outFile.createNewFile();
 		}
@@ -174,7 +172,7 @@ public class FileUtils {
 			ByteBuffer buffer = ByteBuffer.wrap(contents.getBytes());
 			fileChannel.write(buffer);
 		} catch (IOException e) {
-			throw new RuntimeException("写入文件失败!" , e);
+			throw new RuntimeException("写入文件失败 , FileUtils ==> writeFile" , e);
 		} finally {
 			if (fileChannel != null){
 				try {
@@ -225,9 +223,47 @@ public class FileUtils {
 				
 			});
 		} catch (IOException e) {
-			throw new RuntimeException("获取文件路径失败" , e);
+			throw new RuntimeException("获取文件路径失败,FileUtils ==> getDirFilePaths" , e);
 		}
 		
 		return filePaths;
+	}
+	
+	/**
+	 * 
+	 * 描述：删除文件/文件夹
+	 * @author csy
+	 * @date 2020年7月13日 下午8:47:46
+	 * @param dirPath 要删除文件路径或文件夹路径
+	 */
+	public static void deletes(String dirPath){
+		
+		Path path = Paths.get(dirPath);
+		File dirFile = path.toFile();
+		
+		if (!dirFile.exists()) {
+			return;
+		}
+
+		try {
+			Files.walkFileTree(path, new SimpleFileVisitor<Path> (){
+				
+				@Override
+				public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+					Files.deleteIfExists(dir);
+					return FileVisitResult.CONTINUE;
+				}
+				
+				@Override
+				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+					Files.deleteIfExists(file);
+					return FileVisitResult.CONTINUE;
+				}
+				
+			});
+			
+		} catch (IOException e) {
+			throw new RuntimeException("删除文件或文件夹失败,FileUtils ==> deletes" , e);
+		}
 	}
 }
