@@ -129,14 +129,14 @@ public class FileUtils {
 	 * @return File
 	 */
 	public static File writeFile(String filePath , String contents) {
-		File file = new File(filePath);
-		try {
-			file.createNewFile();
-		} catch (IOException e) {
-			throw new RuntimeException("创建文件失败!" , e);
-		}
 		
-		return writeFile(file, contents);
+		Path path = Paths.get(filePath);
+
+		try {
+			return writeFile(Files.createFile(path).toFile(), contents);
+		} catch (IOException e) {
+			throw new RuntimeException("写文件失败，创建文件失败，filePath:" + filePath);
+		}
 	}
 	
 	

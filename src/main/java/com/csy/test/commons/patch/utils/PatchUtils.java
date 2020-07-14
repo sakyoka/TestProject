@@ -1,6 +1,8 @@
 package com.csy.test.commons.patch.utils;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -119,14 +121,10 @@ public class PatchUtils {
 		String cachePathPrefix = patchInitParams.getCachePathPrefix();
     	String uuid = patchInitParams.getCachePathUuid();
 		String cachePath = cachePathPrefix + File.separator + uuid;
-		File cacheDir = null;
     	try {
     		System.out.println(String.format("starting to generate cache dir and uuid key: %s" , uuid));
     		//创建临时路径
-    		cacheDir = new File(cachePath);
-    		if (!cacheDir.exists()){
-    			cacheDir.mkdirs();
-    		}
+    		Files.createDirectories(Paths.get(cachePath));
     		
     		System.out.println("starting to copy compile file...");
     		AbstractPatchGenerate abstractPachGenerate = ( patchInitParams.getPatchGenerateClazz() == null ? 
