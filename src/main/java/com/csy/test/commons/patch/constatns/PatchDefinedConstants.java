@@ -67,4 +67,18 @@ public class PatchDefinedConstants {
 	 * 正斜杠
 	 */
 	public static final String  FORWARD_SLASH = "/";
+	
+	/**
+	 * 相反操作系统路径分隔符
+	 */
+	public static String SYSTEM_REVERSE_SEPARATOR = "/";
+	
+	static{
+		String os = System.getProperty("os.name");
+		if (os.toLowerCase().startsWith("win")){
+			SYSTEM_REVERSE_SEPARATOR  = "/";
+		}else{
+			SYSTEM_REVERSE_SEPARATOR = "\\";
+		}	
+	}
 }

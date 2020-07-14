@@ -9,6 +9,8 @@ import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -172,12 +174,11 @@ public class ZipOperate {
             while ( (zipEntry = zipInputStream.getNextEntry()) != null){
             	if (zipEntry.isDirectory()){
             		String dir = this.outDir + File.separator + zipEntry.getName();
-            		this.createDir(dir);
+            		Files.createDirectories(Paths.get(dir));
             	}else{
             		File file = new File(this.outDir + File.separator + zipEntry.getName());
             		String path = file.getAbsolutePath();
-            		this.createDir(path.substring(0 , path.lastIndexOf(File.separator)));
-            		
+            		Files.createDirectories(Paths.get(path.substring(0 , path.lastIndexOf(File.separator))));
             		if (this.showPackFile){
             			System.out.println("\t uncompress file ==> " + file.getAbsolutePath());
             			System.out.println();
@@ -229,7 +230,7 @@ public class ZipOperate {
 			if (file.isFile()){
 				
 				if (this.showPackFile){
-					System.out.println("\t compress file ==> " + path + File.separator + file.getName() );
+					System.out.println("\t compress file ==> " + path);
 					System.out.println();
 				}
 				
@@ -253,17 +254,5 @@ public class ZipOperate {
 				}
 			}
 		}	
-	}
-	
-	/**
-	 * 描述：创建文件夹
-	 * @author csy 
-	 * @date 2020年7月3日 上午10:50:46
-	 * @param dir
-	 */
-	private void createDir(String dir){
-		File dirFile = new File(dir);
-		if (!dirFile.exists())
-			dirFile.mkdirs();		
 	}
 }

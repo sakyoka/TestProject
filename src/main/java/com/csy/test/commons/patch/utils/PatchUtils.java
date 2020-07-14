@@ -2,6 +2,7 @@ package com.csy.test.commons.patch.utils;
 
 import java.io.File;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 
@@ -13,6 +14,7 @@ import com.csy.test.commons.patch.base.defaults.DefaultPatchStandardGenerate;
 import com.csy.test.commons.patch.base.defaults.DefaultPatchCommandExecutor;
 import com.csy.test.commons.patch.bean.PatchInitParams;
 import com.csy.test.commons.patch.cache.CompileRefSourcePathCache;
+import com.csy.test.commons.patch.constatns.PatchDefinedConstants;
 import com.csy.test.commons.patch.state.sourcepath.executor.SourcePathExecutor;
 import com.csy.test.commons.utils.ClassUtils;
 import com.csy.test.commons.utils.file.FileUtils;
@@ -98,7 +100,11 @@ public class PatchUtils {
      	for (String sourcePath:sourcePaths){
      		sourcePathExecutor.autoSelectSourcePathState().sourcePath(sourcePath.replace('\\', '/')).build().execute();
     	}
-    	return sourcePathExecutor.getCompilePaths();
+     	
+     	List<String> compileFilePaths = sourcePathExecutor.getCompilePaths().stream()
+     			.map(e -> e.replace(PatchDefinedConstants.SYSTEM_REVERSE_SEPARATOR, File.separator))
+     			.collect(Collectors.toList());
+    	return compileFilePaths;
 	}
 	
 	/**
