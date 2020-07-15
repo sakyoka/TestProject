@@ -57,6 +57,15 @@ public class FieldExecutorCache {
 	}
 	
 	/**
+	 * 描述：清除 
+	 * @author csy 
+	 * @date 2020年7月15日 下午5:06:19
+	 */
+	public static void clear(){
+		FIELD_EXECUTE_MAP.clear();
+	}
+	
+	/**
 	 * 
 	 * 描述：初始化
 	 * @author csy
