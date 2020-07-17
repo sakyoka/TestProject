@@ -1,50 +1,60 @@
 package com.csy.test.commons.excel.utils;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.mapping.Environment;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.apache.poi.ss.usermodel.Cell;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.fastjson.JSON;
 import com.csy.test.commons.excel.annotion.ExportExcelField;
 import com.csy.test.commons.excel.annotion.ExportExcelHeader;
 import com.csy.test.commons.excel.annotion.ImportExcelField;
 import com.csy.test.commons.excel.base.ExcelImportConvertBase;
+import com.csy.test.commons.utils.Properties;
+
+import tk.mybatis.mapper.session.Configuration;
 
 @ExportExcelHeader(needIndex = true , needHead = true  , headerName = "Excel test")
 public class Test {
 	
-	@ImportExcelField(order = 1 , convertClazz = ExcelImportDoubleConvertToInteger.class)
-	@ExportExcelField(order = 1 , cellName = "年龄")
-	private Integer age;
+//	@ImportExcelField(order = 1 , convertClazz = ExcelImportDoubleConvertToInteger.class)
+//	@ExportExcelField(order = 1 , cellName = "年龄")
+//	private Integer age;
 	
 	@ImportExcelField(order = 0)
-	@ExportExcelField(order = 0 , cellName = "姓名")
-	private String name;
+	@ExportExcelField(order = 0 , cellName = "事项名称")
+	private String approveName;
 	
 	public Test(){}
 
-	public Test(String name , Integer age) {
-		this.name = name;
-		this.age = age;
+//	public Test(String name , Integer age) {
+//		this.name = name;
+//		this.age = age;
+//	}
+
+	public String getApproveName() {
+		return approveName;
 	}
 
-	public String getName() {
-		return name;
+	public void setApproveName(String approveName) {
+		this.approveName = approveName;
 	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public Integer getAge() {
-		return age;
-	}
-
-	public void setAge(Integer age) {
-		this.age = age;
-	}
+//	
+//	public Integer getAge() {
+//		return age;
+//	}
+//
+//	public void setAge(Integer age) {
+//		this.age = age;
+//	}
 	
 	@Override
 	public String toString(){
@@ -69,15 +79,54 @@ public class Test {
 		}
 		
 	}
+	
+	interface DataMapper{
+		
+		@Insert(value = "insert into slt_approve_item_record(approve_name) values(#{approveName})")
+		int insert(Test test);
+		
+		@Select(value = "select count(*) from slt_approve_item_record")
+		int getAllCount();
+	}
 
 	public static void main(String[] args) {
-		String filePath = "D:\\test.xls";
-		List<Test> tests = new ArrayList<Test>();
-		tests.add(new Test("小杰" , 17));
-		tests.add(new Test("明哥" , 18));
-		ExcelUtils.exportExcel(filePath, tests, Test.class);
+		String filePath = "C:\\Users\\csy\\Desktop\\test.xlsx";
+		String driver = Properties.get("jdbc.driver");
+		String url = Properties.get("jdbc.url");
+		String username = Properties.get("jdbc.username");
+		String password = Properties.get("jdbc.password"); 
 		
-		List<Test> tests2 = ExcelUtils.xlsDataToBeans(2 , 1 , filePath, Test.class);
-		System.out.println(tests2);
+		SqlSession session = null;
+		try {
+			Configuration configuration = new Configuration();
+			configuration.addMapper(DataMapper.class);
+						
+			DruidDataSource dataSource = new DruidDataSource();
+			dataSource.setDriverClassName(driver);
+			dataSource.setUrl(url);
+			dataSource.setUsername(username);
+			dataSource.setPassword(password);
+			
+			Environment environment = new Environment("test", 
+					new JdbcTransactionFactory(), 
+					dataSource);
+			configuration.setEnvironment(environment);
+			SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(configuration);
+			session = sessionFactory.openSession();
+			
+			DataMapper mapper = session.getMapper(DataMapper.class);
+			List<Test> tests2 = ExcelUtils.xlsDataToBeans(1 , 1 , filePath, Test.class);
+			for (Test test:tests2){
+				mapper.insert(test);
+			}
+			session.commit();
+			System.out.println("after insert data count:" + mapper.getAllCount());
+		} finally {
+			if (session != null){
+				session.close();
+			}
+		}
+
+		
 	}
 }
