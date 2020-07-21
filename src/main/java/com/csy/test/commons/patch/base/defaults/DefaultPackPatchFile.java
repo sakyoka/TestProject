@@ -21,8 +21,10 @@ public class DefaultPackPatchFile extends AbstractPackPatchFile{
 		//执行压缩打包
 		String sourceFilePath = patchInitParams.getCachePathPrefix() + File.separator + patchInitParams.getCachePathUuid();
 		File dir = new File(sourceFilePath);
-		if (!dir.exists())
+		if (!dir.exists()){
+			System.err.println(String.format("compress file fail due to source dir(%s) not exists" , sourceFilePath));
 			return ;
+		}
 		
 		String packFilePath = patchInitParams.getPackFilePath() != null ? 
 				                                    patchInitParams.getPackFilePath() : 

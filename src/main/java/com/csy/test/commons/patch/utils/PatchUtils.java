@@ -136,6 +136,7 @@ public class PatchUtils {
 				    		    .writeRecordFile();
     		System.out.println("generate patch file finished.");
 		} catch (Exception e) {
+			
 			System.out.println(String.format("error generate patch and then delete cache dir uuid key:%s", uuid));
 			FileUtils.deletes(cachePath);
 			throw new RuntimeException(e);
