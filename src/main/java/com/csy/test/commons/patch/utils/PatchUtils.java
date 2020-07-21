@@ -138,7 +138,13 @@ public class PatchUtils {
 		} catch (Exception e) {
 			
 			System.out.println(String.format("error generate patch and then delete cache dir uuid key:%s", uuid));
-			FileUtils.deletes(cachePath);
+			try {
+				FileUtils.deletes(cachePath);
+			} catch (Exception e2) {
+				e2.printStackTrace();
+				System.out.println(String.format("delete dir:%s error", cachePath));
+			}
+			
 			throw new RuntimeException(e);
 		}		
 	}
