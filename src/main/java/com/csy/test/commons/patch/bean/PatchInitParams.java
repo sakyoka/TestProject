@@ -226,8 +226,11 @@ public class PatchInitParams implements Serializable{
 		if (this.sourcePathPrefix == null)
 			throw new RuntimeException("useGitCommand before the sourcePathPrefix is not allow null");
 		
+		String dir = this.sourcePathPrefix.substring(0, this.sourcePathPrefix.lastIndexOf(":") + 1);
 		this.commandStr = new StringBuilder()
-	              .append("cmd /c cd ")
+	              .append("cmd /c ")
+	              .append(dir)
+	              .append(" && cd ")
 	              .append(this.sourcePathPrefix)
 	              .append(this.projectEnName)
 	              .append(" && git status")
@@ -249,8 +252,11 @@ public class PatchInitParams implements Serializable{
 		if (this.sourcePathPrefix == null)
 			throw new RuntimeException("useSvnCommand before the sourcePathPrefix is not allow null");
 		
+		String dir = this.sourcePathPrefix.substring(0, this.sourcePathPrefix.lastIndexOf(":") + 1);
 		this.commandStr = new StringBuilder()
-	              .append("cmd /c cd ")
+	              .append("cmd /c ")
+	              .append(dir)
+	              .append(" && cd ")
 	              .append(this.sourcePathPrefix)
 	              .append(this.projectEnName)
 	              .append(" && svn st")
