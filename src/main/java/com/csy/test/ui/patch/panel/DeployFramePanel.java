@@ -53,7 +53,7 @@ public class DeployFramePanel implements InitInterface{
 		JLabel label1 = new JLabel("数据源:");
 		label1.setHorizontalAlignment(SwingConstants.RIGHT);
 		JTextField jTextField1 = new JTextField();
-		jTextField1.setText(cacheDeployBean.getCachePathPrefix());
+		jTextField1.setText(cacheDeployBean.getSourcePathPrefix());
 		jTextField1.setPreferredSize(new Dimension (300 , 30));
 		gridBagLayout.setConstraints(label1, constraints);
 		constraints.gridwidth = GridBagConstraints.REMAINDER;
@@ -122,30 +122,20 @@ public class DeployFramePanel implements InitInterface{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				boolean isSuccess = true;
-				String sourcePathPrefix = jTextField1.getText();
-				String compilePathPrefix = jTextField2.getText();
-				String cachePathPrefix = jTextField3.getText();
-				int selected = patchStyleBox1.isSelected() ? 1 : 2;
-				
 				try {
 					DeloyParamCache.storage(JSON.toJSONString(DeployBean.getBuilder()
-							.sourcePathPrefix(sourcePathPrefix)
-							.compilePathPrefix(compilePathPrefix)
-							.patchStyle(selected)
-							.cachePathPrefix(cachePathPrefix)));
-				} catch (Exception e2) {
-					// TODO: handle exception
-					isSuccess = false;
-					logger.error("保存配置失败" , e2);
-				}
-				
-				if (isSuccess){
+							.sourcePathPrefix(jTextField1.getText())
+							.compilePathPrefix(jTextField2.getText())
+							.patchStyle(patchStyleBox1.isSelected() ? 1 : 2)
+							.cachePathPrefix(jTextField3.getText())));
+					
 					JOptionPane.showConfirmDialog(window ,"保存成功!" , "信息提示" , JOptionPane.PLAIN_MESSAGE);
-					//window.dispose();
-				}else{
+				} catch (Exception e2) {
+
+					logger.error("保存配置失败" , e2);
 					JOptionPane.showConfirmDialog(window ,"保存失败!" , "错误提示" , 0);
 				}
+				
 			}
 		});
 		
