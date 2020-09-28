@@ -19,7 +19,8 @@ public class Test {
 	public static void main(String[] args) {
 		List<String> projectList = new ArrayList<String>();
 	    //projectList.add("ApprSynthesis");
-		projectList.add("ApprControl");
+		//projectList.add("ApprControl");
+		projectList.add("ApprCountDown");
 		//projectList.add("ApprSupport");
 		//projectList.add(PatchInitConstants.DEFAULT_PROJECT_NAME);
 		//projectList.add("ApprEfficiencyInterface");
