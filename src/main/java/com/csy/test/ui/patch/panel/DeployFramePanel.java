@@ -12,10 +12,14 @@ import java.awt.event.ActionListener;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.csy.test.ui.patch.bean.DeployBean;
@@ -30,21 +34,26 @@ import com.csy.test.ui.patch.common.base.InitInterface;
  */
 public class DeployFramePanel implements InitInterface{
 	
+	private Logger logger = LoggerFactory.getLogger(getClass());
+	
 	@Override
 	public Component init(Window window) {
 		
 		JPanel panel = new JPanel();
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		panel.setLayout(gridBagLayout);
-		
+
+		DeployBean cacheDeployBean = DeployBean.readCache(true);
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.weighty = 0.2;
 		constraints.weightx = 0.3;
+		
 		constraints.gridwidth = 1;
 		constraints.insets = new Insets(15 , 5 , 0 , 0);
 		JLabel label1 = new JLabel("数据源:");
 		label1.setHorizontalAlignment(SwingConstants.RIGHT);
 		JTextField jTextField1 = new JTextField();
+		jTextField1.setText(cacheDeployBean.getCachePathPrefix());
 		jTextField1.setPreferredSize(new Dimension (300 , 30));
 		gridBagLayout.setConstraints(label1, constraints);
 		constraints.gridwidth = GridBagConstraints.REMAINDER;
@@ -57,6 +66,7 @@ public class DeployFramePanel implements InitInterface{
 		JLabel label2 = new JLabel("编译空间:");
 		label2.setHorizontalAlignment(SwingConstants.RIGHT);
 		JTextField jTextField2 = new JTextField();
+		jTextField2.setText(cacheDeployBean.getCompilePathPrefix());
 		jTextField2.setPreferredSize(new Dimension (300 , 30));
 		gridBagLayout.setConstraints(label2, constraints);
 		constraints.gridwidth = GridBagConstraints.REMAINDER;
@@ -69,6 +79,7 @@ public class DeployFramePanel implements InitInterface{
 		JLabel label3 = new JLabel("缓存空间:");
 		label3.setHorizontalAlignment(SwingConstants.RIGHT);
 		JTextField jTextField3 = new JTextField();
+		jTextField3.setText(cacheDeployBean.getCachePathPrefix());
 		jTextField3.setPreferredSize(new Dimension (300 , 30));
 		gridBagLayout.setConstraints(label3, constraints);
 		constraints.gridwidth = GridBagConstraints.REMAINDER;
@@ -80,8 +91,13 @@ public class DeployFramePanel implements InitInterface{
 		
 		JLabel label4 = new JLabel("补丁格式:");
 		label2.setHorizontalAlignment(SwingConstants.RIGHT);
-		JRadioButton patchStyleBox1 = new JRadioButton("列表" , true);
+		JRadioButton patchStyleBox1 = new JRadioButton("列表");
 		JRadioButton patchStyleBox2 = new JRadioButton("树状");
+		if(cacheDeployBean.getPatchStyle() == 1) {
+			patchStyleBox1.setSelected(true) ;
+		}else {
+			patchStyleBox2.setSelected(true);
+		}
         ButtonGroup patchGroups = new ButtonGroup();
         patchGroups.add(patchStyleBox1);
         patchGroups.add(patchStyleBox2);
@@ -113,23 +129,22 @@ public class DeployFramePanel implements InitInterface{
 				int selected = patchStyleBox1.isSelected() ? 1 : 2;
 				
 				try {
-					DeployBean deployBean = DeployBean.getBuilder()
+					DeloyParamCache.storage(JSON.toJSONString(DeployBean.getBuilder()
 							.sourcePathPrefix(sourcePathPrefix)
 							.compilePathPrefix(compilePathPrefix)
 							.patchStyle(selected)
-							.cachePathPrefix(cachePathPrefix);
-					
-					DeloyParamCache.storage(JSON.toJSONString(deployBean));
+							.cachePathPrefix(cachePathPrefix)));
 				} catch (Exception e2) {
 					// TODO: handle exception
 					isSuccess = false;
-					System.out.println(e2);
+					logger.error("保存配置失败" , e2);
 				}
 				
 				if (isSuccess){
-					window.dispose();
+					JOptionPane.showConfirmDialog(window ,"保存成功!" , "信息提示" , JOptionPane.PLAIN_MESSAGE);
+					//window.dispose();
 				}else{
-					System.out.println("保存失败!");
+					JOptionPane.showConfirmDialog(window ,"保存失败!" , "错误提示" , 0);
 				}
 			}
 		});
