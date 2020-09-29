@@ -35,7 +35,7 @@ public class FirstMenu {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				new AboutMenu().initAboutMenu(parentJFrame);
 			}
 		});
 		

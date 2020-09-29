@@ -3,6 +3,7 @@ package com.csy.test.commons.utils;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -101,5 +102,29 @@ public class ClassUtils {
 		} catch (Exception e) {
 			throw new RuntimeException("创建实例失败" , e);
 		} 
+	}
+	
+	/**
+	 * 描述：根据字段获取对应值
+	 * @author csy 
+	 * @date 2020年9月29日 上午11:06:51
+	 * @param fieldName 字段
+	 * @param entity 对象
+	 * @return Object 返回值
+	 */
+	@SuppressWarnings("rawtypes")
+	public static <T> Object getBeanValue(String fieldName , T entity){
+		Class clazz = entity.getClass();
+		Field field = null;
+		try {
+			field = clazz.getDeclaredField(fieldName);
+			field.setAccessible(true);
+			return field.get(entity);
+		} catch (Exception e) {
+			throw new RuntimeException("获取对象值失败!");
+		}finally {
+			if (field != null)
+				field.setAccessible(false);
+		}
 	}
 }
