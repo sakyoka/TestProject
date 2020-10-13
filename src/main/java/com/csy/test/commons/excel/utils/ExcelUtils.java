@@ -70,10 +70,24 @@ public class ExcelUtils {
      * @return List<T>
      */
     public static <T> List<T> xlsDataToBeans(int startRowIndex ,int startColsIndex , File file , Class<T> clazz){
+        Workbook workbook = ExcelOperateBase.getWorkbook(file);
+        return xlsDataToBeans(startRowIndex , startColsIndex , workbook , clazz);
+    }
+    
+    /**
+     * 描述：读取excel row转换成bean List
+     * @author csy 
+     * @date 2020年10月13日 下午5:10:44
+     * @param startRowIndex
+     * @param startColsIndex
+     * @param workbook
+     * @param clazz
+     * @return List<T>
+     */
+    public static <T> List<T> xlsDataToBeans(int startRowIndex ,int startColsIndex , Workbook workbook , Class<T> clazz){
         Sheet sheet;
         Row row;
         List<T> list = new ArrayList<T>();
-        Workbook workbook = ExcelOperateBase.getWorkbook(file);
         ExcelImportInitBaseContextHolder excelImportInitBase = ExcelImportInitBaseContextHolder.newInstance()
         		.initConvert(clazz)
         		.initTempBeans(clazz);

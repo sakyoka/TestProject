@@ -2,6 +2,7 @@ package com.csy.test.commons.excel.base;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,13 +61,28 @@ public class ExcelOperateBase {
      * @return org.apache.poi.ss.usermodel.Workbook
      **/
     public static Workbook getWorkbook(File file){
+    	try {
+			return getWorkbook(new FileInputStream(file), file.getAbsolutePath());
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException("文件不存在" , e);
+		} catch (Exception e){
+			throw new RuntimeException(e);
+		}
+    }
+    
+    /**
+     * 描述：对getWorkbook再封装一层
+     * @author csy 
+     * @date 2020年10月13日 上午9:55:34
+     * @param is 文件流
+     * @param filePath 文件名称路径
+     * @return Workbook
+     */
+    public static Workbook getWorkbook(InputStream is , String filePath){
         Workbook workbook;
-        InputStream is = null;
         try {
 
-            String filePath = file.getAbsolutePath();
             String fileType = filePath.substring( filePath.lastIndexOf(".") + 1 );
-            is = new FileInputStream(file);
 
             if (fileType.equalsIgnoreCase("xls")){
                 workbook = new HSSFWorkbook(is);
