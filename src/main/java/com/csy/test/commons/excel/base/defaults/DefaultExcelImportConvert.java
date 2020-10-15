@@ -2,6 +2,7 @@ package com.csy.test.commons.excel.base.defaults;
 
 import java.lang.reflect.Field;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 
 import com.csy.test.commons.excel.base.ExcelImportConvertBase;
@@ -22,7 +23,7 @@ public class DefaultExcelImportConvert implements ExcelImportConvertBase{
 			return ;
 		
 		try {
-			Object v = ExcelOperateBase.cellToData(cell);
+			Object v = cell != null ? ExcelOperateBase.cellToData(cell) : null;
 			field.set(entity, this.autoConvert(field, v));
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			throw new ExcelImportFormatException("转换值失败 , fieldName ==> " + field.getName() , e);
@@ -38,7 +39,7 @@ public class DefaultExcelImportConvert implements ExcelImportConvertBase{
 	 * @return Object
 	 */
 	public Object autoConvert(Field field , Object v){
-		if (v == null){
+		if (v == null || StringUtils.isBlank(v.toString())){
 			return null;
 		}
 		
