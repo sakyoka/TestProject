@@ -9,6 +9,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.util.Assert;
 
 import com.csy.test.commons.excel.annotion.ExportExcelHeader;
+import com.csy.test.commons.excel.annotion.ImportExcelField;
 import com.csy.test.commons.excel.base.ExcelExportFormatBase;
 import com.csy.test.commons.excel.base.ExcelExportHeaderDefinedBase;
 import com.csy.test.commons.excel.base.ExcelExportInitBaseContextHolder;
@@ -71,20 +72,51 @@ public class ExcelUtils {
      */
     public static <T> List<T> xlsDataToBeans(int startRowIndex ,int startColsIndex , File file , Class<T> clazz){
         Workbook workbook = ExcelOperateBase.getWorkbook(file);
-        return xlsDataToBeans(startRowIndex , startColsIndex , workbook , clazz);
+        return xlsDataToBeans(startRowIndex , startColsIndex , workbook , clazz , null);
+    }
+    
+    /**
+     * 描述：读取excel row转换成bean List
+     * @author csy 
+     * @date 2020年10月16日 下午3:23:44
+     * @param startRowIndex 开始行
+     * @param startColsIndex 开始列
+     * @param file excel文件
+     * @param clazz  目标对象
+     * @param group 分组
+     * @return List<T>
+     */
+    public static <T> List<T> xlsDataToBeans(int startRowIndex ,int startColsIndex , File file , Class<T> clazz , String group){
+        Workbook workbook = ExcelOperateBase.getWorkbook(file);
+        return xlsDataToBeans(startRowIndex , startColsIndex , workbook , clazz , group);
+    }
+    
+    /**
+     * 描述：读取excel row转换成bean List
+     * @author csy 
+     * @date 2020年10月16日 下午3:23:49
+     * @param startRowIndex 开始行 
+     * @param startColsIndex 开始列
+     * @param workbook excel对象
+     * @param clazz 目标对象
+     * @return List<T>
+     */
+    public static <T> List<T> xlsDataToBeans(int startRowIndex ,int startColsIndex , Workbook workbook , Class<T> clazz){
+    	return xlsDataToBeans(startRowIndex, startColsIndex, workbook, clazz , null);
     }
     
     /**
      * 描述：读取excel row转换成bean List
      * @author csy 
      * @date 2020年10月13日 下午5:10:44
-     * @param startRowIndex
-     * @param startColsIndex
-     * @param workbook
-     * @param clazz
+     * @param startRowIndex 开始行 
+     * @param startColsIndex 开始列
+     * @param workbook  excel对象
+     * @param clazz 目标对象
+     * @param group 分组
      * @return List<T>
      */
-    public static <T> List<T> xlsDataToBeans(int startRowIndex ,int startColsIndex , Workbook workbook , Class<T> clazz){
+    public static <T> List<T> xlsDataToBeans(int startRowIndex ,int startColsIndex , Workbook workbook , Class<T> clazz , String group){
         Sheet sheet;
         Row row;
         List<T> list = new ArrayList<T>();
@@ -95,7 +127,7 @@ public class ExcelUtils {
         	sheet = workbook.getSheetAt(i);
         	for (int rowIndex = startRowIndex , rowLen = sheet.getLastRowNum() ; rowIndex <= rowLen ; rowIndex++){
                 row = sheet.getRow(rowIndex);
-                list.add(rowToBean(startColsIndex , row , clazz , excelImportInitBase ));
+                list.add(rowToBean(startColsIndex , row , clazz , excelImportInitBase , group));
             }       	
         }
         return list;
@@ -406,7 +438,7 @@ public class ExcelUtils {
      * @param excelImportInitBase
      * @return T
      */
-    private static <T> T rowToBean(int startColsIndex,Row row , Class<T> clazz , ExcelImportInitBaseContextHolder excelImportInitBase){
+    private static <T> T rowToBean(int startColsIndex,Row row , Class<T> clazz , ExcelImportInitBaseContextHolder excelImportInitBase , String group){
     	
         T entity = null;
         try {
@@ -422,6 +454,11 @@ public class ExcelUtils {
         for (int i = 0 , len = importExcelTempBeans.size() ; i < len ; i++) {
             try {
             	field = clazz.getDeclaredField(importExcelTempBeans.get(i).getFieldName());
+            	
+            	if (group != null && !Arrays.asList(field.getAnnotation(ImportExcelField.class)).contains(group)){
+            		continue;
+            	}
+            	
                 field.setAccessible(true);
                 excelImportInitBase.getConvertMap()
                                                    .get(field.getName()).convert(entity, field, row.getCell(i + startColsIndex));

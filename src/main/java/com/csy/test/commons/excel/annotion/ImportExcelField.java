@@ -28,4 +28,11 @@ public @interface ImportExcelField {
      * @date 2020年7月1日 下午6:10:40
      */
     Class<? extends ExcelImportConvertBase> convertClazz() default DefaultExcelImportConvert.class;
+    
+    /**
+     * 描述：导入分组
+     * @author csy 
+     * @date 2020年10月16日 下午3:21:46
+     */
+    String[] groups() default {};
 }
