@@ -32,13 +32,4 @@ public final class DefaultHeaderForEach<T> extends AbstractFieldForEach<T>{
 			field.setAccessible(false);
 		}
 	}
-
-	@Override
-	protected boolean canContiune(T entity, Field field) {
-		int v = field.getModifiers();
-		return Modifier.isPrivate(v) 
-				&& !Modifier.isFinal(v) 
-				&& !Modifier.isTransient(v) 
-				&& !Modifier.isNative(v);
-	}
 }

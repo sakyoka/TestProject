@@ -1,6 +1,7 @@
 package com.csy.test.commons.entity.base;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 public abstract class AbstractFieldForEach<T> {
 	
@@ -32,5 +33,11 @@ public abstract class AbstractFieldForEach<T> {
 
 	protected abstract void execute(T entity, Field field);
 
-	protected abstract boolean canContiune(T entity, Field field);
+	protected boolean canContiune(T entity, Field field) {
+		int v = field.getModifiers();
+		return Modifier.isPrivate(v) 
+				&& !Modifier.isFinal(v) 
+				&& !Modifier.isTransient(v) 
+				&& !Modifier.isNative(v);
+	}
 }
