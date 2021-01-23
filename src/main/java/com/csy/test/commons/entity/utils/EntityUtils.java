@@ -5,13 +5,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
 
 import com.csy.test.commons.entity.base.AbstractFieldForEach;
 import com.csy.test.commons.entity.base.annotion.FieldForeach;
 import com.csy.test.commons.entity.base.annotion.FieldProperty;
+import com.csy.test.commons.entity.base.defaults.DefaultEntityTranferForEach;
 import com.csy.test.commons.entity.base.defaults.DefaultFieldForEach;
 import com.csy.test.commons.entity.base.defaults.DefaultHeaderForEach;
 import com.csy.test.commons.entity.exception.InitForeachException;
+import com.csy.test.commons.utils.ClassUtils;
 
 /**
  * 
@@ -51,6 +54,25 @@ public class EntityUtils {
 		Class<? extends AbstractFieldForEach> fieldForEachClazz = clazz.isAnnotationPresent(fieldForeachClazz) ? 
 				(clazz.getAnnotation(fieldForeachClazz).fieldForeachClazz()) : DefaultFieldForEach.class;
 		initForeachAndExecute(fieldForEachClazz , entity);
+	}
+	
+	/**
+	 * 
+	 * 描述：sourceEntity To Class object
+	 * @author csy
+	 * @date 2021年1月23日 上午11:26:15
+	 * @param <T>
+	 * @param <E>
+	 * @param sourceEntity 数据源
+	 * @param clazz 目标对象
+	 * @return Class object
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static <T , E> T sourceTranferTo(E sourceEntity , Class<T> toClazz) {
+		T toEntity = ClassUtils.newInstance(toClazz);
+		Field[] fields = toClazz.getDeclaredFields();
+		new DefaultEntityTranferForEach(sourceEntity).entity(toEntity).fields(fields).foreach();
+		return toEntity;
 	}
 	
 

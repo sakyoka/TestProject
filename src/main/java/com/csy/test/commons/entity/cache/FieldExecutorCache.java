@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import com.csy.test.commons.entity.base.AbstractFieldExecute;
+import com.csy.test.commons.entity.base.EntityTranferBase;
 import com.csy.test.commons.utils.ClassUtils;
 
 /**
@@ -17,14 +18,13 @@ public class FieldExecutorCache {
 	
 	private static final ConcurrentMap<Class<? extends AbstractFieldExecute>, AbstractFieldExecute> FIELD_EXECUTE_MAP = 
 			new ConcurrentHashMap<Class<? extends AbstractFieldExecute>, AbstractFieldExecute>();
-
-//	public static void main(String[] args) {
-//		initCache("springboot.myservice1.sourcetheme.utils.base.defaults");
-//	}
+	
+	private static final ConcurrentMap<Class<? extends EntityTranferBase>, EntityTranferBase> ENTITY_TRANFER_MAP = 
+			new ConcurrentHashMap<Class<? extends EntityTranferBase>, EntityTranferBase>();
 	
 	/**
 	 * 
-	 * 描述：根据class获取执行器，如果map有直接拿，没有新建一个
+	 * 描述：根据class获取执行器，如果map有直接拿，没有新建一个AbstractFieldExecute
 	 * @author csy
 	 * @date 2020 上午10:01:04
 	 * @param clazz
@@ -38,10 +38,32 @@ public class FieldExecutorCache {
 		if (FIELD_EXECUTE_MAP.containsKey(clazz)) {
 			fieldExcute = FIELD_EXECUTE_MAP.get(clazz);
 		}else {
-			fieldExcute = clazz.newInstance();
+			fieldExcute = ClassUtils.newInstance(clazz);
 			FIELD_EXECUTE_MAP.put(clazz, fieldExcute);
 		}
 		return fieldExcute;
+	}
+	
+	/**
+	 * 
+	 * 描述：根据class获取执行器，如果map有直接拿，没有新建一个 EntityTranferBase
+	 * @author csy
+	 * @date 2021年1月23日 下午12:02:53
+	 * @param clazz
+	 * @return EntityTranferBase
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
+	public static EntityTranferBase getEntityTranferByClazz(Class<? extends EntityTranferBase> clazz) 
+			throws InstantiationException, IllegalAccessException {
+		EntityTranferBase entityTranferBase = null;
+		if (ENTITY_TRANFER_MAP.containsKey(clazz)) {
+			entityTranferBase = ENTITY_TRANFER_MAP.get(clazz);
+		}else {
+			entityTranferBase = ClassUtils.newInstance(clazz);
+			ENTITY_TRANFER_MAP.put(clazz, entityTranferBase);
+		}
+		return entityTranferBase;
 	}
 	
 	/**
@@ -52,6 +74,7 @@ public class FieldExecutorCache {
 	 * @param clazz
 	 * @return AbstractFieldExecute
 	 */
+	@Deprecated
 	public static AbstractFieldExecute get(Class<? extends AbstractFieldExecute> clazz) {
 		return FIELD_EXECUTE_MAP.get(clazz);
 	}
@@ -63,6 +86,7 @@ public class FieldExecutorCache {
 	 */
 	public static void clear(){
 		FIELD_EXECUTE_MAP.clear();
+		ENTITY_TRANFER_MAP.clear();
 	}
 	
 	/**
@@ -81,6 +105,11 @@ public class FieldExecutorCache {
 				if (AbstractFieldExecute.class.isAssignableFrom(clazz)) {
 					if (!FIELD_EXECUTE_MAP.containsKey(clazz))
 						FIELD_EXECUTE_MAP.put(clazz, (AbstractFieldExecute) clazz.newInstance());
+				}
+				
+				if (EntityTranferBase.class.isAssignableFrom(clazz)) {
+					if (!ENTITY_TRANFER_MAP.containsKey(clazz))
+						ENTITY_TRANFER_MAP.put(clazz, (EntityTranferBase) ClassUtils.newInstance(clazz));
 				}
 			}
 		} catch (Exception e) {

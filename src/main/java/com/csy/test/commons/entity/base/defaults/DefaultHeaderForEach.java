@@ -1,8 +1,6 @@
 package com.csy.test.commons.entity.base.defaults;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-
 import com.csy.test.commons.entity.base.AbstractFieldForEach;
 import com.csy.test.commons.entity.base.annotion.FieldProperty;
 import com.csy.test.commons.entity.cache.FieldExecutorCache;

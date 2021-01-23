@@ -186,8 +186,7 @@ public class FileUtils {
 				try {
 					fileOutputStream.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+
 				}
 			}
 		}
@@ -266,4 +265,42 @@ public class FileUtils {
 			throw new RuntimeException("删除文件或文件夹失败,FileUtils ==> deletes" , e);
 		}
 	}
+	
+	/**
+	 * 
+	 * 描述：读取文件内容
+	 * @author csy
+	 * @date 2021年1月23日 下午8:36:04
+	 * @param filePath 文件路径
+	 * @return 文件内容
+	 */
+	public static String read(String filePath) {
+		return read(new File(filePath));
+	}
+	
+	/**
+	 * 描述：读取文件内容
+	 * @author csy
+	 * @date 2021年1月23日 下午8:35:40
+	 * @param file 文件对象
+	 * @return 文件内容
+	 */
+    public static String read(File file) {
+        try (FileInputStream fin = new FileInputStream(file);
+        	 FileChannel channel = fin.getChannel();){
+            int capacity = 1024;// 字节
+            ByteBuffer bf = ByteBuffer.allocate(capacity);
+            int length = -1;
+            StringBuilder stringBuilder = new StringBuilder();
+            while ((length = channel.read(bf)) != -1) {
+                bf.clear();
+                byte[] bytes = bf.array();
+                stringBuilder.append(new String(bytes, 0, length));
+            }
+            return stringBuilder.toString();
+        } catch (Exception e) {
+            throw new RuntimeException("读取文件内容失败" , e);
+ 
+        } 
+    }
 }
