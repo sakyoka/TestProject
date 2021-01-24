@@ -9,6 +9,8 @@ import java.util.Map;
 import com.csy.test.commons.codegenerate.base.WriteFileBase;
 import com.csy.test.commons.codegenerate.base.defaults.WriteFileGeneralDefault;
 import com.csy.test.commons.codegenerate.constants.ClassifyConstants;
+import com.csy.test.commons.codegenerate.database.bean.base.DataMetaBase;
+import com.csy.test.commons.codegenerate.database.bean.base.defaults.DataMetaJdbc;
 import com.csy.test.commons.utils.UUID;
 import com.csy.test.commons.valid.annotion.Valid;
 import com.csy.test.commons.valid.base.defaults.BlankValid;
@@ -43,6 +45,8 @@ public class CodeGenerateParams {
 	private WriteFileBase writeFileBase;
 	
 	private String author;
+	
+	private Class<? extends DataMetaBase> dataMetaBaseClass;
 	
 	@SuppressWarnings("serial")
 	private Map<String, String> fileSuffixNameMap = new HashMap<String, String>(){{
@@ -152,6 +156,19 @@ public class CodeGenerateParams {
 		this.author = author;
 		return this;
 	}
+	
+	/**
+	 * 
+	 * 描述：设置获取数据库连接方式
+	 * @author csy
+	 * @date 2021年1月24日 下午8:13:41
+	 * @param dataMetaBaseClass
+	 * @return CodeGenerateParams
+	 */
+	public CodeGenerateParams dataMetaBaseClass(Class<? extends DataMetaBase> dataMetaBaseClass) {
+		this.dataMetaBaseClass = dataMetaBaseClass;
+		return this;
+	}
 		
 	/**
 	 * 
@@ -188,6 +205,8 @@ public class CodeGenerateParams {
 		this.codeFilePaths = new ArrayList<String>();
 		
 		if (this.writeFileBase == null) this.writeFileBase = new WriteFileGeneralDefault();
+		
+		if (this.dataMetaBaseClass == null) this.dataMetaBaseClass = DataMetaJdbc.class;
 		
 		return this;
 	}
@@ -230,5 +249,9 @@ public class CodeGenerateParams {
 
 	public String getAuthor() {
 		return author;
+	}
+
+	public Class<? extends DataMetaBase> getDataMetaBaseClass() {
+		return dataMetaBaseClass;
 	}
 }

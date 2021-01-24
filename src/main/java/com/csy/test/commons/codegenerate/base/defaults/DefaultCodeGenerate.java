@@ -172,8 +172,8 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 			.append("package ").append(this.beanPath).append(";")
 			.append(LineConstants.WRAP).append(LineConstants.WRAP);
 		appendClassNote(stringBuilder , dataMetaBase.getTableMessage().getRemarks() + "实体类")
-			.append("public class ").append(this.beanName).append(" {")
-			.append(LineConstants.WRAP).append(LineConstants.WRAP);
+			.append("public class ").append(this.beanName).append(codeGenerateParams.getFileSuffixNameMap().get(ClassifyConstants.BEAN))
+			.append(" {").append(LineConstants.WRAP).append(LineConstants.WRAP);
 		
 		this.beanFieldMessages.forEach((e) -> {
 			stringBuilder.append(LineConstants.BLANK_SPACE_FOUR)

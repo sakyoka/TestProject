@@ -26,21 +26,17 @@ public class DataMetaTemplate implements DataMetaBase{
 	
 	private TableMessage tableMessage;
 	
-	public DataMetaTemplate(JdbcTemplate jdbcTemplate , String tableName) {
+	private String tableName;
+	
+	public DataMetaTemplate() {
 		
-		this.jdbcTemplate = jdbcTemplate == null ? this.defaultJdbcTemplate() : jdbcTemplate;
+		this.jdbcTemplate = this.defaultJdbcTemplate();
 		
-		this.tableMessage = new TableMessage();
-		
-		try (Connection conn = this.jdbcTemplate.getDataSource().getConnection()){
-			this.columnMetaDatas =  defaultColumnMetaDatas(conn , tableName , this.tableMessage);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+		this.tableMessage = new TableMessage();		
 	}
 	
 	@Override
-	public List<ColumnMetaData> getColumnMetaDatas() {
+	public DataMetaBase initDataMetaBase() {
 		
 //		SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(this.sql);
 //		int columnCount;
@@ -53,13 +49,32 @@ public class DataMetaTemplate implements DataMetaBase{
 //			columnMetaData.setColumnName(sqlRowSetMetaData.getColumnName(i));
 //			columnMetaData.setColumnType(sqlRowSetMetaData.getColumnType(i));
 //			columnMetaData.setColumnTypeName(sqlRowSetMetaData.getColumnTypeName(i));
+//		    columnMetaDatas.add(columnMetaData);
 //		}
+//		this.columnMetaDatas = columnMetaDatas;
+		
+		try (Connection conn = this.jdbcTemplate.getDataSource().getConnection()){
+			this.columnMetaDatas =  defaultColumnMetaDatas(conn , tableName , this.tableMessage);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return this;
+	}
+	
+	@Override
+	public List<ColumnMetaData> getColumnMetaDatas() {
 		return this.columnMetaDatas;
 	}
 	
 	@Override
 	public TableMessage getTableMessage() {
 		return this.tableMessage;
+	}
+	
+	@Override
+	public DataMetaBase tableName(String tableName) {
+		this.tableName = tableName;
+		return this;
 	}
 	
 	private JdbcTemplate defaultJdbcTemplate() {

@@ -10,11 +10,50 @@ import com.csy.test.commons.codegenerate.constants.TypeNameDicConstants;
 import com.csy.test.commons.codegenerate.database.bean.ColumnMetaData;
 import com.csy.test.commons.utils.DataBase;
 
+/**
+ * 
+ * 描述:表结构数据操作
+ * @author csy
+ * @date 2021年1月24日 下午8:18:50
+ */
 public interface DataMetaBase {
 
+	/**
+	 * 
+	 * 描述：获取List<ColumnMetaData>数据
+	 * @author csy
+	 * @date 2021年1月24日 下午8:17:17
+	 * @return List<ColumnMetaData>
+	 */
 	List<ColumnMetaData> getColumnMetaDatas();
 	
+	/**
+	 * 
+	 * 描述：获取TableMessage
+	 * @author csy
+	 * @date 2021年1月24日 下午8:17:45
+	 * @return TableMessage
+	 */
 	TableMessage getTableMessage();
+	
+	/**
+	 * 
+	 * 描述：设置tableName
+	 * @author csy
+	 * @date 2021年1月24日 下午8:18:01
+	 * @param tableName
+	 * @return DataMetaBase
+	 */
+	DataMetaBase tableName(String tableName);
+	
+	/**
+	 * 
+	 * 描述：初始化
+	 * @author csy
+	 * @date 2021年1月24日 下午8:18:15
+	 * @return DataMetaBase
+	 */
+	DataMetaBase initDataMetaBase();
 
 	/**
 	 * 

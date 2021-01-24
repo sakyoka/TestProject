@@ -9,7 +9,7 @@ import com.csy.test.commons.codegenerate.base.CodeGenerateBase;
 import com.csy.test.commons.codegenerate.base.defaults.DefaultCodeGenerate;
 import com.csy.test.commons.codegenerate.bean.CodeGenerateParams;
 import com.csy.test.commons.codegenerate.database.bean.base.DataMetaBase;
-import com.csy.test.commons.codegenerate.database.bean.base.defaults.DataMetaTemplate;
+import com.csy.test.commons.utils.ClassUtils;
 import com.csy.test.commons.utils.file.FileUtils;
 
 /**
@@ -38,8 +38,8 @@ public class CodeGenerateUtils {
 				
 				String basePath = codeGenerateParams.getBasePathMap().get(k) + StringUtils.lowerCase(k).replace("_", "");
 				codeGenerateParams.getBasePathMap().put(k, basePath);
-				DataMetaBase dataMetaBase = new DataMetaTemplate(null , k);
-				codeGenerate.preInit(dataMetaBase)
+				DataMetaBase dataMetaBase = ClassUtils.newInstance(codeGenerateParams.getDataMetaBaseClass());
+				codeGenerate.preInit(dataMetaBase.tableName(k).initDataMetaBase())
 				            .generateBean()
 							.generateMapper()
 							.generateDao()

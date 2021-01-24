@@ -15,16 +15,28 @@ public class DataMetaJdbc implements DataMetaBase{
 	
 	private TableMessage tableMessage;
 	
-	public DataMetaJdbc(String tableName) {
+	private String tableName;
+	
+	public DataMetaJdbc() {
 		
-		this.tableMessage = new TableMessage();
-		
+		this.tableMessage = new TableMessage();	
+	}
+	
+	@Override
+	public DataMetaBase tableName(String tableName) {	
+		this.tableName = tableName;
+		return this;
+	}
+	
+	@Override
+	public DataMetaBase initDataMetaBase() {
 		try (Connection conn = DataBase.getConnection()){
 			
 			this.columnMetaDatas = defaultColumnMetaDatas(conn , tableName , this.tableMessage);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
-		}		
+		}			
+		return this;
 	}
 
 	@Override
