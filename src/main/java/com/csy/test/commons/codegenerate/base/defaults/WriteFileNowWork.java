@@ -21,35 +21,52 @@ import com.csy.test.commons.utils.file.FileUtils;
 public class WriteFileNowWork implements WriteFileBase{
 
 	@Override
-	public void write(CodeGenerateParams codeGenerateParams , String tableName , String contents , String beanNameSuffix , FileSuffixEnum fileSuffixEnum) {
-		String path = codeGenerateParams.getBasePathMap().get(tableName);
+	public void write(CodeGenerateParams codeGenerateParams , String tableName , String contents , FileSuffixEnum fileSuffixEnum) {
+		StringBuilder stringBuilder = new StringBuilder(codeGenerateParams.getBasePathMap().get(tableName));
 		if (ClassifyConstants.BEAN.equals(fileSuffixEnum.getFileType())) {
-			path += File.separator + ClassifyConstants.BEAN + File.separator;
+			stringBuilder.append(File.separator).append(ClassifyConstants.BEAN).append(File.separator);
 		}
 		
 		if (ClassifyConstants.XML.equals(fileSuffixEnum.getFileType())) {
-			path += File.separator + ClassifyConstants.DAO + File.separator + ClassifyConstants.XML + File.separator;
+			stringBuilder.append(File.separator)
+			.append(ClassifyConstants.DAO)
+			.append(File.separator)
+			.append(ClassifyConstants.XML)
+			.append(File.separator);
 		}
 		
 		if (ClassifyConstants.DAO.equals(fileSuffixEnum.getFileType())) {
-			path += File.separator + ClassifyConstants.DAO + File.separator;
+			stringBuilder.append(File.separator).append(ClassifyConstants.DAO).append(File.separator);
 		}
 		
 		if (ClassifyConstants.SERVICE.equals(fileSuffixEnum.getFileType())) {
-			path += File.separator + ClassifyConstants.SERVICE + File.separator;
+			stringBuilder.append(File.separator).append(ClassifyConstants.SERVICE).append(File.separator);
 		}
 		
 		if (ClassifyConstants.SERVICE_IMPL.equals(fileSuffixEnum.getFileType())) {
-			path += File.separator + ClassifyConstants.SERVICE + File.separator + ClassifyConstants.SERVICE_IMPL + File.separator;
+			stringBuilder.append(File.separator)
+			.append(ClassifyConstants.SERVICE)
+			.append(File.separator)
+			.append(ClassifyConstants.SERVICE_IMPL)
+			.append(File.separator);
 		}
 		
+		if (ClassifyConstants.CONTROLLER.equals(fileSuffixEnum.getFileType())) {
+			stringBuilder.append(File.separator)
+			.append(ClassifyConstants.CONTROLLER)
+			.append(File.separator);
+		}
+		
+		String path = stringBuilder.toString();
 		try {
 			Files.createDirectories(Paths.get(path));
 		} catch (IOException e) {
 			throw new RuntimeException("创建路径失败:" + path, e);
 		}
-		
-		path = path + StrUtil.lowerFirst(StrUtil.toCamelCase(tableName)) + beanNameSuffix + "." + ClassifyConstants.JAVA;
+		path = stringBuilder
+				.append(StrUtil.upperFirst(StrUtil.toCamelCase(tableName)))
+				.append(codeGenerateParams.getFileSuffixNameMap().get(fileSuffixEnum.getFileType()))
+				.append(".").append(fileSuffixEnum.getSuffixName()).toString();
 		FileUtils.writeFile(path , contents);
 		
 		codeGenerateParams.getCodeFilePaths().add(path);

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.csy.test.commons.codegenerate.base.WriteFileBase;
 import com.csy.test.commons.codegenerate.base.defaults.WriteFileGeneralDefault;
+import com.csy.test.commons.codegenerate.constants.ClassifyConstants;
 import com.csy.test.commons.utils.UUID;
 import com.csy.test.commons.valid.annotion.Valid;
 import com.csy.test.commons.valid.base.defaults.BlankValid;
@@ -37,13 +38,21 @@ public class CodeGenerateParams {
 	
 	private Boolean isBuild = false;
 	
-	private String beanSuffixName;
-	
-	private String daoSuffixName;
-	
 	private List<String> codeFilePaths;
 	
 	private WriteFileBase writeFileBase;
+	
+	private String author;
+	
+	@SuppressWarnings("serial")
+	private Map<String, String> fileSuffixNameMap = new HashMap<String, String>(){{
+		this.put(ClassifyConstants.BEAN, "Model");
+		this.put(ClassifyConstants.XML, "Mapper");
+		this.put(ClassifyConstants.DAO, "Dao");
+		this.put(ClassifyConstants.SERVICE, "Service");
+		this.put(ClassifyConstants.SERVICE_IMPL, "ServiceImpl");
+		this.put(ClassifyConstants.CONTROLLER, "Controller");
+	}};
 	
 	private CodeGenerateParams() {}
 	
@@ -120,27 +129,27 @@ public class CodeGenerateParams {
 	
 	/**
 	 * 
-	 * 描述：设置Bean后缀名
+	 * 描述：文件后缀
 	 * @author csy
-	 * @date 2021年1月23日 下午3:28:28
-	 * @param beanSuffixName Bean后缀名
+	 * @date 2021年1月24日 下午1:39:29
+	 * @param fileSuffixNameMap
 	 * @return CodeGenerateParams
 	 */
-	public CodeGenerateParams beanSuffixName(String beanSuffixName) {
-		this.beanSuffixName = beanSuffixName;
+	public CodeGenerateParams fileSuffixNameMap(Map<String, String> fileSuffixNameMap) {
+		this.fileSuffixNameMap = fileSuffixNameMap;
 		return this;
 	}
 	
 	/**
 	 * 
-	 * 描述：设置dao后缀名
+	 * 描述：编写人
 	 * @author csy
-	 * @date 2021年1月23日 下午3:31:38
-	 * @param daoSuffixName dao后缀名
+	 * @date 2021年1月24日 下午4:10:58
+	 * @param author
 	 * @return CodeGenerateParams
 	 */
-	public CodeGenerateParams daoSuffixName(String daoSuffixName) {
-		this.daoSuffixName = daoSuffixName;
+	public CodeGenerateParams author(String author) {
+		this.author = author;
 		return this;
 	}
 		
@@ -180,10 +189,6 @@ public class CodeGenerateParams {
 		
 		if (this.writeFileBase == null) this.writeFileBase = new WriteFileGeneralDefault();
 		
-		if (this.beanSuffixName == null) this.beanSuffixName = "";
-		
-		if (this.daoSuffixName == null) this.daoSuffixName = "";
-		
 		return this;
 	}
 	
@@ -211,19 +216,19 @@ public class CodeGenerateParams {
 		return isBuild;
 	}
 
-	public String getBeanSuffixName() {
-		return beanSuffixName;
-	}
-
-	public String getDaoSuffixName() {
-		return daoSuffixName;
-	}
-
 	public List<String> getCodeFilePaths() {
 		return codeFilePaths;
 	}
 
 	public WriteFileBase getWriteFileBase() {
 		return writeFileBase;
+	}
+
+	public Map<String, String> getFileSuffixNameMap() {
+		return fileSuffixNameMap;
+	}
+
+	public String getAuthor() {
+		return author;
 	}
 }

@@ -14,20 +14,33 @@ public class MybatisMapperTemplateBase {
 	
 	private String javaBeanPath;
 	
-	@MapperTemplate(idName = "findList" , tempName = "findListId")
+	@MapperTemplate(idName = "findList" , tempName = "findListId" , methodType = 0)
 	private String findListSql;
 	
-	@MapperTemplate(idName = "get" , tempName = "getOneId")
+	@MapperTemplate(idName = "get" , tempName = "getOneId" , methodType = 1)
 	private String getOneSql;
 	
-	@MapperTemplate(idName = "insert" , tempName = "insertId")
+	@MapperTemplate(idName = "insert" , tempName = "insertId" , methodType = 2)
 	private String insertSql;
 	
-	@MapperTemplate(idName = "update" , tempName = "updateId")
+	@MapperTemplate(idName = "update" , tempName = "updateId" , methodType = 3)
 	private String updateSql;
 	
-	@MapperTemplate(idName = "delete" , tempName = "deleteId")
+	@MapperTemplate(idName = "delete" , tempName = "deleteId" , methodType = 4)
 	private String deleteSql;
+	
+	public MybatisMapperTemplateBase() {}
+	
+	public MybatisMapperTemplateBase(String daoPath , String javaBeanPath , 
+			String findListSql, String getOneSql, String insertSql, String updateSql, String deleteSql) {
+		this.daoPath = daoPath;
+		this.javaBeanPath = javaBeanPath;
+		this.findListSql = findListSql;
+		this.getOneSql = getOneSql;
+		this.insertSql = insertSql;
+		this.updateSql = updateSql;
+		this.deleteSql = deleteSql;
+	}
 
 	public String getDaoPath() {
 		return daoPath;

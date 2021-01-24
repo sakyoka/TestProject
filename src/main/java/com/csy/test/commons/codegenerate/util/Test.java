@@ -3,6 +3,7 @@ package com.csy.test.commons.codegenerate.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.csy.test.commons.codegenerate.base.defaults.WriteFileNowWork;
 import com.csy.test.commons.codegenerate.bean.CodeGenerateParams;
 
 public class Test {
@@ -13,9 +14,9 @@ public class Test {
 		basePackageMap.put("generate_field_test", "com.csy.test.commons");
 		CodeGenerateParams codeGenerateParams = CodeGenerateParams.getBuilder()
 				.basePackageMap(basePackageMap)
-				.beanSuffixName("Model")
-				.daoSuffixName("Dao")
 				.codeCacheBasePath("D:\\code_cache")
+				.author("csy")
+				//.writeFileBase(new WriteFileNowWork())
 				.build();
 		if (!codeGenerateParams.getIsBuild()) {
 			throw new RuntimeException("需要执行build");

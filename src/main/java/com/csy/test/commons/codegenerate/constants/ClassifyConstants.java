@@ -13,4 +13,6 @@ public class ClassifyConstants {
 	public static final String SERVICE = "service";
 	
 	public static final String SERVICE_IMPL = "impl";
+	
+	public static final String CONTROLLER = "controller";
 }

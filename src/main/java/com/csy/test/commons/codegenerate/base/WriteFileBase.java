@@ -15,5 +15,5 @@ public interface WriteFileBase {
 	 * @param contents 文件内容
 	 * @param fileSuffixEnum 记录文件后缀及类型对象
 	 */
-	void write(CodeGenerateParams codeGenerateParams , String tableName , String contents , String beanNameSuffix , FileSuffixEnum fileSuffixEnum);
+	void write(CodeGenerateParams codeGenerateParams , String tableName , String contents , FileSuffixEnum fileSuffixEnum);
 }

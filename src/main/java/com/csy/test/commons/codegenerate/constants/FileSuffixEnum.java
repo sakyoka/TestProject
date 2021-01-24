@@ -1,5 +1,11 @@
 package com.csy.test.commons.codegenerate.constants;
 
+/**
+ * 
+ * 描述:类型对应文件的后缀 ps:.java .xml
+ * @author csy
+ * @date 2021年1月24日 下午3:37:43
+ */
 public enum FileSuffixEnum {
 
 	BEAN(ClassifyConstants.BEAN , ClassifyConstants.JAVA),
@@ -10,7 +16,9 @@ public enum FileSuffixEnum {
 	
 	SERVICE(ClassifyConstants.SERVICE , ClassifyConstants.JAVA),
 	
-	SERVICE_IMPL(ClassifyConstants.SERVICE_IMPL , ClassifyConstants.JAVA);
+	SERVICE_IMPL(ClassifyConstants.SERVICE_IMPL , ClassifyConstants.JAVA),
+	
+	CONTRLLER(ClassifyConstants.CONTROLLER , ClassifyConstants.JAVA);
 	
 	private String suffixName;
 	

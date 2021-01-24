@@ -58,4 +58,13 @@ public interface CodeGenerateBase {
 	 * @return dataMetaBase
 	 */
 	CodeGenerateBase generateServiceImpl();
+	
+	/**
+	 * 
+	 * 描述：生成controller
+	 * @author csy
+	 * @date 2021年1月24日 下午3:34:19
+	 * @return CodeGenerateBase
+	 */
+	CodeGenerateBase generateController();
 }

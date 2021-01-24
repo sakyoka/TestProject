@@ -20,7 +20,7 @@ import com.csy.test.commons.utils.file.FileUtils;
 public class WriteFileGeneralDefault implements WriteFileBase{
 
 	@Override
-	public void write(CodeGenerateParams codeGenerateParams , String tableName, String contents , String beanNameSuffix , FileSuffixEnum fileSuffixEnum) {
+	public void write(CodeGenerateParams codeGenerateParams , String tableName, String contents , FileSuffixEnum fileSuffixEnum) {
 		String path = codeGenerateParams.getBasePathMap().get(tableName);
 
 		try {
@@ -31,11 +31,11 @@ public class WriteFileGeneralDefault implements WriteFileBase{
 		
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(path)
-		.append(File.separator)
-		.append(StrUtil.upperFirst(StrUtil.toCamelCase(tableName)))
-		.append(beanNameSuffix)
-		.append(".")
-		.append(fileSuffixEnum.getSuffixName());
+					 .append(File.separator)
+					 .append(StrUtil.upperFirst(StrUtil.toCamelCase(tableName)))
+					 .append(codeGenerateParams.getFileSuffixNameMap().get(fileSuffixEnum.getFileType()))
+					 .append(".")
+					 .append(fileSuffixEnum.getSuffixName());
 
 		path = stringBuilder.toString();
 		FileUtils.writeFile(path , contents);

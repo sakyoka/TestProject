@@ -22,11 +22,18 @@ public class CodeGenerateUtils {
 	
 	private CodeGenerateUtils(){}
 	
-	public static void generate(CodeGenerateParams codeGenerateParams){
+	/**
+	 * 
+	 * 描述：代码生成
+	 * @author csy
+	 * @date 2021年1月24日 下午4:43:14
+	 * @param codeGenerateParams 初始化参数对象
+	 * @param codeGenerate 生成器
+	 */
+	public static void generate(CodeGenerateParams codeGenerateParams , CodeGenerateBase codeGenerate){
 		Map<String, String> basePackageMap = codeGenerateParams.getBasePackageMap();
 		try {
 			System.out.println("starting to generate code...");
-			CodeGenerateBase codeGenerate = new DefaultCodeGenerate(codeGenerateParams); 
 			basePackageMap.forEach((k , v) -> {
 				
 				String basePath = codeGenerateParams.getBasePathMap().get(k) + StringUtils.lowerCase(k).replace("_", "");
@@ -37,7 +44,8 @@ public class CodeGenerateUtils {
 							.generateMapper()
 							.generateDao()
 							.generateService()
-							.generateServiceImpl();
+							.generateServiceImpl()
+							.generateController();
 			});
 			
 			System.out.println("end generate code...");
@@ -52,5 +60,17 @@ public class CodeGenerateUtils {
 			}
 		} 
 
+	}
+	
+	/**
+	 * 
+	 * 描述：代码生成
+	 * @author csy
+	 * @date 2021年1月24日 下午4:43:07
+	 * @param codeGenerateParams 初始化参数对象
+	 */
+	public static void generate(CodeGenerateParams codeGenerateParams){
+		//使用默认的生成器DefaultCodeGenerate
+		generate(codeGenerateParams , new DefaultCodeGenerate(codeGenerateParams));
 	}
 }
