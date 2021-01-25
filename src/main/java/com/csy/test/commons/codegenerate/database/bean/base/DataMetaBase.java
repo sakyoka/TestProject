@@ -75,14 +75,15 @@ public interface DataMetaBase {
 		ResultSet primaryRs = null;
 		try {
 			databaseMetaData = conn.getMetaData();
-			rs = databaseMetaData.getTables(null, null, tableName , types);
+			rs = databaseMetaData.getTables(null, null , tableName.toUpperCase() , types);
 			List<ColumnMetaData> columnMetaDatas = new ArrayList<ColumnMetaData>();
 			while (rs.next()) {
 				if(rs.getString("TABLE_NAME").equalsIgnoreCase(tableName)){
-					primaryRs = databaseMetaData.getPrimaryKeys(null, "%", tableName);
+					primaryRs = databaseMetaData.getPrimaryKeys(null, "%", rs.getString("TABLE_NAME"));
 					primaryRs.next();
 					String primaryKey = primaryRs.getString("COLUMN_NAME");
 					String tableSchema = rs.getString("TABLE_SCHEM");
+					String remarks = rs.getString("REMARKS");
 					resultSet = databaseMetaData.getColumns(null, tableSchema , rs.getString("TABLE_NAME") , null);
 					ColumnMetaData columnMetaData = null;
 					while (resultSet.next()) {
@@ -95,14 +96,17 @@ public interface DataMetaBase {
 					}
 					tableMessage = tableMessage == null ? new TableMessage() : tableMessage;
 					tableMessage.setTableName(tableName);
-					tableMessage.setRemarks("");
+					tableMessage.setRemarks(remarks == null ? "" : remarks);
 					break;
 				}
-			}	
+			}
+			
+			if (columnMetaDatas.isEmpty()) 
+				throw new RuntimeException("not found table " + tableName + "message");
+			
 			return columnMetaDatas;
 		}catch(Exception e) {
-			System.out.println(e);
-			throw new RuntimeException("获取表字段数据失败");
+			throw new RuntimeException(e);
 		} finally {
 			DataBase.getCloseObject().closeResult(rs);
 			DataBase.getCloseObject().closeResult(resultSet);

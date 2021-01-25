@@ -40,8 +40,12 @@ public class DataBase {
 		}		
 		
 		try {
-			
-			return DriverManager.getConnection(URL, USERNAME, PASSWORD);
+			java.util.Properties props = new java.util.Properties();
+			props.put("user", USERNAME);
+			props.put("password", PASSWORD);
+			props.put("remarks", "true");
+			props.put("useInformationSchema", "true");
+			return DriverManager.getConnection(URL, props);
 		} catch (SQLException e) {
 			throw new RuntimeException("获取数据库连接对象失败" , e);
 		}
