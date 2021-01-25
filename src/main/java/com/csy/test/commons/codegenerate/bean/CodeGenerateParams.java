@@ -74,7 +74,28 @@ public class CodeGenerateParams {
 	 * @return CodeGenerateParams
 	 */
 	public CodeGenerateParams basePackageMap(Map<String, String> basePackageMap) {
-		this.basePackageMap = basePackageMap;
+		 if(this.basePackageMap == null)
+			 this.basePackageMap = new HashMap<String, String>();
+		 basePackageMap.forEach((k , v) ->{
+			 this.basePackageMapKeyValue(k , v);
+		 });
+		return this;
+	}
+	
+	/**
+	 * 描述：设置包目录
+	 * <br> tableName : com.csy.test.commons
+	 * @author csy
+	 * @date 2021年1月25日 下午10:25:14
+	 * @param tableName   eg:test_table
+	 * @param packageName eg:com.csy.test.commons
+	 * @return CodeGenerateParams
+	 */
+	public CodeGenerateParams basePackageMapKeyValue(String tableName , String packageName) {
+		if (this.basePackageMap == null)
+			this.basePackageMap = new HashMap<String, String>();
+		
+		this.basePackageMap.put(tableName.toLowerCase() , packageName);
 		return this;
 	}
 
