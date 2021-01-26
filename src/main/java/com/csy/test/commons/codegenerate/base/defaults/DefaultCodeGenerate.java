@@ -53,6 +53,16 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 	
 	private String tableName;
 	
+	private String fullDaoName;
+	
+	private String fullBeanName;
+
+	private String fullServiceName;
+	
+	private String fullServiceImplName;
+	
+	private String fullControllerName;
+	
 	private List<BeanFieldMessage> beanFieldMessages;
 	
 	public DefaultCodeGenerate(CodeGenerateParams codeGenerateParams) {
@@ -71,16 +81,21 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 		String basePackage = this.codeGenerateParams.getBasePackageMap().get(this.tableName); 		
 		String prePath = basePackage + "." + StringUtils.lowerCase(tableName.replace("_", "")) + ".";
 		this.daoPath = prePath + ClassifyConstants.DAO; 
+		this.fullDaoName = this.beanName + codeGenerateParams.getFileSuffixNameMap().get(ClassifyConstants.DAO);
 		
  		this.beanPath = prePath + ClassifyConstants.BEAN;
+ 		this.fullBeanName = this.beanName + codeGenerateParams.getFileSuffixNameMap().get(ClassifyConstants.BEAN);
  		
  		this.xmlPath = prePath + ClassifyConstants.DAO + "." + ClassifyConstants.XML;
  		
  		this.servicePath = prePath + ClassifyConstants.SERVICE;
+ 		this.fullServiceName = this.beanName + codeGenerateParams.getFileSuffixNameMap().get(ClassifyConstants.SERVICE);
  		
 		this.serviceImplPath = prePath + ClassifyConstants.SERVICE + "." + ClassifyConstants.SERVICE_IMPL;
+		this.fullServiceImplName = this.beanName + codeGenerateParams.getFileSuffixNameMap().get(ClassifyConstants.SERVICE_IMPL);
 		
 		this.controllerPath =  prePath + ClassifyConstants.CONTROLLER;
+		this.fullControllerName = this.beanName + codeGenerateParams.getFileSuffixNameMap().get(ClassifyConstants.CONTROLLER);
 		
 		this.beanFieldMessages = DataMetaUtils.tranferToBeanFields(dataMetaBase.getColumnMetaDatas());
  		return this;
@@ -172,7 +187,7 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 			.append("package ").append(this.beanPath).append(";")
 			.append(LineConstants.WRAP).append(LineConstants.WRAP);
 		appendClassNote(stringBuilder , dataMetaBase.getTableMessage().getRemarks() + "实体类")
-			.append("public class ").append(this.beanName).append(codeGenerateParams.getFileSuffixNameMap().get(ClassifyConstants.BEAN))
+			.append("public class ").append(this.fullBeanName)
 			.append(" {").append(LineConstants.WRAP).append(LineConstants.WRAP);
 		
 		this.beanFieldMessages.forEach((e) -> {
@@ -259,8 +274,8 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
  		
  		String deleteSql = "delete from "+ tableMessage.getTableName() + whereSql.toString();
  		
- 		String daoPath = this.daoPath + "." + this.beanName + codeGenerateParams.getFileSuffixNameMap().get(ClassifyConstants.DAO);
- 		String beanPath = this.beanPath + "." + this.beanName + codeGenerateParams.getFileSuffixNameMap().get(ClassifyConstants.BEAN);
+ 		String daoPath = this.daoPath + "." + this.fullDaoName;
+ 		String beanPath = this.beanPath + "." + this.fullBeanName;
  		MybatisMapperTemplateBase templateBase = new MybatisMapperTemplateBase(daoPath , beanPath , findListSql , getOneSql , insertSql , updateSql ,deleteSql);
 		String templateContents = MapperTemplateMessage.getTemplateContents();
 		String content = TemplateUtils.fillTemplate(this.getTemplateContentsMap(templateBase), templateContents);
@@ -281,7 +296,7 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 			.append(LineConstants.WRAP)
 			.append(LineConstants.WRAP);
 	    appendClassNote(stringBuilder, dataMetaBase.getTableMessage().getRemarks() + "dao")
-			.append("import ").append(this.beanPath).append(".").append(this.beanName).append(codeGenerateParams.getFileSuffixNameMap().get(ClassifyConstants.BEAN)).append(";")
+			.append("import ").append(this.beanPath).append(".").append(this.fullBeanName).append(";")
 			.append(LineConstants.WRAP)
 			.append(LineConstants.WRAP)
 			.append("public class ").append(this.beanName).append(this.codeGenerateParams.getFileSuffixNameMap().get(ClassifyConstants.DAO)).append(" {")
@@ -356,18 +371,17 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder
 			.append("package ").append(this.serviceImplPath).append(";")
-			//.append(LineConstants.WRAP)
-			//.append(LineConstants.WRAP)
+			.append(LineConstants.WRAP)
+			.append(LineConstants.WRAP)
+			.append("import ").append(this.servicePath).append(".").append(this.fullServiceName).append(";")
 			//.append("import ").append(this.beanPath).append(";")
 			.append(LineConstants.WRAP)
 			.append(LineConstants.WRAP);
 		appendClassNote(stringBuilder , dataMetaBase.getTableMessage().getRemarks() + "业务实现类")
-			.append("@Service")
 			.append(LineConstants.WRAP)
-			.append("@Transactional(readOnly = false)")
 			.append(LineConstants.WRAP)
-			.append("public class ").append(this.beanName).append(this.codeGenerateParams.getFileSuffixNameMap().get(ClassifyConstants.SERVICE_IMPL))
-			.append(" implements ").append(this.beanName).append(this.codeGenerateParams.getFileSuffixNameMap().get(ClassifyConstants.SERVICE))
+			.append("public class ").append(this.fullServiceImplName)
+			.append(" implements ").append(this.fullServiceName)
 			.append(" {")
 			.append(LineConstants.WRAP).append(LineConstants.WRAP);
 
@@ -386,13 +400,10 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder
 			.append("package ").append(this.servicePath).append(";")
-			//.append(LineConstants.WRAP)
-			//.append(LineConstants.WRAP)
-			//.append("import ").append(this.beanPath).append(";")
 			.append(LineConstants.WRAP)
 			.append(LineConstants.WRAP);
 		appendClassNote(stringBuilder , dataMetaBase.getTableMessage().getRemarks() + "业务接口")
-			.append("public class ").append(this.beanName).append(this.codeGenerateParams.getFileSuffixNameMap().get(ClassifyConstants.SERVICE)).append(" {")
+			.append("public class ").append(this.fullServiceName).append(" {")
 			.append(LineConstants.WRAP).append(LineConstants.WRAP);
 
 		stringBuilder.append("}");
@@ -415,7 +426,7 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 		appendClassNote(stringBuilder , dataMetaBase.getTableMessage().getRemarks() + "控制层")
 			.append("@Controller")
 			.append(LineConstants.WRAP)
-			.append("public class ").append(this.beanName).append(this.codeGenerateParams.getFileSuffixNameMap().get(ClassifyConstants.CONTROLLER)).append(" {")
+			.append("public class ").append(this.fullControllerName).append(" {")
 			.append(LineConstants.WRAP).append(LineConstants.WRAP);
 
 		stringBuilder.append("}");

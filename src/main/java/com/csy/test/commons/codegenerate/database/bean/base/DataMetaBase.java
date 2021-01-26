@@ -88,7 +88,7 @@ public interface DataMetaBase {
 					ColumnMetaData columnMetaData = null;
 					while (resultSet.next()) {
 						columnMetaData = new ColumnMetaData();
-						columnMetaData.setColumnName(resultSet.getString("COLUMN_NAME"));
+						columnMetaData.setColumnName(resultSet.getString("COLUMN_NAME").toLowerCase());
 						columnMetaData.setColumnType(TypeNameDicConstants.getJavaType(resultSet.getString("TYPE_NAME")));
 						columnMetaData.setColumnTypeName(resultSet.getString("REMARKS"));
 						columnMetaData.setPrimaryKey(resultSet.getString("COLUMN_NAME").equals(primaryKey));
