@@ -102,7 +102,7 @@ public class CodeGenerateUtils {
 			codeGenerateParams.getBasePathMap().forEach((k , v) -> {
 				try {
 					if (codeGenerateParams.getBaseProjectPathMap().get(k) != null)
-						tranferFileBase.tranfer(v , codeGenerateParams.getBaseProjectPathMap().get(k) + File.separator + k.replace("_", ""));
+						tranferFileBase.tranfer(codeGenerateParams , k , v);
 				} catch (Exception e) {
 					System.out.println(e);
 				}

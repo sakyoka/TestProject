@@ -17,7 +17,7 @@ public class Test {
 				.codeCacheBasePath("D:\\code_cache")
 				.author("csy")
 				.writeFileBase(new WriteFileNowWork())
-				.baseProjectPathMap("appr_approriate_record", "D:\\githubwordpacenew\\TestProject\\src\\main\\java\\com\\csy\\test\\commons")
+				.baseProjectPathMap("appr_approriate_record", "D:\\githubwordpacenew\\TestProject")
 				.build();
 		
 		if (!codeGenerateParams.getIsBuild()) {
