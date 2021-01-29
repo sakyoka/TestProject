@@ -3,6 +3,7 @@ package com.csy.test.commons.codegenerate.database.bean.base;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,8 +63,9 @@ public interface DataMetaBase {
 	 * @date 2021年1月23日 下午1:53:51
 	 * @param tableName
 	 * @return
+	 * @throws SQLException 
 	 */
-	default List<ColumnMetaData> defaultColumnMetaDatas(Connection conn , String tableName , TableMessage tableMessage) {
+	default List<ColumnMetaData> defaultColumnMetaDatas(Connection conn , String tableName , TableMessage tableMessage) throws SQLException {
 		
 		if (conn == null) throw new RuntimeException("数据库连接对象不能为空");
 		if (tableName == null) throw new RuntimeException("表名不能为空");
@@ -81,7 +83,13 @@ public interface DataMetaBase {
 				if(rs.getString("TABLE_NAME").equalsIgnoreCase(tableName)){
 					primaryRs = databaseMetaData.getPrimaryKeys(null, "%", rs.getString("TABLE_NAME"));
 					primaryRs.next();
-					String primaryKey = primaryRs.getString("COLUMN_NAME");
+					String primaryKey = null;
+					try {
+						primaryKey = primaryRs.getString("COLUMN_NAME");
+					} catch (SQLException e) {
+						throw new RuntimeException("获取表" + tableName + "主键字段失败,请检查表是否有设置主键");
+					}
+					
 					String tableSchema = rs.getString("TABLE_SCHEM");
 					String remarks = rs.getString("REMARKS");
 					resultSet = databaseMetaData.getColumns(null, tableSchema , rs.getString("TABLE_NAME") , null);
@@ -105,12 +113,11 @@ public interface DataMetaBase {
 				throw new RuntimeException("not found table " + tableName + "message");
 			
 			return columnMetaDatas;
-		}catch(Exception e) {
-			throw new RuntimeException(e);
-		} finally {
-			DataBase.getCloseObject().closeResult(rs);
-			DataBase.getCloseObject().closeResult(resultSet);
-			DataBase.getCloseObject().closeResult(primaryRs);
+		}finally {
+			DataBase.getCloseObject()
+			                    .closeResult(rs)
+			                    .closeResult(resultSet)
+			                    .closeResult(primaryRs);
 		}
 	}
 }

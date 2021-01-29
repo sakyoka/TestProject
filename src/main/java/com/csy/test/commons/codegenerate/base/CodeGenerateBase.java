@@ -2,6 +2,12 @@ package com.csy.test.commons.codegenerate.base;
 
 import com.csy.test.commons.codegenerate.database.bean.base.DataMetaBase;
 
+/**
+ * 
+ * 描述：生成器
+ * @author csy
+ * @date 2021年1月29日 上午10:34:35
+ */
 public interface CodeGenerateBase {
 
 	/**

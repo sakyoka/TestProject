@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.csy.test.commons.codegenerate.base.TranferFileBase;
 import com.csy.test.commons.codegenerate.base.WriteFileBase;
+import com.csy.test.commons.codegenerate.base.defaults.DefaultTranferFile;
 import com.csy.test.commons.codegenerate.base.defaults.WriteFileGeneralDefault;
 import com.csy.test.commons.codegenerate.constants.ClassifyConstants;
 import com.csy.test.commons.codegenerate.database.bean.base.DataMetaBase;
@@ -47,6 +49,10 @@ public class CodeGenerateParams {
 	private String author;
 	
 	private Class<? extends DataMetaBase> dataMetaBaseClass;
+
+	private Map<String , String> baseProjectPathMap;
+	
+	private Class<? extends TranferFileBase> tranferFileBaseClass;
 	
 	@SuppressWarnings("serial")
 	private Map<String, String> fileSuffixNameMap = new HashMap<String, String>(){{
@@ -190,13 +196,58 @@ public class CodeGenerateParams {
 		this.dataMetaBaseClass = dataMetaBaseClass;
 		return this;
 	}
+	
+	/**
+	 * 描述：文件转移
+	 * @author csy 
+	 * @date 2021年1月29日 上午11:14:13
+	 * @param tranferFileBaseClass
+	 * @return CodeGenerateParams
+	 */
+	public CodeGenerateParams tranferFileBaseClass(Class<? extends TranferFileBase> tranferFileBaseClass) {
+		this.tranferFileBaseClass = tranferFileBaseClass;
+		return this;
+	}
+	
+	/**
+	 * 描述：生成的代码是否要转移到对应目录;
+	 * 如果有配置表对应目录会转移
+	 * @author csy 
+	 * @date 2021年1月29日 上午10:43:22
+	 * @param baseProjectPathMap
+	 * @return CodeGenerateParams
+	 */
+	public CodeGenerateParams baseProjectPathMap(Map<String, String> baseProjectPathMap) {
+		if (this.baseProjectPathMap != null){
+			this.baseProjectPathMap.putAll(baseProjectPathMap);
+		}else{
+			this.baseProjectPathMap = baseProjectPathMap;
+		}
+		return this;
+	}
+	
+	/**
+	 * 描述：生成的代码是否要转移到对应目录;
+	 * 如果有配置表对应目录会转移
+	 * @author csy 
+	 * @date 2021年1月29日 上午10:44:53
+	 * @param tableName 表名
+	 * @param baseProjectPath 项目路径
+	 * @return CodeGenerateParams
+	 */
+	public CodeGenerateParams baseProjectPathMap(String tableName , String baseProjectPath) {
+		if (this.baseProjectPathMap == null)
+			this.baseProjectPathMap = new HashMap<String , String>();
+		this.baseProjectPathMap.put(tableName, baseProjectPath);
+		return this;
+	}
 		
 	/**
 	 * 
 	 * 描述：构建必要参数
 	 * @author csy
 	 * @date 2021年1月23日 下午2:53:20
-	 * @return
+	 * @return CodeGenerateParams
 	 */
 	public CodeGenerateParams build() {
 		
@@ -228,6 +279,8 @@ public class CodeGenerateParams {
 		if (this.writeFileBase == null) this.writeFileBase = new WriteFileGeneralDefault();
 		
 		if (this.dataMetaBaseClass == null) this.dataMetaBaseClass = DataMetaJdbc.class;
+		
+		if (this.tranferFileBaseClass == null) this.tranferFileBaseClass = DefaultTranferFile.class;
 		
 		return this;
 	}
@@ -274,5 +327,13 @@ public class CodeGenerateParams {
 
 	public Class<? extends DataMetaBase> getDataMetaBaseClass() {
 		return dataMetaBaseClass;
+	}
+	
+	public Map<String, String> getBaseProjectPathMap() {
+		return baseProjectPathMap;
+	}
+
+	public Class<? extends TranferFileBase> getTranferFileBaseClass() {
+		return tranferFileBaseClass;
 	}
 }

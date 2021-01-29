@@ -3,12 +3,9 @@ package com.csy.test.commons.codegenerate.base.defaults;
 import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
-import com.alibaba.fastjson.JSON;
 import com.csy.test.commons.codegenerate.annotation.MapperTemplate;
 import com.csy.test.commons.codegenerate.base.CodeGenerateBase;
 import com.csy.test.commons.codegenerate.bean.BeanFieldMessage;
@@ -278,7 +275,7 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
  		String beanPath = this.beanPath + "." + this.fullBeanName;
  		MybatisMapperTemplateBase templateBase = new MybatisMapperTemplateBase(daoPath , beanPath , findListSql , getOneSql , insertSql , updateSql ,deleteSql);
 		String templateContents = MapperTemplateMessage.getTemplateContents();
-		String content = TemplateUtils.fillTemplate(this.getTemplateContentsMap(templateBase), templateContents);
+		String content = TemplateUtils.fillTemplate(MapperTemplateMessage.getTemplateContentsMap(templateBase), templateContents);
 		return content;
 	}
 	
@@ -441,25 +438,6 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 	 */
 	private void preAssert() {
 		if (this.dataMetaBase == null) throw new RuntimeException("dataMetaBase is not allow null");
-	}
-	
-	private Map<String, String> getTemplateContentsMap(MybatisMapperTemplateBase templateBase){
-		try {
-			@SuppressWarnings("unchecked")
-			Map<String, String> contentMap = JSON.parseObject(JSON.toJSONString(templateBase), Map.class);
-			@SuppressWarnings("rawtypes")
-			Class clazz = templateBase.getClass();
-			Field[] fields = clazz.getDeclaredFields();
-			for (Field field:fields) {
-				if (field.isAnnotationPresent(MapperTemplate.class)) {
-					MapperTemplate mapperTemplate = field.getAnnotation(MapperTemplate.class);
-					contentMap.put(mapperTemplate.tempName() , mapperTemplate.idName());
-				}
-			}
-			return contentMap;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} 
 	}
 	
 	private StringBuilder appendClassNote(StringBuilder stringBuilder , String desc) {
