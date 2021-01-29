@@ -2,7 +2,10 @@ package com.csy.test.commons.codegenerate.base.defaults;
 
 import java.lang.reflect.Field;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
@@ -182,7 +185,9 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder
 			.append("package ").append(this.beanPath).append(";")
-			.append(LineConstants.WRAP).append(LineConstants.WRAP);
+			.append(LineConstants.WRAP).append(LineConstants.WRAP)
+		    .append("import java.util.*;")
+		    .append(LineConstants.WRAP).append(LineConstants.WRAP);
 		appendClassNote(stringBuilder , dataMetaBase.getTableMessage().getRemarks() + "实体类")
 			.append("public class ").append(this.fullBeanName)
 			.append(" {").append(LineConstants.WRAP).append(LineConstants.WRAP);
@@ -290,13 +295,14 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder
 			.append("package ").append(this.daoPath).append(";")
-			.append(LineConstants.WRAP)
-			.append(LineConstants.WRAP);
-	    appendClassNote(stringBuilder, dataMetaBase.getTableMessage().getRemarks() + "dao")
+			.append(LineConstants.WRAP).append(LineConstants.WRAP)
+		    .append("import java.util.*;")
+		    .append(LineConstants.WRAP)
 			.append("import ").append(this.beanPath).append(".").append(this.fullBeanName).append(";")
 			.append(LineConstants.WRAP)
-			.append(LineConstants.WRAP)
-			.append("public class ").append(this.beanName).append(this.codeGenerateParams.getFileSuffixNameMap().get(ClassifyConstants.DAO)).append(" {")
+			.append(LineConstants.WRAP);
+			appendClassNote(stringBuilder, dataMetaBase.getTableMessage().getRemarks() + "dao")
+			.append("public interface ").append(this.beanName).append(this.codeGenerateParams.getFileSuffixNameMap().get(ClassifyConstants.DAO)).append(" {")
 			.append(LineConstants.WRAP).append(LineConstants.WRAP);
 
 		String primaryKey = null;
@@ -312,43 +318,54 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 		Class clazz = MybatisMapperTemplateBase.class;
 		Field[] fields = clazz.getDeclaredFields();
 		String beanName = this.beanName + this.codeGenerateParams.getFileSuffixNameMap().get(ClassifyConstants.BEAN);
+		Map<String, String> params = new HashMap<String, String>();
 		for (Field field:fields) {
 			if (field.isAnnotationPresent(MapperTemplate.class)) {
 				MapperTemplate mapperTemplate = field.getAnnotation(MapperTemplate.class);
-				appendMethodNote(stringBuilder , mapperTemplate.desc());
+				params.clear();
 				if (MethodTypeEnum.FIND_LIST.equalsType(mapperTemplate.methodType())) {
+					params.put(StrUtil.lowerFirst(beanName), null);
+					appendMethodNote(stringBuilder , mapperTemplate.desc() , params , "List<"+ beanName +">" );
 					stringBuilder.append(LineConstants.BLANK_SPACE_FOUR)
 					             .append("List<").append(beanName).append("> ").append(mapperTemplate.idName()).append("(")
 					             .append(beanName).append(" ").append(StrUtil.lowerFirst(beanName)).append(");")
-					             .append(LineConstants.WRAP).append(LineConstants.WRAP);
+					             .append(LineConstants.WRAP);
 				}
 				
 				if (MethodTypeEnum.GET_ONE.equalsType(mapperTemplate.methodType())) {
+					params.put(primaryKey, null);
+					appendMethodNote(stringBuilder , mapperTemplate.desc() , params , beanName);
 					stringBuilder.append(LineConstants.BLANK_SPACE_FOUR)
 					             .append(beanName).append(" ").append(mapperTemplate.idName()).append("(")
 					             .append(fieldType).append(" ").append(primaryKey).append(");")
-					             .append(LineConstants.WRAP).append(LineConstants.WRAP);					
+					             .append(LineConstants.WRAP);					
 				}
 				
 				if (MethodTypeEnum.INSERT.equalsType(mapperTemplate.methodType())) {
+					params.put(StrUtil.lowerFirst(beanName), null);
+					appendMethodNote(stringBuilder , mapperTemplate.desc() , params , "int");
 					stringBuilder.append(LineConstants.BLANK_SPACE_FOUR)
 					             .append("int ").append(mapperTemplate.idName()).append("(")
 					             .append(beanName).append(" ").append(StrUtil.lowerFirst(beanName)).append(");")
-					             .append(LineConstants.WRAP).append(LineConstants.WRAP);						
+					             .append(LineConstants.WRAP);						
 				}
 				
 				if (MethodTypeEnum.UPDATE.equalsType(mapperTemplate.methodType())) {
+					params.put(StrUtil.lowerFirst(beanName), null);
+					appendMethodNote(stringBuilder , mapperTemplate.desc() , params , "int");
 					stringBuilder.append(LineConstants.BLANK_SPACE_FOUR)
 					             .append("int ").append(mapperTemplate.idName()).append("(")
 					             .append(beanName).append(" ").append(StrUtil.lowerFirst(beanName)).append(");")
-					             .append(LineConstants.WRAP).append(LineConstants.WRAP);						
+					             .append(LineConstants.WRAP);						
 				}
 				
 				if (MethodTypeEnum.DELETE.equalsType(mapperTemplate.methodType())) {
+					params.put(primaryKey , null);
+					appendMethodNote(stringBuilder , mapperTemplate.desc() , params , "int");
 					stringBuilder.append(LineConstants.BLANK_SPACE_FOUR)
 					             .append("int ").append(mapperTemplate.idName()).append("(")
 					             .append(fieldType).append(" ").append(primaryKey).append(");")
-					             .append(LineConstants.WRAP).append(LineConstants.WRAP);	
+					             .append(LineConstants.WRAP);	
 				}
 			}
 		}		
@@ -375,8 +392,6 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 			.append(LineConstants.WRAP)
 			.append(LineConstants.WRAP);
 		appendClassNote(stringBuilder , dataMetaBase.getTableMessage().getRemarks() + "业务实现类")
-			.append(LineConstants.WRAP)
-			.append(LineConstants.WRAP)
 			.append("public class ").append(this.fullServiceImplName)
 			.append(" implements ").append(this.fullServiceName)
 			.append(" {")
@@ -400,7 +415,7 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 			.append(LineConstants.WRAP)
 			.append(LineConstants.WRAP);
 		appendClassNote(stringBuilder , dataMetaBase.getTableMessage().getRemarks() + "业务接口")
-			.append("public class ").append(this.fullServiceName).append(" {")
+			.append("public interface ").append(this.fullServiceName).append(" {")
 			.append(LineConstants.WRAP).append(LineConstants.WRAP);
 
 		stringBuilder.append("}");
@@ -421,8 +436,6 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 			.append(LineConstants.WRAP)
 			.append(LineConstants.WRAP);
 		appendClassNote(stringBuilder , dataMetaBase.getTableMessage().getRemarks() + "控制层")
-			.append("@Controller")
-			.append(LineConstants.WRAP)
 			.append("public class ").append(this.fullControllerName).append(" {")
 			.append(LineConstants.WRAP).append(LineConstants.WRAP);
 
@@ -440,24 +453,54 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 		if (this.dataMetaBase == null) throw new RuntimeException("dataMetaBase is not allow null");
 	}
 	
+	/**
+	 * 描述：类注释
+	 * @author csy 
+	 * @date 2021年1月29日 下午3:22:01
+	 * @param stringBuilder
+	 * @param desc 描述
+	 * @return StringBuilder
+	 */
 	private StringBuilder appendClassNote(StringBuilder stringBuilder , String desc) {
 		stringBuilder.append(LineConstants.WRAP)
 		             .append("/**").append(LineConstants.WRAP)
-		             .append(" *描述：").append(desc == null ? "" : desc).append(LineConstants.WRAP)
-		             .append(" *@author ").append(codeGenerateParams.getAuthor()).append(LineConstants.WRAP)
-		             .append(" *@date ").append(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss")).append(LineConstants.WRAP)
+		             .append(" * 描述：").append(desc == null ? "" : desc).append(LineConstants.WRAP)
+		             .append(" * @author ").append(codeGenerateParams.getAuthor()).append(LineConstants.WRAP)
+		             .append(" * @date ").append(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss")).append(LineConstants.WRAP)
 		             .append(" */").append(LineConstants.WRAP);
 		return stringBuilder;
 	}
 	
-	private StringBuilder appendMethodNote(StringBuilder stringBuilder , String desc) {
-//		stringBuilder.append(LineConstants.WRAP)
-//		             .append(LineConstants.BLANK_SPACE_FOUR)
-//		             .append("/**").append(LineConstants.WRAP).append(LineConstants.BLANK_SPACE_FOUR)
-//		             .append(" *描述：").append(desc == null ? "" : desc).append(LineConstants.WRAP).append(LineConstants.BLANK_SPACE_FOUR)
-//		             .append(" *@author ").append(codeGenerateParams.getAuthor()).append(LineConstants.WRAP).append(LineConstants.BLANK_SPACE_FOUR)
-//		             .append(" *@date ").append(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss")).append(LineConstants.WRAP).append(LineConstants.BLANK_SPACE_FOUR)
-//		             .append(" */").append(LineConstants.WRAP);
+	/**
+	 * 描述：方法注释
+	 * @author csy 
+	 * @date 2021年1月29日 下午3:22:12
+	 * @param stringBuilder
+	 * @param desc 描述
+	 * @param params 参数集合
+	 * @param returnParam 返回值
+	 * @return StringBuilder
+	 */
+	private StringBuilder appendMethodNote(StringBuilder stringBuilder , String desc , Map<String, String> params , String returnParam) {
+		stringBuilder.append(LineConstants.WRAP)
+		             .append(LineConstants.BLANK_SPACE_FOUR)
+		             .append("/**").append(LineConstants.WRAP).append(LineConstants.BLANK_SPACE_FOUR)
+		             .append(" * 描述：").append(desc == null ? "" : desc).append(LineConstants.WRAP).append(LineConstants.BLANK_SPACE_FOUR)
+		             .append(" * @author ").append(codeGenerateParams.getAuthor()).append(LineConstants.WRAP).append(LineConstants.BLANK_SPACE_FOUR)
+		             .append(" * @date ").append(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss")).append(LineConstants.WRAP).append(LineConstants.BLANK_SPACE_FOUR);
+		
+		if (params != null){
+			params.forEach((k , v) -> {
+				if (k != null)
+				    stringBuilder
+				     .append(" * @param ").append(k).append(" ").append(v != null ? v : "").append(LineConstants.WRAP).append(LineConstants.BLANK_SPACE_FOUR);
+			});
+		}
+		if (returnParam != null){
+		    stringBuilder
+		             .append(" * @return ").append(returnParam).append(LineConstants.WRAP).append(LineConstants.BLANK_SPACE_FOUR);			
+		}
+		stringBuilder.append(" */").append(LineConstants.WRAP);
 		return stringBuilder;
 	}
 }

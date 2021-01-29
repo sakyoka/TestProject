@@ -14,19 +14,19 @@ public class MybatisMapperTemplateBase {
 	
 	private String javaBeanPath;
 	
-	@MapperTemplate(idName = "findList" , tempName = "findListId" , methodType = 0)
+	@MapperTemplate(idName = "findList" , tempName = "findListId" , methodType = 0 , desc = "get collections record")
 	private String findListSql;
 	
-	@MapperTemplate(idName = "get" , tempName = "getOneId" , methodType = 1)
+	@MapperTemplate(idName = "get" , tempName = "getOneId" , methodType = 1 , desc = "get a record")
 	private String getOneSql;
 	
-	@MapperTemplate(idName = "insert" , tempName = "insertId" , methodType = 2)
+	@MapperTemplate(idName = "insert" , tempName = "insertId" , methodType = 2 , desc = "insert a record")
 	private String insertSql;
 	
-	@MapperTemplate(idName = "update" , tempName = "updateId" , methodType = 3)
+	@MapperTemplate(idName = "update" , tempName = "updateId" , methodType = 3 , desc = "update a record")
 	private String updateSql;
 	
-	@MapperTemplate(idName = "delete" , tempName = "deleteId" , methodType = 4)
+	@MapperTemplate(idName = "delete" , tempName = "deleteId" , methodType = 4 , desc = "update a record")
 	private String deleteSql;
 	
 	public MybatisMapperTemplateBase() {}
