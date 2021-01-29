@@ -122,6 +122,7 @@ public class CodeGenerateParams {
 	/**
 	 * 
 	 * 描述：targetBasePath后面拼接的uuidPath
+	 * <br>暂存目录的uuid
 	 * @author csy
 	 * @date 2021年1月23日 下午2:44:39
 	 * @param uuidPath uuid
@@ -134,8 +135,9 @@ public class CodeGenerateParams {
 	
 	/**
 	 * 
-	 * 描述：设置是否需要生成包路径
-	 * <br> true是，false否
+	 * 描述：设置是否需要生成包路径 针对缓存目录
+	 * <br> true 是(生成文件已包形式存在)
+	 * <br> false 否(所有文件生成在同一个文件夹) 
 	 * @author csy
 	 * @date 2021年1月23日 下午3:29:35
 	 * @param isProjectDir 是否需要生成包路径
@@ -147,7 +149,10 @@ public class CodeGenerateParams {
 	}
 	
 	/**
-	 * 描述：文件输出器
+	 * 描述：文件输出器 
+	 * <br>com.csy.test.commons.codegenerate.base.WriteFileBase  
+	 * 实现该类，把文件内容输出
+	 * @see com.csy.test.commons.codegenerate.base.defaults.WriteFileGeneralDefault
 	 * @author csy
 	 * @date 2021年1月23日 下午5:36:00
 	 * @param writeFileBase
@@ -160,7 +165,7 @@ public class CodeGenerateParams {
 	
 	/**
 	 * 
-	 * 描述：文件后缀
+	 * 描述：文件后缀 e: xxxx.java , 即table_name 对应 java后缀，不需要带点
 	 * @author csy
 	 * @date 2021年1月24日 下午1:39:29
 	 * @param fileSuffixNameMap
@@ -173,7 +178,7 @@ public class CodeGenerateParams {
 	
 	/**
 	 * 
-	 * 描述：编写人
+	 * 描述：编写人 注释的编写人
 	 * @author csy
 	 * @date 2021年1月24日 下午4:10:58
 	 * @param author
@@ -187,6 +192,9 @@ public class CodeGenerateParams {
 	/**
 	 * 
 	 * 描述：设置获取数据库连接方式
+	 * <br>com.csy.test.commons.codegenerate.database.bean.base.DataMetaBase 
+	 * 可实现该类，获取表的数据结构
+	 * @see com.csy.test.commons.codegenerate.database.bean.base.defaults.DataMetaJdbc
 	 * @author csy
 	 * @date 2021年1月24日 下午8:13:41
 	 * @param dataMetaBaseClass
@@ -198,7 +206,10 @@ public class CodeGenerateParams {
 	}
 	
 	/**
-	 * 描述：文件转移
+	 * 描述：文件转移 
+	 * <br>com.csy.test.commons.codegenerate.base.TranferFileBase 
+	 * 可实现该类对应处理文件转移
+	 * @see com.csy.test.commons.codegenerate.base.defaults.DefaultTranferFile
 	 * @author csy 
 	 * @date 2021年1月29日 上午11:14:13
 	 * @param tranferFileBaseClass
@@ -250,7 +261,7 @@ public class CodeGenerateParams {
 	 * @author csy 
 	 * @date 2021年1月29日 下午5:49:21
 	 * @param tableName 表名
-	 * @param baseProjectPath 目标项目路径 eg:D:xxx\Project
+	 * @param baseProjectPath 目标项目路径 eg:D:\\xxx\\Project 空时候，不对tableName对应生成的代码转移
 	 * @param packageName     类路径           eg:com.xxx.test
 	 * @return CodeGenerateParams
 	 */
@@ -286,7 +297,7 @@ public class CodeGenerateParams {
 		        .append(File.separator)
 		        .toString();
 		this.basePackageMap.forEach((k , v) -> {
-			String path = this.isProjectDir ? v.replace(".", File.separator) : "";
+			String path = this.isProjectDir ? v.replace(".", File.separator) + File.separator : "";
 			this.basePathMap.put(k , basePath + path);
 		});
 		
