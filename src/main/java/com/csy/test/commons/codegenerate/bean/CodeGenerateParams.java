@@ -83,7 +83,7 @@ public class CodeGenerateParams {
 		 if(this.basePackageMap == null)
 			 this.basePackageMap = new HashMap<String, String>();
 		 basePackageMap.forEach((k , v) ->{
-			 this.basePackageMapKeyValue(k , v);
+			 this.basePackageMap(k , v);
 		 });
 		return this;
 	}
@@ -97,7 +97,7 @@ public class CodeGenerateParams {
 	 * @param packageName eg:com.csy.test.commons
 	 * @return CodeGenerateParams
 	 */
-	public CodeGenerateParams basePackageMapKeyValue(String tableName , String packageName) {
+	public CodeGenerateParams basePackageMap(String tableName , String packageName) {
 		if (this.basePackageMap == null)
 			this.basePackageMap = new HashMap<String, String>();
 		
@@ -218,11 +218,12 @@ public class CodeGenerateParams {
 	 * @return CodeGenerateParams
 	 */
 	public CodeGenerateParams baseProjectPathMap(Map<String, String> baseProjectPathMap) {
-		if (this.baseProjectPathMap != null){
-			this.baseProjectPathMap.putAll(baseProjectPathMap);
-		}else{
-			this.baseProjectPathMap = baseProjectPathMap;
-		}
+		 if(this.baseProjectPathMap == null)
+			 this.baseProjectPathMap = new HashMap<String, String>();
+		 
+		 baseProjectPathMap.forEach((k , v) ->{
+			 this.baseProjectPathMap(k , v);
+		 });
 		return this;
 	}
 	
@@ -238,7 +239,8 @@ public class CodeGenerateParams {
 	public CodeGenerateParams baseProjectPathMap(String tableName , String baseProjectPath) {
 		if (this.baseProjectPathMap == null)
 			this.baseProjectPathMap = new HashMap<String , String>();
-		this.baseProjectPathMap.put(tableName, baseProjectPath);
+		
+		this.baseProjectPathMap.put(tableName.toLowerCase(), baseProjectPath);
 		return this;
 	}
 		
