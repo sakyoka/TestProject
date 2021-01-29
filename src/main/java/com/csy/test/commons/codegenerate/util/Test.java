@@ -1,8 +1,5 @@
 package com.csy.test.commons.codegenerate.util;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.csy.test.commons.codegenerate.base.defaults.WriteFileNowWork;
 import com.csy.test.commons.codegenerate.bean.CodeGenerateParams;
 
@@ -10,14 +7,15 @@ public class Test {
 	
 	public static void main(String[] args) {
 
-		Map<String, String> basePackageMap = new HashMap<String, String>();
-		basePackageMap.put("appr_approriate_record", "com.csy.test.commons");//表名-生成包目录
+		//Map<String, String> basePackageMap = new HashMap<String, String>();
+		//basePackageMap.put("appr_approriate_record", "com.csy.test.commons");//表名-生成包目录
 		CodeGenerateParams codeGenerateParams = CodeGenerateParams.getBuilder()
-				.basePackageMap(basePackageMap)
+				//.basePackageMap(basePackageMap)
 				.codeCacheBasePath("D:\\code_cache")
 				.author("csy")
 				.writeFileBase(new WriteFileNowWork())
-				.baseProjectPathMap("appr_approriate_record", "D:\\githubwordpacenew\\TestProject")
+				//.baseProjectPathMap("appr_approriate_record", "D:\\githubwordpacenew\\TestProject")
+				.baseProjectPathAndPackageMap("appr_approriate_record", "D:\\githubwordpacenew\\TestProject", "com.csy.test.commons")
 				.build();
 		
 		if (!codeGenerateParams.getIsBuild()) {

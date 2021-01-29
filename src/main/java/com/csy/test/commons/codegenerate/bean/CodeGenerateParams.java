@@ -243,6 +243,22 @@ public class CodeGenerateParams {
 		this.baseProjectPathMap.put(tableName.toLowerCase(), baseProjectPath);
 		return this;
 	}
+	
+	/**
+	 * 描述：设置tableName 对应的项目路径、包路径
+	 * <br>等于baseProjectPathMap、basePackageMap
+	 * @author csy 
+	 * @date 2021年1月29日 下午5:49:21
+	 * @param tableName 表名
+	 * @param baseProjectPath 目标项目路径 eg:D:xxx\Project
+	 * @param packageName     类路径           eg:com.xxx.test
+	 * @return CodeGenerateParams
+	 */
+	public CodeGenerateParams baseProjectPathAndPackageMap(String tableName , String baseProjectPath , String packageName) {
+		return this.basePackageMap(tableName , packageName)
+		           .baseProjectPathMap(tableName , baseProjectPath);
+				   
+	}
 		
 	/**
 	 * 
