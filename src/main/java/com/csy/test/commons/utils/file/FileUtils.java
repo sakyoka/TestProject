@@ -153,6 +153,66 @@ public class FileUtils {
 		return writeFile(file, contents, false);
 	}
 	
+	/**
+	 * 描述：复制文件夹、文件到目标目录
+	 * @author csy 
+	 * @date 2021年1月29日 下午1:59:43
+	 * @param inputPath 数据源
+	 * @param outPath   目标文件
+	 * @param showConsole   是否打印信息
+	 */
+	public static void copyTo(Path inputPath , Path outPath , Boolean showConsole){
+		
+		File dirFile = inputPath.toFile();
+		
+		if (!dirFile.exists()) {
+			return;
+		}
+
+		try {
+			Files.walkFileTree(inputPath, new SimpleFileVisitor<Path> (){
+				
+				@Override
+				public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                    Path targetPath = Paths.get(outPath.toString() + dir.toString().substring(inputPath.toString().length()));
+                    if (!Files.exists(targetPath)) {
+                    	if (showConsole){
+                    		System.out.println();
+                    		System.out.println("dir:" + dir + "===>>>" +targetPath);
+                    	}
+                        Files.createDirectory(targetPath);
+                    }
+					return FileVisitResult.CONTINUE;
+				}
+				
+				@Override
+				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+	                Path targetPath = Paths.get(outPath.toString() + file.toString().substring(inputPath.toString().length()));
+	                if (showConsole){
+		                System.out.println();
+		                System.out.println("file:" + file.toFile() + " ===>>> " + targetPath.toFile());	                	
+	                }
+					coppyTo(file.toFile() , targetPath.toFile());
+					return FileVisitResult.CONTINUE;
+				}
+				
+			});
+			
+		} catch (IOException e) {
+			throw new RuntimeException("复制文件夹，文件失败" , e);
+		}
+	}
+	
+	/**
+	 * 描述：复制文件夹、文件到目标目录
+	 * @author csy 
+	 * @date 2021年1月29日 下午1:59:43
+	 * @param inputPath 数据源
+	 * @param outPath   目标文件
+	 */
+	public static void copyTo(Path inputPath , Path outPath ){
+		copyTo(inputPath, outPath, true);
+	}
 
 	/**
 	 * 描述：内容写进文件

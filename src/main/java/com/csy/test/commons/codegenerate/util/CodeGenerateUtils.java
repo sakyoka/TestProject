@@ -85,6 +85,7 @@ public class CodeGenerateUtils {
 		});
 			
 		System.out.println("end generate code...");
+		System.out.println();
 	}
 
 	/**
@@ -94,19 +95,19 @@ public class CodeGenerateUtils {
 	 * @param codeGenerateParams
 	 */
 	private static void tranferFileToTarget(CodeGenerateParams codeGenerateParams){
-		System.out.println("starting to tranfer targetDIr");
+		System.out.println("starting to tranfer targetDir");
 		if (codeGenerateParams.getBaseProjectPathMap() != null){
 			//转移不一定要成功
 			TranferFileBase tranferFileBase = ClassUtils.newInstance(codeGenerateParams.getTranferFileBaseClass());
 			codeGenerateParams.getBasePathMap().forEach((k , v) -> {
 				try {
 					if (codeGenerateParams.getBaseProjectPathMap().get(k) != null)
-						tranferFileBase.tranfer(v , codeGenerateParams.getBaseProjectPathMap().get(k));
+						tranferFileBase.tranfer(v , codeGenerateParams.getBaseProjectPathMap().get(k) + File.separator + k.replace("_", ""));
 				} catch (Exception e) {
 					System.out.println(e);
 				}
 			});
 		}
-		System.out.println("end to tranfer targetDIr");	
+		System.out.println("end to tranfer targetDir");	
 	}
 }

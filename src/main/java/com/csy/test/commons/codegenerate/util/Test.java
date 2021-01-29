@@ -17,6 +17,7 @@ public class Test {
 				.codeCacheBasePath("D:\\code_cache")
 				.author("csy")
 				.writeFileBase(new WriteFileNowWork())
+				.baseProjectPathMap("appr_approriate_record", "D:\\code_cache")
 				.build();
 		
 		if (!codeGenerateParams.getIsBuild()) {
