@@ -30,23 +30,10 @@ public class CodeGenerateUtils {
 	 * @param codeGenerate 生成器
 	 */
 	public static void generate(CodeGenerateParams codeGenerateParams , CodeGenerateBase codeGenerate){
-		try {
-
-			excueteGenerate(codeGenerateParams , codeGenerate);
-			
-			tranferFileToTarget(codeGenerateParams);
-			
-		}catch (Exception e) {
-			String deleteDir = codeGenerateParams.getCodeCacheBasePath() + File.separator + codeGenerateParams.getUuidPath();
-			System.out.println("generate code fail" + " , and then delete(" + deleteDir + ")dir...");
-			System.out.println(e);
-			try {
-				FileUtils.deletes(deleteDir);
-			} catch (Exception e2) {
-				System.out.println("delete " + deleteDir + " fail: " + e2.getMessage());
-			}
-		} 
 		
+		excueteGenerate(codeGenerateParams , codeGenerate);
+		
+		tranferFileToTarget(codeGenerateParams);	
 	}
 	
 	/**
@@ -69,23 +56,34 @@ public class CodeGenerateUtils {
 	 * @param codeGenerate
 	 */
 	private static void excueteGenerate(CodeGenerateParams codeGenerateParams , CodeGenerateBase codeGenerate){
-		System.out.println("starting to generate code...");
-		codeGenerateParams.getBasePackageMap().forEach((k , v) -> {
-			
-			String basePath = codeGenerateParams.getBasePathMap().get(k) + StringUtils.lowerCase(k).replace("_", "");
-			codeGenerateParams.getBasePathMap().put(k, basePath);
-			DataMetaBase dataMetaBase = ClassUtils.newInstance(codeGenerateParams.getDataMetaBaseClass());
-			codeGenerate.preInit(dataMetaBase.tableName(k).initDataMetaBase())
-			            .generateBean()
-						.generateMapper()
-						.generateDao()
-						.generateService()
-						.generateServiceImpl()
-						.generateController();
-		});
-			
-		System.out.println("end generate code...");
-		System.out.println();
+		try {
+			System.out.println("starting to generate code...");
+			codeGenerateParams.getBasePackageMap().forEach((k , v) -> {
+				
+				String basePath = codeGenerateParams.getBasePathMap().get(k) + StringUtils.lowerCase(k).replace("_", "");
+				codeGenerateParams.getBasePathMap().put(k, basePath);
+				DataMetaBase dataMetaBase = ClassUtils.newInstance(codeGenerateParams.getDataMetaBaseClass());
+				codeGenerate.preInit(dataMetaBase.tableName(k).initDataMetaBase())
+				            .generateBean()
+							.generateMapper()
+							.generateDao()
+							.generateService()
+							.generateServiceImpl()
+							.generateController();
+			});
+				
+			System.out.println("end generate code...");
+			System.out.println();
+		}catch (Exception e) {
+			String deleteDir = codeGenerateParams.getCodeCacheBasePath() + File.separator + codeGenerateParams.getUuidPath();
+			System.out.println("generate code fail" + " , and then delete(" + deleteDir + ")dir...");
+			System.out.println(e);
+			try {
+				FileUtils.deletes(deleteDir);
+			} catch (Exception e2) {
+				System.out.println("delete " + deleteDir + " fail: " + e2.getMessage());
+			}
+		} 
 	}
 
 	/**
