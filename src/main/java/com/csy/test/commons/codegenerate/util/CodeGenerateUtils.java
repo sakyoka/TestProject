@@ -58,11 +58,12 @@ public class CodeGenerateUtils {
 	private static void excueteGenerate(CodeGenerateParams codeGenerateParams , CodeGenerateBase codeGenerate){
 		try {
 			System.out.println("starting to generate code...");
+			DataMetaBase dataMetaBase = ClassUtils.newInstance(codeGenerateParams.getDataMetaBaseClass());
 			codeGenerateParams.getBasePackageMap().forEach((k , v) -> {
 				
 				String basePath = codeGenerateParams.getBasePathMap().get(k) + StringUtils.lowerCase(k).replace("_", "");
 				codeGenerateParams.getBasePathMap().put(k, basePath);
-				DataMetaBase dataMetaBase = ClassUtils.newInstance(codeGenerateParams.getDataMetaBaseClass());
+				
 				codeGenerate.preInit(dataMetaBase.tableName(k).initDataMetaBase())
 				            .generateBean()
 							.generateMapper()

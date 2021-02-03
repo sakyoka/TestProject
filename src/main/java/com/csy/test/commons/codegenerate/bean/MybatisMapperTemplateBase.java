@@ -26,7 +26,7 @@ public class MybatisMapperTemplateBase {
 	@MapperTemplate(idName = "update" , tempName = "updateId" , methodType = 3 , desc = "update a record")
 	private String updateSql;
 	
-	@MapperTemplate(idName = "delete" , tempName = "deleteId" , methodType = 4 , desc = "update a record")
+	@MapperTemplate(idName = "delete" , tempName = "deleteId" , methodType = 4 , desc = "delete a record")
 	private String deleteSql;
 	
 	public MybatisMapperTemplateBase() {}
