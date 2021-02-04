@@ -19,6 +19,7 @@ import com.csy.test.commons.patch.cache.CompileRefSourcePathCache;
 import com.csy.test.commons.patch.constatns.PatchDefinedConstants;
 import com.csy.test.commons.patch.state.sourcepath.executor.SourcePathExecutor;
 import com.csy.test.commons.utils.ClassUtils;
+import com.csy.test.commons.utils.Objects;
 import com.csy.test.commons.utils.file.FileUtils;
 
 /**
@@ -66,7 +67,7 @@ public class PatchUtils {
         	
         	//执行打包
         	Class<? extends AbstractPackPatchFile> packPatchFileClass = patchInitParams.getPackPatchFileClazz();
-        	if (packPatchFileClass != null)
+        	if (Objects.notNull(packPatchFileClass))
         		ClassUtils.newInstance(packPatchFileClass).packFile(patchInitParams);
 		} finally {
 			CompileRefSourcePathCache.remove();
@@ -82,8 +83,8 @@ public class PatchUtils {
 	 * @return 源文件相对路径集合
 	 */
 	private static List<String> getSourceFilePaths(PatchInitParams patchInitParams){
-		Class<? extends AbstractPatchCommandExecutor> clazz = patchInitParams.getPatchCommandExecutorClazz();
-		AbstractPatchCommandExecutor abstractPatchCommandExecutor = (clazz == null) ? new DefaultPatchCommandExecutor() : ClassUtils.newInstance(clazz);
+		Class<? extends AbstractPatchCommandExecutor> cls = Objects.ifNullDefault(patchInitParams.getPatchCommandExecutorClazz(), DefaultPatchCommandExecutor.class);
+		AbstractPatchCommandExecutor abstractPatchCommandExecutor = ClassUtils.newInstance(cls);
 		abstractPatchCommandExecutor.patchInitParams(EntityUtils.deepCopy(patchInitParams)).execute();
         return abstractPatchCommandExecutor.getSourcePaths();
 	}
@@ -127,9 +128,9 @@ public class PatchUtils {
     		Files.createDirectories(Paths.get(cachePath));
     		
     		System.out.println("starting to copy compile file...");
-    		AbstractPatchGenerate abstractPachGenerate = ( patchInitParams.getPatchGenerateClazz() == null ? 
-    				                                               new DefaultPatchStandardGenerate() 
-    				                                               : ClassUtils.newInstance(patchInitParams.getPatchGenerateClazz()) );
+    		
+    		Class<? extends AbstractPatchGenerate> cls = Objects.ifNullDefault(patchInitParams.getPatchGenerateClazz(), DefaultPatchStandardGenerate.class);
+    		AbstractPatchGenerate abstractPachGenerate = ClassUtils.newInstance(cls);
     		abstractPachGenerate.compileFilePaths(compileFilePaths)
     		                    .patchInitParams(EntityUtils.deepCopy(patchInitParams))
 				    		    .foreach()

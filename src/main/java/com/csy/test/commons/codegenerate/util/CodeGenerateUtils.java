@@ -9,6 +9,7 @@ import com.csy.test.commons.codegenerate.base.defaults.DefaultCodeGenerate;
 import com.csy.test.commons.codegenerate.bean.CodeGenerateParams;
 import com.csy.test.commons.codegenerate.database.bean.base.DataMetaBase;
 import com.csy.test.commons.utils.ClassUtils;
+import com.csy.test.commons.utils.Objects;
 import com.csy.test.commons.utils.file.FileUtils;
 
 /**
@@ -95,12 +96,12 @@ public class CodeGenerateUtils {
 	 */
 	private static void tranferFileToTarget(CodeGenerateParams codeGenerateParams){
 		System.out.println("starting to tranfer targetDir");
-		if (codeGenerateParams.getBaseProjectPathMap() != null){
+		if (Objects.notNull(codeGenerateParams.getBaseProjectPathMap())){
 			//转移不一定要成功
 			TranferFileBase tranferFileBase = ClassUtils.newInstance(codeGenerateParams.getTranferFileBaseClass());
 			codeGenerateParams.getBasePathMap().forEach((k , v) -> {
 				try {
-					if (codeGenerateParams.getBaseProjectPathMap().get(k) != null)
+					if (Objects.notNull(codeGenerateParams.getBaseProjectPathMap().get(k)))
 						tranferFileBase.tranfer(codeGenerateParams , k , v);
 				} catch (Exception e) {
 					System.out.println(e);

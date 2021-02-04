@@ -13,6 +13,7 @@ import com.csy.test.commons.codegenerate.base.defaults.WriteFileGeneralDefault;
 import com.csy.test.commons.codegenerate.constants.ClassifyConstants;
 import com.csy.test.commons.codegenerate.database.bean.base.DataMetaBase;
 import com.csy.test.commons.codegenerate.database.bean.base.defaults.DataMetaJdbc;
+import com.csy.test.commons.utils.Objects;
 import com.csy.test.commons.utils.UUID;
 import com.csy.test.commons.valid.annotion.Valid;
 import com.csy.test.commons.valid.base.defaults.BlankValid;
@@ -80,7 +81,7 @@ public class CodeGenerateParams {
 	 * @return CodeGenerateParams
 	 */
 	public CodeGenerateParams basePackageMap(Map<String, String> basePackageMap) {
-		 if(this.basePackageMap == null)
+		 if(Objects.isNull(this.basePackageMap))
 			 this.basePackageMap = new HashMap<String, String>();
 		 basePackageMap.forEach((k , v) ->{
 			 this.basePackageMap(k , v);
@@ -98,7 +99,7 @@ public class CodeGenerateParams {
 	 * @return CodeGenerateParams
 	 */
 	public CodeGenerateParams basePackageMap(String tableName , String packageName) {
-		if (this.basePackageMap == null)
+		if (Objects.isNull(this.basePackageMap))
 			this.basePackageMap = new HashMap<String, String>();
 		
 		this.basePackageMap.put(tableName.toLowerCase() , packageName);
@@ -229,7 +230,7 @@ public class CodeGenerateParams {
 	 * @return CodeGenerateParams
 	 */
 	public CodeGenerateParams baseProjectPathMap(Map<String, String> baseProjectPathMap) {
-		 if(this.baseProjectPathMap == null)
+		 if(Objects.isNull(this.baseProjectPathMap))
 			 this.baseProjectPathMap = new HashMap<String, String>();
 		 
 		 baseProjectPathMap.forEach((k , v) ->{
@@ -248,7 +249,7 @@ public class CodeGenerateParams {
 	 * @return CodeGenerateParams
 	 */
 	public CodeGenerateParams baseProjectPathMap(String tableName , String baseProjectPath) {
-		if (this.baseProjectPathMap == null)
+		if (Objects.isNull(this.baseProjectPathMap))
 			this.baseProjectPathMap = new HashMap<String , String>();
 		
 		this.baseProjectPathMap.put(tableName.toLowerCase(), baseProjectPath);
@@ -286,7 +287,7 @@ public class CodeGenerateParams {
 			throw new RuntimeException(validResult.toString());
 		}
 		
-		if (this.uuidPath == null)
+		if (Objects.isNull(this.uuidPath))
 			this.uuidPath = UUID.getString();
 		
 		this.basePathMap = new HashMap<String , String>();
@@ -305,11 +306,11 @@ public class CodeGenerateParams {
 		
 		this.codeFilePaths = new ArrayList<String>();
 		
-		if (this.writeFileBase == null) this.writeFileBase = new WriteFileGeneralDefault();
+		if (Objects.isNull(this.writeFileBase)) this.writeFileBase = new WriteFileGeneralDefault();
 		
-		if (this.dataMetaBaseClass == null) this.dataMetaBaseClass = DataMetaJdbc.class;
+		if (Objects.isNull(this.dataMetaBaseClass)) this.dataMetaBaseClass = DataMetaJdbc.class;
 		
-		if (this.tranferFileBaseClass == null) this.tranferFileBaseClass = DefaultTranferFile.class;
+		if (Objects.isNull(this.tranferFileBaseClass)) this.tranferFileBaseClass = DefaultTranferFile.class;
 		
 		return this;
 	}

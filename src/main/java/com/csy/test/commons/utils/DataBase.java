@@ -62,17 +62,17 @@ public class DataBase {
 		private CloseObject() {}
 		
 		public CloseObject closeConnection(Connection connection) {
-			if (connection != null)try {connection.close();} catch (SQLException e) {}
+			if (Objects.notNull(connection))try {connection.close();} catch (SQLException e) {}
 			return this;
 		}
 		
 		public CloseObject closeStatment(Statement statement) {
-			if (statement != null) try {statement.close();} catch (SQLException e) {}
+			if (Objects.notNull(statement)) try {statement.close();} catch (SQLException e) {}
 			return this;
 		}
 		
 		public CloseObject closeResult(ResultSet rs) {
-			if (rs != null) try {rs.close();} catch (SQLException e) {}
+			if (Objects.notNull(rs)) try {rs.close();} catch (SQLException e) {}
 			return this;
 		}		
 	}
