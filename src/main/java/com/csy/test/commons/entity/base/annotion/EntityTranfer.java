@@ -17,6 +17,7 @@ public @interface EntityTranfer {
 	/**
 	 * 
 	 * 描述：提取对象里面字段名
+	 * <br> 空时候，取field.getName()
 	 * @author csy
 	 * @date 2021年1月23日 上午11:28:23
 	 * @return 字段名
@@ -25,6 +26,7 @@ public @interface EntityTranfer {
 
 	/**
 	 * 描述：转换器
+	 * <br> 值处理器，默认不处理
 	 * @author csy
 	 * @date 2021年1月23日 上午11:54:28
 	 * @return Class

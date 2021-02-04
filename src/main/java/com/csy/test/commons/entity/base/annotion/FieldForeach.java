@@ -11,7 +11,7 @@ import com.csy.test.commons.entity.base.defaults.DefaultFieldForEach;
 import com.csy.test.commons.entity.base.defaults.DefaultHeaderForEach;
 
 /**
- * foreach切换类
+ * foreach切换类，注解在类头部，可选，主要提供AbstractFieldForEach、AbstractFieldForEach
  * @author csy
  * @date 2020年6月24日
  */

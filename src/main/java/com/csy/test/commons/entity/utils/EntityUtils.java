@@ -29,6 +29,11 @@ public class EntityUtils {
 	/**
 	 * 
 	 * 描述：执行字段属性方法
+	 * <br>修正 entity 字段值，修改成理想值
+	 * <br> 1、 @FieldForeach  可选，没有注解在头部时候 默认DefaultHeaderForEach(头部遍历器)、DefaultFieldForEach(字段遍历器)
+	 * <br> 2、 @FieldProperty 注解在头部，对所有字段统一处理;注解在字段时候，只对该字段处理
+	 * <br> 3、 @FieldProperty 注解在头部 同时 @FieldProperty 注解在字段时候，注解在字段的会覆盖注解在头部的交集字段
+	 * <br> 对应字段需要实现AbstractFieldExecute类方法(正真修改逻辑)，默认DeafultFieldExecute不处理
 	 * @author csy
 	 * @date 2020 上午9:56:50
 	 * @param <T>
@@ -59,6 +64,7 @@ public class EntityUtils {
 	/**
 	 * 
 	 * 描述：sourceEntity To Class object
+	 * <br>sourceEntity field annotation @EntityTranfer
 	 * @author csy
 	 * @date 2021年1月23日 上午11:26:15
 	 * @param <T>

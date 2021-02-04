@@ -7,6 +7,13 @@ import com.csy.test.commons.entity.base.annotion.FieldProperty;
 import com.csy.test.commons.entity.cache.FieldExecutorCache;
 import com.csy.test.commons.entity.exception.EntityDealWithException;
 
+/**
+ * 
+ * 描述：字段遍历，针对FieldProperty注解在字段
+ * @author csy
+ * @date 2021年2月4日 上午10:39:44
+ * @param <T>
+ */
 public final class DefaultFieldForEach<T> extends AbstractFieldForEach<T>{
 
 	@Override
