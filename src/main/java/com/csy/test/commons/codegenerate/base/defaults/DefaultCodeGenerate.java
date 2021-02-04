@@ -243,36 +243,52 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
  			
 			String dataBaseField = StrUtil.toUnderlineCase(e.getFieldName());
  			
- 			getBuilder.append(dataBaseField).append(",");
+ 			getBuilder.append(LineConstants.WRAP)
+ 			.append(LineConstants.BLANK_SPACE_FOUR).append(LineConstants.BLANK_SPACE_FOUR).append(LineConstants.BLANK_SPACE_FOUR)
+ 			.append(dataBaseField).append(",");
  			
- 			dataBaseinsertBuilder.append(dataBaseField).append(",");
- 			javainsertBuilder.append("#{").append(e.getFieldName()).append("},");
+ 			dataBaseinsertBuilder.append(LineConstants.WRAP)
+				.append(LineConstants.BLANK_SPACE_FOUR).append(LineConstants.BLANK_SPACE_FOUR).append(LineConstants.BLANK_SPACE_FOUR)
+				.append(dataBaseField).append(",");
+ 			javainsertBuilder.append(LineConstants.WRAP)
+				.append(LineConstants.BLANK_SPACE_FOUR).append(LineConstants.BLANK_SPACE_FOUR).append(LineConstants.BLANK_SPACE_FOUR)
+				.append("#{").append(e.getFieldName()).append("},");
  			
  			if (e.getPrimaryKey()) {
  				primaryKey = dataBaseField;
  			}else {
- 				updateBuilder.append(dataBaseField).append(" = #{").append(e.getFieldName()).append("},");
+ 				updateBuilder.append(LineConstants.WRAP)
+				.append(LineConstants.BLANK_SPACE_FOUR).append(LineConstants.BLANK_SPACE_FOUR).append(LineConstants.BLANK_SPACE_FOUR)
+				.append(dataBaseField).append(" = #{").append(e.getFieldName()).append("},");
  			}
 		}
 		
 		dataBaseinsertBuilder.setLength(dataBaseinsertBuilder.length() - 1);
 		javainsertBuilder.setLength(javainsertBuilder.length() - 1);
-		dataBaseinsertBuilder.append(")");
+		dataBaseinsertBuilder.append(LineConstants.WRAP)
+			.append(LineConstants.BLANK_SPACE_FOUR).append(LineConstants.BLANK_SPACE_FOUR)
+			.append(")");
 		javainsertBuilder.append(")");
 		String insertSql = new StringBuilder("insert into ")
 								.append(tableMessage.getTableName())
 								.append(dataBaseinsertBuilder)
-								.append(" values")
+								.append(" values ")
 								.append(javainsertBuilder)
 								.toString();
 		StringBuilder whereSql = new StringBuilder().append(" where ").append(primaryKey).append(" = ").append("#{").append(StrUtil.toCamelCase(primaryKey)).append("}");
 		updateBuilder.setLength(updateBuilder.length() - 1);
-		String updateSql = updateBuilder.append(whereSql).toString();
+		String updateSql = updateBuilder.append(LineConstants.WRAP)
+				.append(LineConstants.BLANK_SPACE_FOUR).append(LineConstants.BLANK_SPACE_FOUR)
+				.append(whereSql).toString();
 		
 		getBuilder.setLength(getBuilder.length() - 1);
- 		getBuilder.append(" from ").append(tableMessage.getTableName());
+ 		getBuilder.append(LineConstants.WRAP)
+			.append(LineConstants.BLANK_SPACE_FOUR).append(LineConstants.BLANK_SPACE_FOUR)
+			.append(" from ").append(tableMessage.getTableName());
  		String findListSql = getBuilder.toString();
- 		String getOneSql = getBuilder.append(whereSql).toString();
+ 		String getOneSql = getBuilder.append(LineConstants.WRAP)
+ 				.append(LineConstants.BLANK_SPACE_FOUR).append(LineConstants.BLANK_SPACE_FOUR)
+ 				.append(whereSql).toString();
  		
  		String deleteSql = "delete from "+ tableMessage.getTableName() + whereSql.toString();
  		
