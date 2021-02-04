@@ -224,7 +224,6 @@ public class ZipOperate {
 	 * @param path
 	 * @throws IOException
 	 */
-	@SuppressWarnings("resource")
 	private void compressZip(ZipOutputStream zipOutputStream , WritableByteChannel writableByteChannel, File file , String path) throws IOException{
 		FileChannel fileChannel = null;
 		try {

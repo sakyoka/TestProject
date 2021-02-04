@@ -19,11 +19,15 @@ public class Test {
 	public static void main(String[] args) {
 		List<String> projectList = new ArrayList<String>();
 	    //projectList.add("ApprSynthesis");
-		//projectList.add("ApprControl");
-		projectList.add("ApprCountDown");
-		//projectList.add("ApprSupport");
-		//projectList.add(PatchInitConstants.DEFAULT_PROJECT_NAME);
+	    projectList.add("ApprControl");
+		//projectList.add("ApprBase");
+	    //projectList.add("apprInsuranceVerification");
+		//projectList.add("ApprCountDown");
+		projectList.add("ApprSupport");
+	    //projectList.add(PatchInitConstants.DEFAULT_PROJECT_NAME);
 		//projectList.add("ApprEfficiencyInterface");
+		//projectList.add("ApprWrit");
+		//projectList.add("ApprCountDown");
 		PatchInitParams pachInitParams =  PatchInitParams.getBuilder()
 				.sourcePathPrefix(PatchInitConstants.DEFAULT_SOURCE_PATH_PREFIX)//工作空间根目录
 				.compilePathPrefix(PatchInitConstants.DEFAULT_WORK_PATH_PREFIX)//编译空间根目录

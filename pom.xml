@@ -51,26 +51,6 @@
 		   <scope>test</scope>
 		</dependency>
 		<!-- springboot end -->        
-        
-        <!-- view start -->
-		<!-- 支持jsp -->
-		<dependency>
-		    <groupId>org.apache.tomcat.embed</groupId>
-		    <artifactId>tomcat-embed-jasper</artifactId>
-		    <scope>provided</scope>
-		</dependency>
-		<!-- jstl -->
-		<dependency>
-			<groupId>jstl</groupId>
-			<artifactId>jstl</artifactId>
-			<version>1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>taglibs</groupId>
-			<artifactId>standard</artifactId>
-			<version>1.1.2</version>
-		</dependency>
-         <!-- view end -->
                 	
 		<!-- mybatis start  -->
 		<!-- mybatis -->
@@ -126,46 +106,10 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.11</version>
-		</dependency>
-		<!-- zookeeper -->
-		<dependency>
-			<groupId>org.apache.zookeeper</groupId>
-			<artifactId>zookeeper</artifactId>
-			<version>3.4.6</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>log4j</groupId>
-					<artifactId>log4j</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<!-- redis -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-redis</artifactId>
-		</dependency>
-	    <dependency>
-		   <groupId>org.springframework.boot</groupId>
-		   <artifactId>spring-boot-starter-redis</artifactId>
-		    <version>1.4.7.RELEASE</version>
-	    </dependency>
-	    <!-- ehcache -->
-		<dependency>
-		   <groupId>net.sf.ehcache</groupId>
-		  <artifactId>ehcache</artifactId>
-		</dependency>	    
+		</dependency> 
 		<!-- database end -->
 		
 		<!-- utils start -->
-        <!-- http -->
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-		</dependency>
 		<!-- json -->
 		<dependency>
 		    <groupId>com.alibaba</groupId>
@@ -183,62 +127,13 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.7</version>
 		</dependency>
-		<!-- oauth2 server-->
-	    <dependency>  
-		      <groupId>org.apache.oltu.oauth2</groupId>  
-		      <artifactId>org.apache.oltu.oauth2.authzserver</artifactId>  
-		      <version>0.31</version>  
-	    </dependency>  
-	    <dependency>  
-		      <groupId>org.apache.oltu.oauth2</groupId>  
-		      <artifactId>org.apache.oltu.oauth2.resourceserver</artifactId>  
-		      <version>0.31</version>  
-	    </dependency>
-	    <!-- shiro -->
-        <dependency>
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-spring</artifactId>
-            <version>1.4.0</version>
-        </dependency>
-        <!-- 二维码 -->
+		
 	    <dependency>
-		    <groupId>com.google.zxing</groupId> 
-		    <artifactId>core</artifactId> 
-		    <version>3.3.0</version> 
-	    </dependency>
-	    <dependency>
-		    <groupId>com.google.zxing</groupId> 
-		    <artifactId>javase</artifactId> 
-		    <version>3.3.0</version> 
-	    </dependency>	
-		<!--lucene依赖包 start -->
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-core</artifactId>
-			<version>${lucene.version}</version>
+		    <groupId>commons-collections</groupId>
+		    <artifactId>commons-collections</artifactId>
+		    <version>3.2.2</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-analyzers-common</artifactId>
-			<version>${lucene.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-queryparser</artifactId>
-			<version>${lucene.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-highlighter</artifactId>
-			<version>${lucene.version}</version>
-		</dependency>
-		<!-- solrj依赖 -->
-		<dependency>
-			<groupId>org.apache.solr</groupId>
-			<artifactId>solr-solrj</artifactId>
-			<version>${solrj.version}</version>
-		</dependency>
-	    <!--lucene依赖包 end -->
+
 		<!-- 热部署 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
