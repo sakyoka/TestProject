@@ -19,7 +19,7 @@ public class Objects {
 	 * @return T
 	 */
 	public static <T> T ifNullDefault(T o , T defaultObject){
-		return o == null ? o : defaultObject;
+		return o == null ? defaultObject : o;
 	}
 	
 	/**
