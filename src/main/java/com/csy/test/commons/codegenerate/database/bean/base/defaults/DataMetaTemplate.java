@@ -9,6 +9,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import com.csy.test.commons.codegenerate.database.bean.ColumnMetaData;
 import com.csy.test.commons.codegenerate.database.bean.base.DataMetaBase;
+import com.csy.test.commons.codegenerate.database.bean.base.TableContent;
 import com.csy.test.commons.codegenerate.database.bean.base.TableMessage;
 import com.csy.test.commons.utils.DataBase;
 
@@ -37,24 +38,12 @@ public class DataMetaTemplate implements DataMetaBase{
 	
 	@Override
 	public DataMetaBase initDataMetaBase() {
-		
-//		SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(this.sql);
-//		int columnCount;
-//		SqlRowSetMetaData sqlRowSetMetaData = sqlRowSet.getMetaData();
-//		columnCount = sqlRowSetMetaData.getColumnCount();
-//		ColumnMetaData columnMetaData = null;
-//		List<ColumnMetaData> columnMetaDatas = new ArrayList<ColumnMetaData>();
-//		for (int i = 1; i <= columnCount; i++) {
-//			columnMetaData = new ColumnMetaData();
-//			columnMetaData.setColumnName(sqlRowSetMetaData.getColumnName(i));
-//			columnMetaData.setColumnType(sqlRowSetMetaData.getColumnType(i));
-//			columnMetaData.setColumnTypeName(sqlRowSetMetaData.getColumnTypeName(i));
-//		    columnMetaDatas.add(columnMetaData);
-//		}
-//		this.columnMetaDatas = columnMetaDatas;
-		
 		try (Connection conn = this.jdbcTemplate.getDataSource().getConnection()){
-			this.columnMetaDatas =  defaultColumnMetaDatas(conn , tableName , this.tableMessage);
+			TableContent tableContent =  defaultColumnMetaDatas(conn , tableName);
+			
+			this.tableMessage = tableContent.getTableMessage();
+			
+			this.columnMetaDatas = tableContent.getColumnMetaDatas();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}

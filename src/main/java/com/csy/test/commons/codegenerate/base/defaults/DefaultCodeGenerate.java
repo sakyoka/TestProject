@@ -22,6 +22,7 @@ import com.csy.test.commons.codegenerate.database.bean.base.DataMetaBase;
 import com.csy.test.commons.codegenerate.database.bean.base.TableMessage;
 import com.csy.test.commons.codegenerate.database.util.DataMetaUtils;
 import com.csy.test.commons.codegenerate.mappertemplate.MapperTemplateMessage;
+import com.csy.test.commons.utils.Objects;
 import com.csy.test.commons.utils.StrUtil;
 import com.csy.test.commons.utils.TemplateUtils;
 
@@ -466,7 +467,7 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 	 * @date 2021年1月24日 下午2:11:21
 	 */
 	private void preAssert() {
-		if (this.dataMetaBase == null) throw new RuntimeException("dataMetaBase is not allow null");
+		Objects.notNullAssert(this.dataMetaBase, "dataMetaBase is not allow null");
 	}
 	
 	/**

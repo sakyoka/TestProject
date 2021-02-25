@@ -10,6 +10,7 @@ import java.util.List;
 import com.csy.test.commons.codegenerate.constants.TypeNameDicConstants;
 import com.csy.test.commons.codegenerate.database.bean.ColumnMetaData;
 import com.csy.test.commons.utils.DataBase;
+import com.csy.test.commons.utils.Objects;
 
 /**
  * 
@@ -65,10 +66,10 @@ public interface DataMetaBase {
 	 * @return
 	 * @throws SQLException 
 	 */
-	default List<ColumnMetaData> defaultColumnMetaDatas(Connection conn , String tableName , TableMessage tableMessage) throws SQLException {
-		
-		if (conn == null) throw new RuntimeException("数据库连接对象不能为空");
-		if (tableName == null) throw new RuntimeException("表名不能为空");
+	default TableContent defaultColumnMetaDatas(Connection conn , String tableName) throws SQLException {
+
+		Objects.notNullAssert(conn , "数据库连接对象不能为空");
+		Objects.notNullAssert(tableName , "表名不能为空");
 		
 		DatabaseMetaData databaseMetaData = null;
 		String[] types = { "TABLE" };
@@ -79,6 +80,7 @@ public interface DataMetaBase {
 			databaseMetaData = conn.getMetaData();
 			rs = databaseMetaData.getTables(null, null , tableName.toUpperCase() , types);
 			List<ColumnMetaData> columnMetaDatas = new ArrayList<ColumnMetaData>();
+			TableMessage tableMessage = null;
 			while (rs.next()) {
 				if(rs.getString("TABLE_NAME").equalsIgnoreCase(tableName)){
 					primaryRs = databaseMetaData.getPrimaryKeys(null, "%", rs.getString("TABLE_NAME"));
@@ -102,9 +104,9 @@ public interface DataMetaBase {
 						columnMetaData.setPrimaryKey(resultSet.getString("COLUMN_NAME").equals(primaryKey));
 						columnMetaDatas.add(columnMetaData);
 					}
-					tableMessage = tableMessage == null ? new TableMessage() : tableMessage;
+					tableMessage = new TableMessage();
 					tableMessage.setTableName(tableName);
-					tableMessage.setRemarks(remarks == null ? "" : remarks);
+					tableMessage.setRemarks(Objects.ifNullDefault(remarks, ""));
 					break;
 				}
 			}
@@ -112,7 +114,7 @@ public interface DataMetaBase {
 			if (columnMetaDatas.isEmpty()) 
 				throw new RuntimeException("not found table " + tableName + "message");
 			
-			return columnMetaDatas;
+			return new TableContent(tableMessage , columnMetaDatas);
 		}finally {
 			DataBase.getCloseObject()
 			                    .closeResult(rs)

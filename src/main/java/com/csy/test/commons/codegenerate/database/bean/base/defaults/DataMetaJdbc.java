@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.csy.test.commons.codegenerate.database.bean.ColumnMetaData;
 import com.csy.test.commons.codegenerate.database.bean.base.DataMetaBase;
+import com.csy.test.commons.codegenerate.database.bean.base.TableContent;
 import com.csy.test.commons.codegenerate.database.bean.base.TableMessage;
 import com.csy.test.commons.utils.DataBase;
 
@@ -31,8 +32,11 @@ public class DataMetaJdbc implements DataMetaBase{
 	@Override
 	public DataMetaBase initDataMetaBase() {
 		try (Connection conn = DataBase.getConnection()){
+			TableContent tableContent =  defaultColumnMetaDatas(conn , tableName);
 			
-			this.columnMetaDatas = defaultColumnMetaDatas(conn , tableName , this.tableMessage);
+			this.tableMessage = tableContent.getTableMessage();
+			
+			this.columnMetaDatas = tableContent.getColumnMetaDatas();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}			
