@@ -195,7 +195,8 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 		
 		this.beanFieldMessages.forEach((e) -> {
 			stringBuilder.append(LineConstants.BLANK_SPACE_FOUR)
-			             .append("private ").append(e.getFieldType()).append(" ").append(e.getFieldName()).append(";").append("//").append(e.getRemarks())
+			             .append("private ").append(e.getFieldType()).append(" ").append(e.getFieldName()).append(";")
+			             .append("//").append(StrUtil.removeAllLineBreaks(e.getRemarks()))
 			             .append(LineConstants.WRAP).append(LineConstants.WRAP);
 		}); 
 		
@@ -220,6 +221,7 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 			             .append(LineConstants.WRAP)
 			             .append(LineConstants.BLANK_SPACE_FOUR)
 			             .append("}")
+			             .append(LineConstants.WRAP)
 			             .append(LineConstants.WRAP);
 		}); 
 		stringBuilder.append("}");
