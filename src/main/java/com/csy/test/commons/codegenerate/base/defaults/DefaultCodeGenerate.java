@@ -1,16 +1,14 @@
 package com.csy.test.commons.codegenerate.base.defaults;
 
 import java.lang.reflect.Field;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
-
 import com.csy.test.commons.codegenerate.annotation.MapperTemplate;
 import com.csy.test.commons.codegenerate.base.CodeGenerateBase;
+import com.csy.test.commons.codegenerate.base.bean.CodeGenerateBaseInitParams;
+import com.csy.test.commons.codegenerate.base.utils.NoteStringUitls;
 import com.csy.test.commons.codegenerate.bean.BeanFieldMessage;
 import com.csy.test.commons.codegenerate.bean.CodeGenerateParams;
 import com.csy.test.commons.codegenerate.bean.MybatisMapperTemplateBase;
@@ -38,33 +36,13 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 	
 	private DataMetaBase dataMetaBase;
 	
-	private String daoPath;
-	
-	private String beanPath;
-	
-	private String xmlPath;
-	
-	private String servicePath;
-	
-	private String serviceImplPath;
-	
-	private String controllerPath;
-	
 	private String beanName;
 	
 	private String tableName;
 	
-	private String fullDaoName;
-	
-	private String fullBeanName;
-
-	private String fullServiceName;
-	
-	private String fullServiceImplName;
-	
-	private String fullControllerName;
-	
 	private List<BeanFieldMessage> beanFieldMessages;
+	
+	private CodeGenerateBaseInitParams codeGenerateBaseInitParams;
 	
 	public DefaultCodeGenerate(CodeGenerateParams codeGenerateParams) {
 		this.codeGenerateParams = codeGenerateParams;
@@ -75,30 +53,12 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 		
 		this.dataMetaBase = dataMetaBase;
 		
-		this.tableName = dataMetaBase.getTableMessage().getTableName();
+		this.codeGenerateBaseInitParams = this.initCodeGenerateBaseInitParams(this.codeGenerateParams, dataMetaBase);
 		
-		this.beanName = StrUtil.upperFirst(StrUtil.toCamelCase(this.tableName));
+		this.tableName = this.codeGenerateBaseInitParams.getTableName();
+		this.beanName = this.codeGenerateBaseInitParams.getBeanName();
 		
-		String basePackage = this.codeGenerateParams.getBasePackageMap().get(this.tableName); 		
-		String prePath = basePackage + "." + StringUtils.lowerCase(tableName.replace("_", "")) + ".";
-		this.daoPath = prePath + ClassifyConstants.DAO; 
-		this.fullDaoName = this.beanName + codeGenerateParams.getFileSuffixNameMap().get(ClassifyConstants.DAO);
-		
- 		this.beanPath = prePath + ClassifyConstants.BEAN;
- 		this.fullBeanName = this.beanName + codeGenerateParams.getFileSuffixNameMap().get(ClassifyConstants.BEAN);
- 		
- 		this.xmlPath = prePath + ClassifyConstants.DAO + "." + ClassifyConstants.XML;
- 		
- 		this.servicePath = prePath + ClassifyConstants.SERVICE;
- 		this.fullServiceName = this.beanName + codeGenerateParams.getFileSuffixNameMap().get(ClassifyConstants.SERVICE);
- 		
-		this.serviceImplPath = prePath + ClassifyConstants.SERVICE + "." + ClassifyConstants.SERVICE_IMPL;
-		this.fullServiceImplName = this.beanName + codeGenerateParams.getFileSuffixNameMap().get(ClassifyConstants.SERVICE_IMPL);
-		
-		this.controllerPath =  prePath + ClassifyConstants.CONTROLLER;
-		this.fullControllerName = this.beanName + codeGenerateParams.getFileSuffixNameMap().get(ClassifyConstants.CONTROLLER);
-		
-		this.beanFieldMessages = DataMetaUtils.tranferToBeanFields(dataMetaBase.getColumnMetaDatas());
+        this.beanFieldMessages = DataMetaUtils.tranferToBeanFields(dataMetaBase.getColumnMetaDatas());
  		return this;
 	}
 	
@@ -108,7 +68,7 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 		this.preAssert();
 		
 		String contents = this.getBeanContents();
-		System.out.println("execuete generateBean starting to create file:" + this.beanPath);
+		System.out.println("execuete generateBean starting to create file:" + this.codeGenerateBaseInitParams.getBeanPath());
 		codeGenerateParams.getWriteFileBase().write(codeGenerateParams , this.tableName , contents , FileSuffixEnum.BEAN);
 		System.out.println();
 		return this;
@@ -120,7 +80,7 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 		this.preAssert();
 		
 		String contents = this.getMapperContents();
-		System.out.println("execuete generateMapper starting to create file:" + this.xmlPath);
+		System.out.println("execuete generateMapper starting to create file:" + this.codeGenerateBaseInitParams.getXmlPath());
 		codeGenerateParams.getWriteFileBase().write(codeGenerateParams , this.tableName , contents , FileSuffixEnum.MAPPER);
 		System.out.println();
 		return this;
@@ -132,7 +92,7 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 		this.preAssert();
 		
 		String contents = this.getDaoContents();
-		System.out.println("execuete generateDao starting to create file:" + this.daoPath);
+		System.out.println("execuete generateDao starting to create file:" + this.codeGenerateBaseInitParams.getDaoPath());
 		codeGenerateParams.getWriteFileBase().write(codeGenerateParams , this.tableName , contents , FileSuffixEnum.DAO);
 		System.out.println();
 		return this;
@@ -144,7 +104,7 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 		this.preAssert();
 		
 		String contents = this.getServiceContents();
-		System.out.println("execuete generateService starting to create file:" + this.servicePath);
+		System.out.println("execuete generateService starting to create file:" + this.codeGenerateBaseInitParams.getServicePath());
 		codeGenerateParams.getWriteFileBase().write(codeGenerateParams , this.tableName , contents , FileSuffixEnum.SERVICE);
 		System.out.println();
 		return this;
@@ -157,7 +117,7 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 		this.preAssert();
 		
 		String contents = this.getServiceImplContents();
-		System.out.println("execuete generateServiceImpl starting to create file:" + this.serviceImplPath);
+		System.out.println("execuete generateServiceImpl starting to create file:" + this.codeGenerateBaseInitParams.getServiceImplPath());
 		codeGenerateParams.getWriteFileBase().write(codeGenerateParams , this.tableName , contents , FileSuffixEnum.SERVICE_IMPL);
 		System.out.println();
 		return this;
@@ -169,7 +129,7 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 		this.preAssert();
 		
 		String contents = this.getControllerContents();
-		System.out.println("execuete generateController starting to create file:" + this.controllerPath);
+		System.out.println("execuete generateController starting to create file:" + this.codeGenerateBaseInitParams.getControllerPath());
 		codeGenerateParams.getWriteFileBase().write(codeGenerateParams , this.tableName , contents , FileSuffixEnum.CONTRLLER);
 		System.out.println();
 		return this;
@@ -183,14 +143,16 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 	 * @return bean内容
 	 */
 	private String getBeanContents() {
+		String beanPath = this.codeGenerateBaseInitParams.getBeanPath();
+		String fullBeanName = this.codeGenerateBaseInitParams.getFullBeanName();
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder
-			.append("package ").append(this.beanPath).append(";")
+			.append("package ").append(beanPath).append(";")
 			.append(LineConstants.WRAP).append(LineConstants.WRAP)
 		    .append("import java.util.*;")
 		    .append(LineConstants.WRAP).append(LineConstants.WRAP);
-		appendClassNote(stringBuilder , dataMetaBase.getTableMessage().getRemarks() + "实体类")
-			.append("public class ").append(this.fullBeanName)
+		NoteStringUitls.appendClassNote(stringBuilder , codeGenerateParams.getAuthor(), dataMetaBase.getTableMessage().getRemarks() + "实体类")
+			.append("public class ").append(fullBeanName)
 			.append(" {").append(LineConstants.WRAP).append(LineConstants.WRAP);
 		
 		this.beanFieldMessages.forEach((e) -> {
@@ -295,8 +257,8 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
  		
  		String deleteSql = "delete from "+ tableMessage.getTableName() + whereSql.toString();
  		
- 		String daoPath = this.daoPath + "." + this.fullDaoName;
- 		String beanPath = this.beanPath + "." + this.fullBeanName;
+ 		String daoPath = this.codeGenerateBaseInitParams.getDaoPath() + "." + this.codeGenerateBaseInitParams.getFullDaoName();
+ 		String beanPath = this.codeGenerateBaseInitParams.getBeanPath() + "." + this.codeGenerateBaseInitParams.getFullBeanName();
  		MybatisMapperTemplateBase templateBase = new MybatisMapperTemplateBase(daoPath , beanPath , findListSql , getOneSql , insertSql , updateSql ,deleteSql);
 		String templateContents = MapperTemplateMessage.getTemplateContents();
 		String content = TemplateUtils.fillTemplate(MapperTemplateMessage.getTemplateContentsMap(templateBase), templateContents);
@@ -313,14 +275,14 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 	private String getDaoContents() {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder
-			.append("package ").append(this.daoPath).append(";")
+			.append("package ").append(this.codeGenerateBaseInitParams.getDaoPath()).append(";")
 			.append(LineConstants.WRAP).append(LineConstants.WRAP)
 		    .append("import java.util.*;")
 		    .append(LineConstants.WRAP)
-			.append("import ").append(this.beanPath).append(".").append(this.fullBeanName).append(";")
+			.append("import ").append(this.codeGenerateBaseInitParams.getBeanPath()).append(".").append(this.codeGenerateBaseInitParams.getFullBeanName()).append(";")
 			.append(LineConstants.WRAP)
 			.append(LineConstants.WRAP);
-			appendClassNote(stringBuilder, dataMetaBase.getTableMessage().getRemarks() + "dao")
+		NoteStringUitls.appendClassNote(stringBuilder , codeGenerateParams.getAuthor() , dataMetaBase.getTableMessage().getRemarks() + "dao")
 			.append("public interface ").append(this.beanName).append(this.codeGenerateParams.getFileSuffixNameMap().get(ClassifyConstants.DAO)).append(" {")
 			.append(LineConstants.WRAP).append(LineConstants.WRAP);
 
@@ -344,7 +306,7 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 				params.clear();
 				if (MethodTypeEnum.FIND_LIST.equalsType(mapperTemplate.methodType())) {
 					params.put(StrUtil.lowerFirst(beanName), null);
-					appendMethodNote(stringBuilder , mapperTemplate.desc() , params , "List<"+ beanName +">" );
+					NoteStringUitls.appendMethodNote(stringBuilder , codeGenerateParams.getAuthor(), mapperTemplate.desc() , params , "List<"+ beanName +">" );
 					stringBuilder.append(LineConstants.BLANK_SPACE_FOUR)
 					             .append("List<").append(beanName).append("> ").append(mapperTemplate.idName()).append("(")
 					             .append(beanName).append(" ").append(StrUtil.lowerFirst(beanName)).append(");")
@@ -353,7 +315,7 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 				
 				if (MethodTypeEnum.GET_ONE.equalsType(mapperTemplate.methodType())) {
 					params.put(primaryKey, null);
-					appendMethodNote(stringBuilder , mapperTemplate.desc() , params , beanName);
+					NoteStringUitls.appendMethodNote(stringBuilder , codeGenerateParams.getAuthor(), mapperTemplate.desc() , params , beanName);
 					stringBuilder.append(LineConstants.BLANK_SPACE_FOUR)
 					             .append(beanName).append(" ").append(mapperTemplate.idName()).append("(")
 					             .append(fieldType).append(" ").append(primaryKey).append(");")
@@ -362,7 +324,7 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 				
 				if (MethodTypeEnum.INSERT.equalsType(mapperTemplate.methodType())) {
 					params.put(StrUtil.lowerFirst(beanName), null);
-					appendMethodNote(stringBuilder , mapperTemplate.desc() , params , "int");
+					NoteStringUitls.appendMethodNote(stringBuilder , codeGenerateParams.getAuthor(), mapperTemplate.desc() , params , "int");
 					stringBuilder.append(LineConstants.BLANK_SPACE_FOUR)
 					             .append("int ").append(mapperTemplate.idName()).append("(")
 					             .append(beanName).append(" ").append(StrUtil.lowerFirst(beanName)).append(");")
@@ -371,7 +333,7 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 				
 				if (MethodTypeEnum.UPDATE.equalsType(mapperTemplate.methodType())) {
 					params.put(StrUtil.lowerFirst(beanName), null);
-					appendMethodNote(stringBuilder , mapperTemplate.desc() , params , "int");
+					NoteStringUitls.appendMethodNote(stringBuilder , codeGenerateParams.getAuthor(), mapperTemplate.desc() , params , "int");
 					stringBuilder.append(LineConstants.BLANK_SPACE_FOUR)
 					             .append("int ").append(mapperTemplate.idName()).append("(")
 					             .append(beanName).append(" ").append(StrUtil.lowerFirst(beanName)).append(");")
@@ -380,7 +342,7 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 				
 				if (MethodTypeEnum.DELETE.equalsType(mapperTemplate.methodType())) {
 					params.put(primaryKey , null);
-					appendMethodNote(stringBuilder , mapperTemplate.desc() , params , "int");
+					NoteStringUitls.appendMethodNote(stringBuilder , codeGenerateParams.getAuthor(), mapperTemplate.desc() , params , "int");
 					stringBuilder.append(LineConstants.BLANK_SPACE_FOUR)
 					             .append("int ").append(mapperTemplate.idName()).append("(")
 					             .append(fieldType).append(" ").append(primaryKey).append(");")
@@ -403,16 +365,16 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 	private String getServiceImplContents() {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder
-			.append("package ").append(this.serviceImplPath).append(";")
+			.append("package ").append(this.codeGenerateBaseInitParams.getServiceImplPath()).append(";")
 			.append(LineConstants.WRAP)
 			.append(LineConstants.WRAP)
-			.append("import ").append(this.servicePath).append(".").append(this.fullServiceName).append(";")
+			.append("import ").append(this.codeGenerateBaseInitParams.getServicePath()).append(".").append(this.codeGenerateBaseInitParams.getFullServiceName()).append(";")
 			//.append("import ").append(this.beanPath).append(";")
 			.append(LineConstants.WRAP)
 			.append(LineConstants.WRAP);
-		appendClassNote(stringBuilder , dataMetaBase.getTableMessage().getRemarks() + "业务实现类")
-			.append("public class ").append(this.fullServiceImplName)
-			.append(" implements ").append(this.fullServiceName)
+		NoteStringUitls.appendClassNote(stringBuilder , codeGenerateParams.getAuthor(), dataMetaBase.getTableMessage().getRemarks() + "业务实现类")
+			.append("public class ").append(this.codeGenerateBaseInitParams.getFullServiceImplName())
+			.append(" implements ").append(this.codeGenerateBaseInitParams.getFullServiceName())
 			.append(" {")
 			.append(LineConstants.WRAP).append(LineConstants.WRAP);
 
@@ -430,11 +392,11 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 	private String getServiceContents() {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder
-			.append("package ").append(this.servicePath).append(";")
+			.append("package ").append(this.codeGenerateBaseInitParams.getServicePath()).append(";")
 			.append(LineConstants.WRAP)
 			.append(LineConstants.WRAP);
-		appendClassNote(stringBuilder , dataMetaBase.getTableMessage().getRemarks() + "业务接口")
-			.append("public interface ").append(this.fullServiceName).append(" {")
+		NoteStringUitls.appendClassNote(stringBuilder , codeGenerateParams.getAuthor(), dataMetaBase.getTableMessage().getRemarks() + "业务接口")
+			.append("public interface ").append(this.codeGenerateBaseInitParams.getFullServiceName()).append(" {")
 			.append(LineConstants.WRAP).append(LineConstants.WRAP);
 
 		stringBuilder.append("}");
@@ -451,11 +413,11 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 	private String getControllerContents() {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder
-			.append("package ").append(this.controllerPath).append(";")
+			.append("package ").append(this.codeGenerateBaseInitParams.getControllerPath()).append(";")
 			.append(LineConstants.WRAP)
 			.append(LineConstants.WRAP);
-		appendClassNote(stringBuilder , dataMetaBase.getTableMessage().getRemarks() + "控制层")
-			.append("public class ").append(this.fullControllerName).append(" {")
+		NoteStringUitls.appendClassNote(stringBuilder , codeGenerateParams.getAuthor() , dataMetaBase.getTableMessage().getRemarks() + "控制层")
+			.append("public class ").append(this.codeGenerateBaseInitParams.getFullControllerName()).append(" {")
 			.append(LineConstants.WRAP).append(LineConstants.WRAP);
 
 		stringBuilder.append("}");
@@ -469,57 +431,9 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 	 * @date 2021年1月24日 下午2:11:21
 	 */
 	private void preAssert() {
-		Objects.notNullAssert(this.dataMetaBase, "dataMetaBase is not allow null");
-	}
-	
-	/**
-	 * 描述：类注释
-	 * @author csy 
-	 * @date 2021年1月29日 下午3:22:01
-	 * @param stringBuilder
-	 * @param desc 描述
-	 * @return StringBuilder
-	 */
-	private StringBuilder appendClassNote(StringBuilder stringBuilder , String desc) {
-		stringBuilder.append(LineConstants.WRAP)
-		             .append("/**").append(LineConstants.WRAP)
-		             .append(" * 描述：").append(desc == null ? "" : desc).append(LineConstants.WRAP)
-		             .append(" * @author ").append(codeGenerateParams.getAuthor()).append(LineConstants.WRAP)
-		             .append(" * @date ").append(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss")).append(LineConstants.WRAP)
-		             .append(" */").append(LineConstants.WRAP);
-		return stringBuilder;
-	}
-	
-	/**
-	 * 描述：方法注释
-	 * @author csy 
-	 * @date 2021年1月29日 下午3:22:12
-	 * @param stringBuilder
-	 * @param desc 描述
-	 * @param params 参数集合
-	 * @param returnParam 返回值
-	 * @return StringBuilder
-	 */
-	private StringBuilder appendMethodNote(StringBuilder stringBuilder , String desc , Map<String, String> params , String returnParam) {
-		stringBuilder.append(LineConstants.WRAP)
-		             .append(LineConstants.BLANK_SPACE_FOUR)
-		             .append("/**").append(LineConstants.WRAP).append(LineConstants.BLANK_SPACE_FOUR)
-		             .append(" * 描述：").append(desc == null ? "" : desc).append(LineConstants.WRAP).append(LineConstants.BLANK_SPACE_FOUR)
-		             .append(" * @author ").append(codeGenerateParams.getAuthor()).append(LineConstants.WRAP).append(LineConstants.BLANK_SPACE_FOUR)
-		             .append(" * @date ").append(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss")).append(LineConstants.WRAP).append(LineConstants.BLANK_SPACE_FOUR);
 		
-		if (params != null){
-			params.forEach((k , v) -> {
-				if (k != null)
-				    stringBuilder
-				     .append(" * @param ").append(k).append(" ").append(v != null ? v : "").append(LineConstants.WRAP).append(LineConstants.BLANK_SPACE_FOUR);
-			});
-		}
-		if (returnParam != null){
-		    stringBuilder
-		             .append(" * @return ").append(returnParam).append(LineConstants.WRAP).append(LineConstants.BLANK_SPACE_FOUR);			
-		}
-		stringBuilder.append(" */").append(LineConstants.WRAP);
-		return stringBuilder;
+		Objects.notNullAssert(this.dataMetaBase, "dataMetaBase is not allow null");
+		
+		Objects.notNullAssert(this.tableName, "tableName is not allow null");
 	}
 }

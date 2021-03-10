@@ -79,7 +79,7 @@ public class CodeGenerateUtils {
 		}catch (Exception e) {
 			String deleteDir = codeGenerateParams.getCodeCacheBasePath() + File.separator + codeGenerateParams.getUuidPath();
 			System.out.println("generate code fail" + " , and then delete(" + deleteDir + ")dir...");
-			System.out.println(e);
+			e.printStackTrace();
 			try {
 				FileUtils.deletes(deleteDir);
 			} catch (Exception e2) {
