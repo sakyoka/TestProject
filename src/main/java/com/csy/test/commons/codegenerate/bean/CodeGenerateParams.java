@@ -49,11 +49,11 @@ public class CodeGenerateParams {
 	
 	private String author;
 	
-	private Class<? extends DataMetaBase> dataMetaBaseClass;
+	private DataMetaBase dataMetaBase;
 
 	private Map<String , String> baseProjectPathMap;
 	
-	private Class<? extends TranferFileBase> tranferFileBaseClass;
+	private TranferFileBase tranferFileBase;
 	
 	@SuppressWarnings("serial")
 	private Map<String, String> fileSuffixNameMap = new HashMap<String, String>(){{
@@ -201,8 +201,8 @@ public class CodeGenerateParams {
 	 * @param dataMetaBaseClass
 	 * @return CodeGenerateParams
 	 */
-	public CodeGenerateParams dataMetaBaseClass(Class<? extends DataMetaBase> dataMetaBaseClass) {
-		this.dataMetaBaseClass = dataMetaBaseClass;
+	public CodeGenerateParams dataMetaBase(DataMetaBase dataMetaBase) {
+		this.dataMetaBase = dataMetaBase;
 		return this;
 	}
 	
@@ -216,8 +216,8 @@ public class CodeGenerateParams {
 	 * @param tranferFileBaseClass
 	 * @return CodeGenerateParams
 	 */
-	public CodeGenerateParams tranferFileBaseClass(Class<? extends TranferFileBase> tranferFileBaseClass) {
-		this.tranferFileBaseClass = tranferFileBaseClass;
+	public CodeGenerateParams tranferFileBase(TranferFileBase tranferFileBase) {
+		this.tranferFileBase = tranferFileBase;
 		return this;
 	}
 	
@@ -308,9 +308,9 @@ public class CodeGenerateParams {
 		
 		if (Objects.isNull(this.writeFileBase)) this.writeFileBase = new WriteFileGeneralDefault();
 		
-		if (Objects.isNull(this.dataMetaBaseClass)) this.dataMetaBaseClass = DataMetaJdbc.class;
+		if (Objects.isNull(this.dataMetaBase)) this.dataMetaBase = new DataMetaJdbc();
 		
-		if (Objects.isNull(this.tranferFileBaseClass)) this.tranferFileBaseClass = DefaultTranferFile.class;
+		if (Objects.isNull(this.tranferFileBase)) this.tranferFileBase = new DefaultTranferFile();
 		
 		return this;
 	}
@@ -355,15 +355,15 @@ public class CodeGenerateParams {
 		return author;
 	}
 
-	public Class<? extends DataMetaBase> getDataMetaBaseClass() {
-		return dataMetaBaseClass;
+	public DataMetaBase getDataMetaBase() {
+		return dataMetaBase;
 	}
 	
 	public Map<String, String> getBaseProjectPathMap() {
 		return baseProjectPathMap;
 	}
 
-	public Class<? extends TranferFileBase> getTranferFileBaseClass() {
-		return tranferFileBaseClass;
+	public TranferFileBase getTranferFileBase() {
+		return tranferFileBase;
 	}
 }

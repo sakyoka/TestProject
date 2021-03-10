@@ -1,14 +1,11 @@
 package com.csy.test.commons.codegenerate.util;
 
 import java.io.File;
-import org.apache.commons.lang3.StringUtils;
-
 import com.csy.test.commons.codegenerate.base.CodeGenerateBase;
 import com.csy.test.commons.codegenerate.base.TranferFileBase;
 import com.csy.test.commons.codegenerate.base.defaults.DefaultCodeGenerate;
 import com.csy.test.commons.codegenerate.bean.CodeGenerateParams;
 import com.csy.test.commons.codegenerate.database.bean.base.DataMetaBase;
-import com.csy.test.commons.utils.ClassUtils;
 import com.csy.test.commons.utils.Objects;
 import com.csy.test.commons.utils.file.FileUtils;
 
@@ -59,12 +56,8 @@ public class CodeGenerateUtils {
 	private static void excueteGenerate(CodeGenerateParams codeGenerateParams , CodeGenerateBase codeGenerate){
 		try {
 			System.out.println("starting to generate code...");
-			DataMetaBase dataMetaBase = ClassUtils.newInstance(codeGenerateParams.getDataMetaBaseClass());
+			DataMetaBase dataMetaBase = codeGenerateParams.getDataMetaBase();
 			codeGenerateParams.getBasePackageMap().forEach((k , v) -> {
-				
-				String basePath = codeGenerateParams.getBasePathMap().get(k) + StringUtils.lowerCase(k).replace("_", "");
-				codeGenerateParams.getBasePathMap().put(k, basePath);
-				
 				codeGenerate.preInit(dataMetaBase.tableName(k).initDataMetaBase())
 				            .generateBean()
 							.generateMapper()
@@ -98,7 +91,7 @@ public class CodeGenerateUtils {
 		System.out.println("starting to tranfer targetDir");
 		if (Objects.notNull(codeGenerateParams.getBaseProjectPathMap())){
 			//转移不一定要成功
-			TranferFileBase tranferFileBase = ClassUtils.newInstance(codeGenerateParams.getTranferFileBaseClass());
+			TranferFileBase tranferFileBase = codeGenerateParams.getTranferFileBase();
 			codeGenerateParams.getBasePathMap().forEach((k , v) -> {
 				try {
 					if (Objects.notNull(codeGenerateParams.getBaseProjectPathMap().get(k)))

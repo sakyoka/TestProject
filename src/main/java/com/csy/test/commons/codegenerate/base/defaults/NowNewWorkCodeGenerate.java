@@ -2,6 +2,8 @@ package com.csy.test.commons.codegenerate.base.defaults;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.csy.test.commons.codegenerate.base.CodeGenerateBase;
 import com.csy.test.commons.codegenerate.base.bean.CodeGenerateBaseInitParams;
 import com.csy.test.commons.codegenerate.base.utils.NoteStringUitls;
@@ -32,6 +34,8 @@ public class NowNewWorkCodeGenerate implements CodeGenerateBase {
 	
 	private List<BeanFieldMessage> beanFieldMessages;
 	
+	private String tableName;
+	
 	public NowNewWorkCodeGenerate(CodeGenerateParams codeGenerateParams) {
 		this.codeGenerateParams = codeGenerateParams;
 	}
@@ -40,6 +44,10 @@ public class NowNewWorkCodeGenerate implements CodeGenerateBase {
 	public CodeGenerateBase preInit(DataMetaBase dataMetaBase) {
 		
 		this.dataMetaBase = dataMetaBase;
+		this.tableName = dataMetaBase.getTableMessage().getTableName();
+		
+		String basePath = this.codeGenerateParams.getBasePathMap().get(this.tableName) + StringUtils.lowerCase(this.tableName).replace("_", "");
+		this.codeGenerateParams.getBasePathMap().put(this.tableName, basePath);
 		
 		this.beanFieldMessages = DataMetaUtils.tranferToBeanFields(dataMetaBase.getColumnMetaDatas());
 		
@@ -53,7 +61,7 @@ public class NowNewWorkCodeGenerate implements CodeGenerateBase {
 	@Override
 	public CodeGenerateBase generateBean() {
 		
-		Objects.notNullAssert(this.codeGenerateBaseInitParams.getTableName(), "tableName is not allow null");
+		Objects.notNullAssert(this.tableName , "tableName is not allow null");
 		
 		String beanPath = codeGenerateBaseInitParams.getBeanPath();
 		String fullBeanName = codeGenerateBaseInitParams.getFullBeanName();
@@ -88,7 +96,7 @@ public class NowNewWorkCodeGenerate implements CodeGenerateBase {
 		}); 
 		stringBuilder.append("}");
 		System.out.println("execuete generateBean starting to create file:" + this.codeGenerateBaseInitParams.getBeanPath());
-		codeGenerateParams.getWriteFileBase().write(codeGenerateParams , this.codeGenerateBaseInitParams.getTableName() , stringBuilder.toString() , FileSuffixEnum.BEAN);
+		codeGenerateParams.getWriteFileBase().write(codeGenerateParams , this.tableName , stringBuilder.toString() , FileSuffixEnum.BEAN);
 		System.out.println();
 		
 		//dto

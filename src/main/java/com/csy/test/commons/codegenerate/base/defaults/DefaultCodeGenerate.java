@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.csy.test.commons.codegenerate.annotation.MapperTemplate;
 import com.csy.test.commons.codegenerate.base.CodeGenerateBase;
 import com.csy.test.commons.codegenerate.base.bean.CodeGenerateBaseInitParams;
@@ -52,10 +54,13 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 	public DefaultCodeGenerate preInit(DataMetaBase dataMetaBase) {
 		
 		this.dataMetaBase = dataMetaBase;
+		this.tableName = dataMetaBase.getTableMessage().getTableName();
+		
+		String basePath = this.codeGenerateParams.getBasePathMap().get(this.tableName) + StringUtils.lowerCase(this.tableName).replace("_", "");
+		this.codeGenerateParams.getBasePathMap().put(this.tableName, basePath);
 		
 		this.codeGenerateBaseInitParams = this.initCodeGenerateBaseInitParams(this.codeGenerateParams, dataMetaBase);
 		
-		this.tableName = this.codeGenerateBaseInitParams.getTableName();
 		this.beanName = this.codeGenerateBaseInitParams.getBeanName();
 		
         this.beanFieldMessages = DataMetaUtils.tranferToBeanFields(dataMetaBase.getColumnMetaDatas());
