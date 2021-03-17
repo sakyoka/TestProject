@@ -198,7 +198,7 @@ public class NowNewWorkCodeGenerate implements CodeGenerateBase {
 		
 		this.beanFieldMessages.forEach((e) -> {
 			stringBuilder.append(LineConstants.BLANK_SPACE_FOUR)
-			             .append("@ApiModelProperty(name = \""+ e.getRemarks() +"\")")
+			             .append("@ApiModelProperty(name = \""+ e.getFieldName() +"\" , value = \""+ e.getRemarks() +"\")")
 			             .append(LineConstants.WRAP)
 			             .append(LineConstants.BLANK_SPACE_FOUR)
 			             .append("private ").append(e.getFieldType()).append(" ").append(e.getFieldName()).append(";")
