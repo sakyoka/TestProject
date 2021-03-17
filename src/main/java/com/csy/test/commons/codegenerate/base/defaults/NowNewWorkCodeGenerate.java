@@ -23,9 +23,6 @@ import com.csy.test.commons.utils.Objects;
 import com.csy.test.commons.utils.StrUtil;
 import com.csy.test.commons.utils.file.FileUtils;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
 /**
  * 
  * 描述：基于现在最新的项目生成代码
