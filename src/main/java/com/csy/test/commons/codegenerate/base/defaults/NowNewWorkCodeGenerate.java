@@ -23,6 +23,9 @@ import com.csy.test.commons.utils.Objects;
 import com.csy.test.commons.utils.StrUtil;
 import com.csy.test.commons.utils.file.FileUtils;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 /**
  * 
  * 描述：基于现在最新的项目生成代码
@@ -186,12 +189,20 @@ public class NowNewWorkCodeGenerate implements CodeGenerateBase {
 		    .append(LineConstants.WRAP)
 		    .append("import lombok.Data;")
 		    .append(LineConstants.WRAP)
+		    .append("import lombok.NoArgsConstructor;")
+		    .append(LineConstants.WRAP)
+		    .append("import lombok.AllArgsConstructor;")
+		    .append(LineConstants.WRAP)
 		    .append("import io.swagger.annotations.ApiModelProperty;")
 		    .append(LineConstants.WRAP).append(LineConstants.WRAP);
 		NoteStringUitls.appendClassNote(stringBuilder , codeGenerateParams.getAuthor(), dataMetaBase.getTableMessage().getRemarks() + entityClassify)
 		    .append("@Data")
 		    .append(LineConstants.WRAP)
 		    .append("@Builder")
+		    .append(LineConstants.WRAP)
+		    .append("@NoArgsConstructor")
+		    .append(LineConstants.WRAP)
+		    .append("@AllArgsConstructor")
 		    .append(LineConstants.WRAP)
 			.append("public class ").append(entityName)
 			.append(" {").append(LineConstants.WRAP).append(LineConstants.WRAP);
