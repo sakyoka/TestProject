@@ -15,4 +15,10 @@ public class ClassifyConstants {
 	public static final String SERVICE_IMPL = "impl";
 	
 	public static final String CONTROLLER = "controller";
+	
+	public static final String QUERY = "query";
+	
+	public static final String DTO = "dto";
+	
+	public static final String VO = "vo";
 }

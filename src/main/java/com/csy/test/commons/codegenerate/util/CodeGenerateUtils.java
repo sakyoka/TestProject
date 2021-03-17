@@ -97,7 +97,7 @@ public class CodeGenerateUtils {
 					if (Objects.notNull(codeGenerateParams.getBaseProjectPathMap().get(k)))
 						tranferFileBase.tranfer(codeGenerateParams , k , v);
 				} catch (Exception e) {
-					System.out.println(e);
+					e.printStackTrace();
 				}
 			});
 		}

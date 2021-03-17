@@ -18,7 +18,13 @@ public enum FileSuffixEnum {
 	
 	SERVICE_IMPL(ClassifyConstants.SERVICE_IMPL , ClassifyConstants.JAVA),
 	
-	CONTRLLER(ClassifyConstants.CONTROLLER , ClassifyConstants.JAVA);
+	CONTRLLER(ClassifyConstants.CONTROLLER , ClassifyConstants.JAVA),
+	
+	QUERY(ClassifyConstants.QUERY , ClassifyConstants.JAVA),
+	
+	DTO(ClassifyConstants.DTO , ClassifyConstants.JAVA),
+	
+	VO(ClassifyConstants.VO , ClassifyConstants.JAVA);
 	
 	private String suffixName;
 	

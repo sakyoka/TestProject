@@ -178,6 +178,22 @@ public class CodeGenerateParams {
 	}
 	
 	/**
+	 * 描述：文件后缀 e: xxxx.java , 即table_name 对应 java后缀，不需要带点
+	 * @author csy 
+	 * @date 2021年3月17日 下午1:49:17
+	 * @param k 文件类型
+	 * @param v 文件后缀
+	 * @return CodeGenerateParams
+	 */
+	public CodeGenerateParams fileSuffixNameMap(String k , String v) {
+		if (this.fileSuffixNameMap == null)
+			this.fileSuffixNameMap = new HashMap<String , String>();
+		
+		this.fileSuffixNameMap.put(k, v);
+		return this;
+	}
+	
+	/**
 	 * 
 	 * 描述：编写人 注释的编写人
 	 * @author csy

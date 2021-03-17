@@ -135,7 +135,7 @@ public class FileUtils {
 		try {
 			return writeFile(Files.createFile(path).toFile(), contents);
 		} catch (IOException e) {
-			throw new RuntimeException("写文件失败，创建文件失败，filePath:" + filePath);
+			throw new RuntimeException("写文件失败，创建文件失败，filePath:" + filePath , e);
 		}
 	}
 	
