@@ -67,4 +67,31 @@ public class Objects {
 	public static boolean isNull(Object o){
 		return o == null;
 	}
+	
+	/**
+	 * 描述：判断为false抛异常
+	 * @author csy 
+	 * @date 2021年3月18日 上午9:38:16
+	 * @param condition
+	 * @param clazz
+	 * @param message
+	 */
+	public static <T extends RuntimeException> void isConditionAssert(boolean condition , Class<T> clazz , String message){
+		isConditionAssert(condition, clazz, new Class[]{String.class} , message);
+	}
+	
+	/**
+	 * 描述：判断为false抛异常
+	 * @author csy 
+	 * @date 2021年3月18日 上午9:34:49
+	 * @param condition
+	 * @param clazz
+	 * @param paramTypes
+	 * @param params
+	 */
+	public static <T extends RuntimeException> void isConditionAssert(boolean condition , Class<T> clazz , Class<?>[] paramTypes , Object ...params){
+		if (!condition){
+			throw ClassUtils.newInstanceByConstrutor(clazz, paramTypes, params);
+		}
+	}
 }
