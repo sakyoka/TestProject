@@ -14,36 +14,58 @@ public class Objects {
 	 * 描述：判空，默认值
 	 * @author csy 
 	 * @date 2021年2月4日 下午5:20:42
-	 * @param o
+	 * @param o 判空对象
 	 * @param defaultObject 默认值
 	 * @return T
 	 */
 	public static <T> T ifNullDefault(T o , T defaultObject){
-		return o == null ? defaultObject : o;
+		return isNull(o) ? defaultObject : o;
 	}
 	
 	/**
 	 * 描述：非空对象 断言
 	 * @author csy 
 	 * @date 2021年2月4日 下午5:19:54
-	 * @param o
-	 * @param message
+	 * @param o 判空对象
+	 * @param exceptionMessage 异常信息
 	 */
-	public static void notNullAssert(Object o , String message){
-		if (isNull(o))
-			throw new RuntimeException(message);
+	public static void notNullAssert(Object o , String exceptionMessage){
+		notNullAssert(o, RuntimeException.class, exceptionMessage);
+	}
+	
+	/**
+	 * 描述：非空对象 断言
+	 * @author csy 
+	 * @date 2021年2月4日 下午5:19:54
+	 * @param o 判空对象
+	 * @param exceptionClazz 自定义异常类
+	 * @param exceptionMessage 异常信息
+	 */
+	public static void notNullAssert(Object o ,Class<? extends RuntimeException> exceptionClazz, String exceptionMessage){
+		isConditionAssert(notNull(o), exceptionClazz, exceptionMessage);
 	}
 	
 	/**
 	 * 描述：空对象 断言
 	 * @author csy 
 	 * @date 2021年2月4日 下午5:19:57
-	 * @param o
-	 * @param message
+	 * @param o 判空对象
+	 * @param exceptionMessage 异常信息
 	 */
-	public static void isNullAssert(Object o , String message){
-		if (notNull(o))
-			throw new RuntimeException(message);
+	public static void isNullAssert(Object o , String exceptionMessage){
+		isNullAssert(o, RuntimeException.class, exceptionMessage);
+	}
+	
+	/**
+	 * 描述：空对象 断言
+	 * @author csy 
+	 * @date 2021年2月4日 下午5:19:57
+	 * @param o 判空对象
+	 * @param exceptionClazz 自定义异常类
+	 * @param exceptionMessage 异常信息
+	 */
+	public static void isNullAssert(Object o ,Class<? extends RuntimeException> exceptionClazz , String exceptionMessage){
+		isConditionAssert(isNull(o), exceptionClazz, exceptionMessage);
 	}
 	
 	/**
