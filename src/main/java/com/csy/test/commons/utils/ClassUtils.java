@@ -127,4 +127,33 @@ public class ClassUtils {
 				field.setAccessible(false);
 		}
 	}
+	
+	/**
+	 * 描述：使用构造器实例化
+	 * @author csy 
+	 * @date 2021年3月18日 上午9:34:10
+	 * @param clazz
+	 * @param paramTypes
+	 * @param params
+	 * @return T
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T newInstanceByConstrutor(Class<T> clazz , Class<?>[] paramTypes , Object ...params){
+		Constructor<?> constructor = null;
+		try {
+			constructor = clazz.getConstructor(paramTypes);
+		} catch (Exception e) { 
+			throw new RuntimeException("获取class构造方法失败:" + clazz.getName());
+		} 
+		
+		T entity = null;
+		try {
+			constructor.setAccessible(true);
+			entity = (T) constructor.newInstance(params);
+		} catch (Exception e) {
+			throw new RuntimeException("class " + clazz.getName() + " 不可实例化");
+		} 
+		
+		return entity;
+	}
 }
