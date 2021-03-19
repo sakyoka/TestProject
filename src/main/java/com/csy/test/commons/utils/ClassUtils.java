@@ -6,6 +6,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
@@ -155,5 +156,24 @@ public class ClassUtils {
 		} 
 		
 		return entity;
+	}
+	
+	/**
+	 * 描述：获取Clazz所有字段
+	 * @author csy 
+	 * @date 2021年3月19日 下午12:40:24
+	 * @param clazz
+	 * @return List<Field>
+	 */
+	public static List<Field> getAllFields(Class<?> clazz){
+		Field[] fields = clazz.getDeclaredFields();
+		List<Field> fieldList = new ArrayList<Field>();
+		fieldList.addAll(Arrays.asList(fields));
+		Class<?> superClazz = clazz.getSuperclass();
+		while (superClazz != null){
+			fieldList.addAll(new ArrayList<>(Arrays.asList(superClazz.getDeclaredFields())));
+			superClazz = superClazz.getSuperclass();
+	    }	
+		return fieldList;
 	}
 }
