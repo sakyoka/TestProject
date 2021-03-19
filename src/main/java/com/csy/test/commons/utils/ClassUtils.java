@@ -159,6 +159,18 @@ public class ClassUtils {
 	}
 	
 	/**
+	 * 描述：setAccessible为false
+	 * @author csy 
+	 * @date 2020年12月28日 下午6:27:26
+	 * @param field
+	 */
+	public static void accessibleFalse(Field field){
+		
+		if (field != null)
+			field.setAccessible(false);
+	}
+	
+	/**
 	 * 描述：获取Clazz所有字段
 	 * @author csy 
 	 * @date 2021年3月19日 下午12:40:24
@@ -175,5 +187,85 @@ public class ClassUtils {
 			superClazz = superClazz.getSuperclass();
 	    }	
 		return fieldList;
+	}
+	
+	/**
+	 * 描述：fieldName获取 Field对象
+	 * @author csy 
+	 * @date 2021年3月19日 下午1:39:42
+	 * @param clazz
+	 * @param fieldName
+	 * @return Field
+	 */
+	public static Field getFieldByFieldName(Class<?> clazz , String fieldName) {
+		Field field = null;
+		try {
+			field = clazz.getDeclaredField(fieldName);
+		} catch (NoSuchFieldException e) {
+			Class<?> superClazz = clazz.getSuperclass();
+			if (superClazz == null){
+				throw new RuntimeException("not fount fieldName " + fieldName);
+			}
+			
+			try {
+				field = superClazz.getDeclaredField(fieldName);
+			} catch (NoSuchFieldException e1) {
+				return getFieldByFieldName(superClazz, fieldName);
+			} 
+		} 
+		return field;
+	}
+	
+	/**
+	 * 描述：设置字段值
+	 * @author csy 
+	 * @date 2021年3月19日 下午1:57:55
+	 * @param field
+	 * @param entity
+	 * @param value
+	 */
+	public static void setFieldValue(Field field , Object entity , Object value){
+		try {
+			field.setAccessible(true);
+			field.set(entity, value);
+		} catch (Exception e) {
+			throw new RuntimeException("设置目标字段值失败" + field.getName() , e);
+		}finally {
+			accessibleFalse(field);
+		}		
+	}
+	
+	/**
+	 * 描述：获取字段值
+	 * @author csy 
+	 * @date 2021年3月19日 下午1:57:42
+	 * @param field
+	 * @param entity
+	 * @return
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
+	public static Object getFieldValue(Field field , Object entity) throws IllegalArgumentException, IllegalAccessException{
+		try {
+			field.setAccessible(true);
+			return field.get(entity);
+		}  finally {
+			accessibleFalse(field);
+		}		
+	}
+	
+	/**
+	 * 描述：获取字段值
+	 * @author csy 
+	 * @date 2021年3月19日 下午2:04:56
+	 * @param fieldName
+	 * @param entity
+	 * @return
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
+	public static Object getFieldValueByFieldName(String fieldName , Object entity) throws IllegalArgumentException, IllegalAccessException{
+		Field field = getFieldByFieldName(entity.getClass(), fieldName);
+		return getFieldValue(field, entity);
 	}
 }
