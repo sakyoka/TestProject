@@ -1,0 +1,50 @@
+	@Autowired
+	${daoObject} ${daoObjectParam};
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public PageDataModel<${voObject}> getPageData(PageModel pageModel,
+			${queryObject} ${queryObjectParam}) {
+		pageModel.initPage();
+		List<${voObject}> ${voObjectParam}s = 
+				this.findList(${queryObjectParam});
+		return pageModel.loadData(${voObjectParam}s);
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void saveOrUpdate(${dtoObject} ${dtoObjectParam}) {
+		${modelObject} ${modelObjectParam} = ${modelObject}.builder().build();
+		BeanUtil.sourceToTarget(${dtoObjectParam}, ${modelObjectParam});
+		if (StringUtils.isNotBlank(${modelObjectParam}.${primaryKeyGet}())){
+			${daoObjectParam}.update(${modelObjectParam});
+		}else{
+			${modelObjectParam}.setSeq(UUIDUtil.getUUID());
+			${daoObjectParam}.insert(${modelObjectParam});
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void deletes(String ${primaryKey}s) {
+		String[] ${primaryKey}Arr = ${primaryKey}s.split(",");
+		for (String ${primaryKey}:${primaryKey}Arr){
+			${daoObjectParam}.delete(${primaryKey});
+		}
+	}
+
+	@Override
+	public ${voObject} get(String ${primaryKey}) {
+		${modelObject} ${modelObjectParam} = ${daoObjectParam}.get(${primaryKey});
+		return BeanUtil.sourceToTarget(${modelObjectParam}, ${voObject}.class);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<${voObject}> findList(${queryObject} ${queryObjectParam}){
+		List<${modelObject}> ${modelObjectParam}s = 
+				${daoObjectParam}.findList(${queryObjectParam});
+		List<${voObject}> ${voObjectParam}s = 
+				BeanUtil.sourceToTarget(${modelObjectParam}s, ${voObject}.class);
+		return Objects.ifNullDefault(${voObjectParam}s, Collections.EMPTY_LIST);
+	}

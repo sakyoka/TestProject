@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.csy.test.webui.taskmanage.mapper.LocalTaskMapper">
+    
+    <!-- 获取一条 -->
+    <select id="get" resultType="com.csy.test.webui.taskmanage.model.LocalTaskBean">
+        select 
+            strl.uuid,
+            strl.task_id,
+            strl.method_name,
+            strl.instance_name,
+            strl.request_param
+         from scheduler_task_ref_local strl
+         where strl.uuid = #{strl.uuid}
+    </select>
+    
+    <!--保存 -->
+    <insert id="insert">
+        insert into scheduler_task_ref_local(
+            uuid,
+            task_id,
+            method_name,
+            instance_name,
+            request_param
+        ) values (
+            #{uuid},
+            #{taskId},
+            #{methodName},
+            #{instanceName},
+            #{requestParam})
+    </insert>
+    
+    <!-- 修改 -->
+    <update id="update">
+        update scheduler_task_ref_local set 
+            task_id = #{taskId},
+            method_name = #{methodName},
+            instance_name = #{instanceName},
+            request_param = #{requestParam}
+         where uuid = #{uuid}
+    </update>
+    
+    <!-- 删除 -->
+    <delete id="delete">
+        delete from scheduler_task_ref_local where uuid = #{uuid}
+    </delete>
+    
+    <!-- 根据taskid删除 -->
+    <delete id="deleteByTaskId">
+        delete from scheduler_task_ref_local where task_id = #{taskId}
+    </delete>
+</mapper>

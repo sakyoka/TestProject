@@ -1,0 +1,45 @@
+	/**
+	 * 描述：获取${tableRemarks}分页数据
+	 * @author ${author}
+	 * @date ${createTime}
+	 * @param pageModel
+	 * @param ${queryObjectParam}
+	 * @return PageDataModel<${voObject}>
+	 */
+	PageDataModel<${voObject}> getPageData(PageModel pageModel, 
+			${queryObject} ${queryObjectParam});
+	
+	/**
+	 * 描述：保存或修改${tableRemarks}数据
+	 * @author ${author} 
+	 * @date ${createTime}
+	 * @param ${dtoObjectParam}
+	 */
+	void saveOrUpdate(${dtoObject} ${dtoObjectParam});
+	
+	/**
+	 * 描述：删除${tableRemarks}数据
+	 * @author ${author}
+	 * @date ${createTime}
+	 * @param ${primaryKey}
+	 */
+	void deletes(String ${primaryKey});
+	
+	/**
+	 * 描述：获取${tableRemarks}对象
+	 * @author ${author}
+	 * @date ${createTime}
+	 * @param ${primaryKey}s 主键
+	 * @return ${voObject}
+	 */
+	${voObject} get(String ${primaryKey}s);
+
+	/**
+	 * 描述：获取${tableRemarks}集合
+	 * @author ${author}
+	 * @date ${createTime}
+	 * @param ${queryObjectParam}
+	 * @return List<${voObject}> 
+	 */
+	List<${voObject}> findList(
+			${queryObject} ${queryObjectParam});

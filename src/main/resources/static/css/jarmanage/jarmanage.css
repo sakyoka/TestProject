@@ -1,0 +1,85 @@
+#topContainer{
+	height: calc(15vh);
+	max-height: 100px;
+}
+#middleContainer{
+	height: calc(80vh);
+	border-top: 1px solid #eee;
+}
+#middleLeft{
+	float: left;
+	width: 200px;
+ 	height: 100%;
+ 	clear:left;
+ 	overflow: auto;
+}
+#middleRight{
+	height: 100%;
+	overflow: hidden;
+}
+#topLeft{
+	float: left;
+	width: 20%;
+ 	height: 100%;
+}
+#systemTag{
+	font-size: 30px;
+	line-height: 100px;
+	font-weight: bold;
+	font-style:italic; 
+	padding: 20px;
+}
+#topRight{
+	float: right;
+	width: 80%;
+	height: 100%;
+}
+#projectList{
+	height: 50px;
+	line-height: 50px;
+	overflow: auto;
+}
+#projectList div{
+	margin-left: 20px;
+}
+#projectList div span:first-child {
+	font-size: 20px;
+}
+#descTitle{
+	text-align:center;
+	line-height:60px;
+	height: 7%;
+	font-size:17px;
+}
+#systemMessage{
+	border: 1px solid #eee;
+	border-radius: 5px;
+	background-color: white;
+	margin: 10px;
+	padding: 10px;
+	height: 45%;
+	overflow: auto;
+}
+#allApplicationMessage{
+	border: 1px solid #eee;
+	border-radius: 5px;
+	background-color: white;
+	margin: 10px;
+	padding: 10px;
+	height: 30%;
+	overflow: auto;
+	word-break: break-all;
+}
+.padding5{
+	padding: 10px;
+}
+#system-login{
+	padding: 20px;
+	float: right;
+	font-size: 20px;
+}
+
+#loginout{
+	margin-left: 10px;
+	margin-right: 15px;
+}

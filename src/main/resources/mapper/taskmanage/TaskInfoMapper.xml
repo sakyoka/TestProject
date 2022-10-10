@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.csy.test.webui.taskmanage.mapper.TaskInfoMapper">
+    
+    <!-- 获取集合数据 -->
+    <select id="findList" resultType="com.csy.test.webui.taskmanage.model.TaskInfoBean">
+        select 
+            sti.uuid,
+            sti.task_name,
+            sti.task_desc,
+            sti.task_id,
+            sti.task_key,
+            sti.cron,
+            sti.start_time,
+            sti.dispatch_type,
+            sti.task_type,
+            sti.delay_time,
+            sti.execute_status,
+            sti.create_time,
+            sti.update_time,
+            sti.enable
+         from scheduler_task_info sti
+    </select>
+    
+    <!-- 获取一条 -->
+    <select id="get" resultType="com.csy.test.webui.taskmanage.model.TaskInfoBean">
+        select 
+            sti.uuid,
+            sti.task_name,
+            sti.task_desc,
+            sti.task_id,
+            sti.task_key,
+            sti.cron,
+            sti.start_time,
+            sti.dispatch_type,
+            sti.task_type,
+            sti.delay_time,
+            sti.execute_status,
+            sti.create_time,
+            sti.update_time,
+            sti.enable
+         from scheduler_task_info sti
+         where sti.uuid = #{sti.uuid}
+    </select>
+    
+    <!--保存 -->
+    <insert id="insert">
+        insert into scheduler_task_info(
+            uuid,
+            task_name,
+            task_desc,
+            task_id,
+            task_key,
+            cron,
+            start_time,
+            dispatch_type,
+            task_type,
+            delay_time,
+            execute_status,
+            create_time,
+            update_time,
+            enable
+        ) values (
+            #{uuid},
+            #{taskName},
+            #{taskDesc},
+            #{taskId},
+            #{taskKey},
+            #{cron},
+            #{startTime},
+            #{dispatchType},
+            #{taskType},
+            #{delayTime},
+            #{executeStatus},
+            #{createTime},
+            #{updateTime},
+            #{enable}
+    </insert>
+    
+    <!-- 修改 -->
+    <update id="update">
+        update scheduler_task_info set
+            task_name = #{taskName},
+            task_name = #{taskName},
+            task_desc = #{taskDesc},
+            task_id = #{taskId},
+            task_key = #{taskKey},
+            cron = #{cron},
+            start_time = #{startTime},
+            dispatch_type = #{dispatchType},
+            task_type = #{taskType},
+            delay_time = #{delayTime},
+            execute_status = #{executeStatus},
+            update_time = #{updateTime},
+            enable = #{enable}
+         where uuid = #{uuid}
+    </update>
+    
+    <update id="updateIfNotEmpty">
+        update scheduler_task_info 
+        <trim prefix="set" suffixOverrides=",">
+            <if test="taskName != null and taskName != ''">
+                task_name = #{taskName},
+            </if>
+            <if test="taskDesc != null and taskDesc != ''">
+                task_desc = #{taskDesc},
+            </if>
+            <if test="cron != null and cron != ''">
+                cron = #{cron},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime},
+            </if>
+            <if test="dispatchType != null">
+                dispatch_type = #{dispatchType},
+            </if>
+            <if test="taskType != null">
+                task_type = #{taskType},
+            </if>
+            <if test="delayTime != null">
+                delay_time = #{delayTime},
+            </if>
+            <if test="executeStatus != null">
+                execute_status = #{executeStatus},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="enable != null">
+                enable = #{enable},
+            </if>
+         </trim>
+         where uuid = #{uuid}
+    </update>
+    
+    <!-- 删除 -->
+    <delete id="delete">
+        delete from scheduler_task_info where uuid = #{uuid}
+    </delete>
+</mapper>

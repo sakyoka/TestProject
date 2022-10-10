@@ -1,0 +1,1 @@
+window 支持 tail 命令 需把tail.exe放到System32目录下
