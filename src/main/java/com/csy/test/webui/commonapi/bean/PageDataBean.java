@@ -47,4 +47,10 @@ public class PageDataBean<T> {
 		
 		return pageDataBean(size, currentPage, datas);
 	}
+
+	public static <T> PageDataBean<T> pageDataBean(PageBean pageBean, 
+			List<T> taskInfoPageVos) {
+		return pageDataBean(Integer.valueOf(pageBean.getPage().getTotal() + ""), 
+				pageBean.getPageIndex(), taskInfoPageVos);
+	}
 }

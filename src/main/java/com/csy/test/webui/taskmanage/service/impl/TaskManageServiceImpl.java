@@ -1,5 +1,7 @@
 package com.csy.test.webui.taskmanage.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +13,7 @@ import com.csy.test.commons.utils.UUID;
 import com.csy.test.webui.commonapi.annotation.ServiceApi;
 import com.csy.test.webui.commonapi.annotation.ServiceApiMethod;
 import com.csy.test.webui.commonapi.bean.ApiBean;
+import com.csy.test.webui.commonapi.bean.PageBean;
 import com.csy.test.webui.commonapi.bean.PageDataBean;
 import com.csy.test.webui.commonapi.utils.ApiBeanUtils;
 import com.csy.test.webui.taskmanage.enums.TaskTypeEnum;
@@ -21,9 +24,12 @@ import com.csy.test.webui.taskmanage.model.JarTaskBean;
 import com.csy.test.webui.taskmanage.model.LocalTaskBean;
 import com.csy.test.webui.taskmanage.model.TaskInfoBean;
 import com.csy.test.webui.taskmanage.model.UrlTaskBean;
+import com.csy.test.webui.taskmanage.model.query.TaskInfoPageQuery;
 import com.csy.test.webui.taskmanage.model.vo.TaskInfoPageVo;
 import com.csy.test.webui.taskmanage.model.vo.TaskInfoVo;
 import com.csy.test.webui.taskmanage.service.TaskManageService;
+
+import cn.hutool.core.bean.BeanUtil;
 
 /**
  * 
@@ -49,7 +55,7 @@ public class TaskManageServiceImpl implements TaskManageService {
 	@Transactional(rollbackFor = Exception.class)
 	public void saveTaskInfo(ApiBean apiBean) {
 		Map<String, Object> paramObject = ApiBeanUtils.paramlistToMap(apiBean);
-		TaskInfoBean taskInfoBean = ApiBeanUtils.toBean(paramObject, TaskInfoBean.class);
+		TaskInfoBean taskInfoBean = ApiBeanUtils.paramObjectToBean(paramObject, TaskInfoBean.class);
 		boolean update = StringUtils.isNotBlank(taskInfoBean.getTaskId());
 		if (update){
 			taskInfoBean.preUpdate();
@@ -72,18 +78,18 @@ public class TaskManageServiceImpl implements TaskManageService {
 	 */
 	private void disposeSaveRefTask(TaskInfoBean taskInfoBean, Map<String, Object> paramObject){
 		if (TaskTypeEnum.URL.getType().equals(taskInfoBean.getTaskType())){
-			UrlTaskBean urlTaskBean = ApiBeanUtils.toBean(paramObject, UrlTaskBean.class);
+			UrlTaskBean urlTaskBean = ApiBeanUtils.paramObjectToBean(paramObject, UrlTaskBean.class);
 			urlTaskMapper.deleteByTaskId(taskInfoBean.getTaskId());
 			urlTaskBean.setUuid(UUID.getString());
 			urlTaskMapper.insert(urlTaskBean);
 		}
 		
 		if (TaskTypeEnum.JAR.getType().equals(taskInfoBean.getTaskType())){
-			JarTaskBean jarTaskBean = ApiBeanUtils.toBean(paramObject, JarTaskBean.class);
+			JarTaskBean jarTaskBean = ApiBeanUtils.paramObjectToBean(paramObject, JarTaskBean.class);
 		}
 		
 		if (TaskTypeEnum.CLASS.getType().equals(taskInfoBean.getTaskType())){
-			LocalTaskBean localTaskBean = ApiBeanUtils.toBean(paramObject, LocalTaskBean.class);
+			LocalTaskBean localTaskBean = ApiBeanUtils.paramObjectToBean(paramObject, LocalTaskBean.class);
 			localTaskMapper.deleteByTaskId(taskInfoBean.getTaskId());
 			localTaskBean.setUuid(UUID.getString());
 			localTaskMapper.insert(localTaskBean);
@@ -99,8 +105,18 @@ public class TaskManageServiceImpl implements TaskManageService {
 	@Override
 	@ServiceApiMethod
 	public PageDataBean<TaskInfoPageVo> taskPageData(ApiBean apiBean) {
-		
-		return null;
+		PageBean pageBean = ApiBeanUtils.getPageBean(apiBean);
+		pageBean.page();
+		TaskInfoPageQuery taskInfoPageQuery = 
+				ApiBeanUtils.getQueryObject(apiBean, TaskInfoPageQuery.class);
+		List<TaskInfoBean> taskInfoBeans = taskInfoMapper.findList(taskInfoPageQuery);
+		List<TaskInfoPageVo> taskInfoPageVos = new ArrayList<TaskInfoPageVo>(taskInfoBeans.size());
+		taskInfoBeans.forEach(e -> {
+			TaskInfoPageVo taskInfoPageVo = new TaskInfoPageVo();
+			BeanUtil.copyProperties(e, taskInfoPageVo);
+			taskInfoPageVos.add(taskInfoPageVo);
+		});
+		return PageDataBean.pageDataBean(pageBean, taskInfoPageVos);
 	}
 
 	@Override

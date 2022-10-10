@@ -11,6 +11,7 @@
     <script type="text/javascript" src="${root}/js/common/ParamObjectUtils.js"></script>
     <script type="text/javascript" src="${root}/js/common/ValidUtils.js"></script>
     <script type="text/javascript" src="${root}/js/common/URLBuilder.js"></script>
+    <script type="text/javascript" src="${root}/components/my97datepicker/WdatePicker.js"></script>
 </head>
 <style>
 .first-cols{ width: 120px;}
@@ -53,8 +54,9 @@ textarea {height: 70px!important;}
 		            </tr>
 		            <tr class="dispatchTypeCls" dispatchType="1" style="display: none;">
 		                <td class="first-cols"><font color="red">*</font>指定执行时间：</td>
-		                <td><input type="text" name="startTime" id="startTime" class="param-field input-class form-control" 
-		                           valids="notBlank" fieldDesc="指定执行时间" groups="2"/></td>
+		                <td><input type="text" name="startTime" id="startTime" class="param-field input-class form-control Wdate" 
+		                           valids="notBlank" fieldDesc="指定执行时间" groups="2" 
+		                           onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" readonly="readonly" style="height: 30px;"/></td>
 		            </tr>
 		            <tr>
 		                <td class="first-cols">延迟时间（秒）：</td>
@@ -79,13 +81,26 @@ textarea {height: 70px!important;}
 			            </tr>
 			            <tr>
 			                <td class="first-cols"><font color="red">*</font>请求类型：</td>
-			                <td><input type="text" name="methodType" id="methodType" class="param-field input-class form-control" 
-			                           fieldDesc="请求类型" groups="3"/></td>
+			                <td> 
+				                <select id="methodType" name="methodType" class="param-field input-class form-control" 
+				                    fieldDesc="请求类型" groups="3">
+				                     <option></option>
+				                     <option value="0">POST</option>
+				                     <option value="1">GET</option>
+				                </select>
+				            </td>
 			            </tr>
 			            <tr>
 			                <td class="first-cols"><font color="red">*</font>contentType：</td>
-			                <td><input type="text" name="contentType" id="contentType" class="param-field input-class form-control" 
-			                           fieldDesc="contentType" groups="3"/></td>
+			                <td>
+				                <select id="contentType" name="contentType" class="param-field input-class form-control" 
+				                    fieldDesc="contentType" groups="3">
+				                     <option></option>
+				                     <option value="application/x-www-form-urlencoded;charset">application/x-www-form-urlencoded;charset</option>
+				                     <option value="application/json">application/json</option>
+				                     <option value="text/html">text/html</option>
+				                </select>
+				            </td>
 			            </tr>
 			            <tr>
 			                <td class="first-cols">请求的参数：</td>

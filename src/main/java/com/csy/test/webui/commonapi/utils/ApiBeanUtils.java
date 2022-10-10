@@ -77,6 +77,32 @@ public class ApiBeanUtils {
 	
 	/**
 	 * 
+	 * 描述：paramObject转bean
+	 * @author csy
+	 * @date 2022年10月10日 上午11:22:10
+	 * @param param
+	 * @param cls
+	 * @return <T>
+	 */
+	public static <T> T paramObjectToBean(Map<String, Object> param, Class<T> cls){
+		return toBean(JSON.toJSONString(param.get("paramObject")), cls);
+	}
+	
+	/**
+	 * 
+	 * 描述：paramObject转bean
+	 * @author csy
+	 * @date 2022年10月10日 上午11:22:24
+	 * @param apiBean
+	 * @param cls
+	 * @return <T>
+	 */
+	public static <T> T paramObjectToBean(ApiBean apiBean, Class<T> cls){
+		return paramObjectToBean(paramlistToMap(apiBean), cls);
+	}
+	
+	/**
+	 * 
 	 * 描述：获取pageBean
 	 * @author csy
 	 * @date 2022年10月9日 下午5:52:09
@@ -100,5 +126,34 @@ public class ApiBeanUtils {
 	public static PageBean getPageBean(Map<String, Object> paramObject){
 		Object pageObject = paramObject.get("pageObject");
 		return toBean(JSON.toJSONString(pageObject), PageBean.class);
+	}
+	
+	/**
+	 * 
+	 * 描述：获取查询对象
+	 * @author csy
+	 * @date 2022年10月10日 上午11:37:51
+	 * @param paramObject
+	 * @param cls
+	 * @return <T>
+	 */
+	public static <T> T getQueryObject(Map<String, Object> paramObject, Class<T> cls){
+		Object pageObject = paramObject.get("queryObject");
+		return toBean(JSON.toJSONString(pageObject), cls);
+	}
+	
+	/**
+	 * 
+	 * 描述：获取查询对象
+	 * @author csy
+	 * @date 2022年10月10日 上午11:37:54
+	 * @param apiBean
+	 * @param cls
+	 * @return <T>
+	 */
+	public static <T> T getQueryObject(ApiBean apiBean, Class<T> cls){
+		Map<String, Object> paramObject = paramlistToMap(apiBean);
+		Object pageObject = paramObject.get("queryObject");
+		return toBean(JSON.toJSONString(pageObject), cls);
 	}
 }

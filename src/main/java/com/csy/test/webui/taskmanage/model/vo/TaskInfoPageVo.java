@@ -2,6 +2,8 @@ package com.csy.test.webui.taskmanage.model.vo;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Data;
 
 /**
@@ -32,6 +34,7 @@ public class TaskInfoPageVo{
 	private String cron;
 
 	/**执行时间*/
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date startTime;
 
 	/**调度类型：0使用表达式，1使用到点执行*/
@@ -44,9 +47,11 @@ public class TaskInfoPageVo{
 	private Integer executeStatus;
 	
 	/**创建时间*/
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date createTime;
 	
 	/**修改时间*/
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date updateTime;
 	
 	/**是否有效0否，1*/
