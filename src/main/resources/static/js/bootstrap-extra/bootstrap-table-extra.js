@@ -77,7 +77,7 @@
 	 */
 	var disposeHeaders = function(config, innerConfig){
 		var columns = config.columns;
-		var headerStr = '<thead id='+ innerConfig.theadId +'><tr>';
+		var headerStr = '<thead id='+ innerConfig.theadId +' style="display:table;width:100%;table-layout:fixed;"><tr>';
 		var headerFields = [];
 		var headerFieldFormats = {};
 		
@@ -171,10 +171,10 @@
 		var bodyStr = '';
 		$.each(datas, function(index){
 			var data = this;
-			bodyStr += '<tr class="data-td">';
+			bodyStr += '<tr class="data-td" style="display:table;width:100%;table-layout:fixed;" data-index='+ index +'>';
 			
 			if (config.checkBox === true){
-				bodyStr += '<td><input type="checkbox" class="check-sub" data-id=""/></td>';				
+				bodyStr += '<td><input type="checkbox" class="check-sub" checkbox-index="'+ index +'" /></td>';				
 			}
 			
 			if (config.showIndex === true){
@@ -252,6 +252,13 @@
 	 */
 	var bindClickColumns = function(config, innerConfig){
 		$('.data-td').click(function(){
+			
+			var dataIndex = $(this).attr('data-index');
+			var currentTrCheckBox = $("input[checkbox-index="+ dataIndex +"]");
+			if (currentTrCheckBox){
+				currentTrCheckBox.prop("checked", !(currentTrCheckBox.is(':checked')));
+			}
+			
 			$('.data-td').css({'background-color': 'white'});
 			$(this).css({'background-color': '#F3F3F3'});
 			if (config.clickColumn){

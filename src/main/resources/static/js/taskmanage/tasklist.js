@@ -23,8 +23,14 @@ $(function(){
 		},
 		checkBox: true,
 		columns:[{title: '任务名称', fieldName: 'taskName'},
-		         {title: '任务ID', fieldName: 'taskId'},
-		         {title: '任务key', fieldName: 'taskKey'},
+		         {title: '任务ID', fieldName: 'taskId', 
+			       	 formatter: function(v, data){
+			       		 return '<p style="word-wrap:break-word">'+ v +'</p>'
+			     }},
+		         {title: '任务key', fieldName: 'taskKey', 
+			       	 formatter: function(v, data){
+			       		 return '<p style="word-wrap:break-word">'+ v +'</p>'
+			     }},
 		         {title: '调度计划', fieldName: 'dispatchType', 
 		        	 formatter: function(v, data){
 			        	 switch (v){
