@@ -5,12 +5,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 import com.csy.test.webui.jarmanage.websocket.JarLogWebSocketHandler;
@@ -26,7 +26,7 @@ import com.csy.test.webui.systemconfig.interceptor.WebSocketReadLogInterceptor;
 @Configuration
 @EnableWebSocket
 @EnableWebSocketMessageBroker
-public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer implements WebSocketConfigurer{
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer, WebSocketConfigurer{
 	
 	@Autowired
 	WebSocketReadLogInterceptor webSocketReadLogInterceptor;
@@ -73,6 +73,6 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer im
 	@Override
 	public void configureClientInboundChannel(ChannelRegistration registration) {
 		//添加路由拦截，判断请求头是否带上token、token是否有效
-		registration.setInterceptors(webSocketEmptyLogInterceptor);
+		registration.interceptors(webSocketEmptyLogInterceptor);
 	}
 }
