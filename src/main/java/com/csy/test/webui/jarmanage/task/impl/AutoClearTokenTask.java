@@ -44,9 +44,4 @@ public class AutoClearTokenTask implements InitTaskBase{
 			});
 		}, DELAY_TIME, DELAY_TIME, TimeUnit.MILLISECONDS);
 	}
-
-	@Override
-	public String taskName() {
-		return null;
-	}
 }

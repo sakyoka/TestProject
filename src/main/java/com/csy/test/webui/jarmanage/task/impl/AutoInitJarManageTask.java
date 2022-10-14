@@ -21,9 +21,4 @@ public class AutoInitJarManageTask implements InitTaskBase{
 	public void execute() {
 		JarManageNeetInit.init();
 	}
-
-	@Override
-	public String taskName() {
-		return null;
-	}
 }

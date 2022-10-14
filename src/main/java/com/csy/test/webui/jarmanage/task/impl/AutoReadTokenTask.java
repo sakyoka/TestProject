@@ -38,9 +38,4 @@ public class AutoReadTokenTask implements InitTaskBase{
 		}
 		log.info("读取文件中的token数据到缓存完毕.");
 	}
-
-	@Override
-	public String taskName() {
-		return null;
-	}
 }

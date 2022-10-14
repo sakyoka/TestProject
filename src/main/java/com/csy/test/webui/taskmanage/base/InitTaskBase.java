@@ -15,7 +15,9 @@ public interface InitTaskBase {
 	 * @date 2022年9月29日 下午5:08:58
 	 * @return 任务名称
 	 */
-	String taskName();
+	default String taskName(){
+		return null;
+	};
 	
 	/**
 	 * 
@@ -24,7 +26,7 @@ public interface InitTaskBase {
 	 * @date 2022年9月11日 上午12:13:13
 	 * @return 排序号
 	 */
-	int order();
+	default int order(){return 9999;};
 
 	/**
 	 * 

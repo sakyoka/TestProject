@@ -68,9 +68,4 @@ public class AutoDisposeAgentJarTask implements InitTaskBase{
 			log.error("生成代理支撑包失败", e);
 		}		
 	}
-
-	@Override
-	public String taskName() {
-		return null;
-	}
 }

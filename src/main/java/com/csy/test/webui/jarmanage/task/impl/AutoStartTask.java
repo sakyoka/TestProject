@@ -54,9 +54,4 @@ public class AutoStartTask implements InitTaskBase{
 			log.debug(PrintUtils.getFormatString("系统没有配置全局启动."));
 		}
 	}
-
-	@Override
-	public String taskName() {
-		return null;
-	}
 }

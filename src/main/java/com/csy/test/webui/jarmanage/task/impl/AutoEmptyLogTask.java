@@ -94,9 +94,4 @@ public class AutoEmptyLogTask implements InitTaskBase{
 			}
 		}, 0, 30 * 60 * 1000,TimeUnit.MILLISECONDS);
 	}
-
-	@Override
-	public String taskName() {
-		return null;
-	}
 }

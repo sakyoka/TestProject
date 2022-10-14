@@ -161,14 +161,9 @@ public class AutoClearTask implements InitTaskBase{
 					&& dir.isDirectory() 
 					&& dirUuids.contains(dir.getName())){
 				//删除
-				log.debug(PrintUtils.getFormatString("删除目录：", dir.getAbsolutePath()));
+				log.debug(PrintUtils.getFormatString("删除目录：%s", dir.getAbsolutePath()));
 				FileUtils.deletes(dir.getAbsolutePath());
 			}
 		}		
-	}
-
-	@Override
-	public String taskName() {
-		return null;
 	}
 }
