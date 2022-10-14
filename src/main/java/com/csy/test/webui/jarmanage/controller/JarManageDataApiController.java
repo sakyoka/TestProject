@@ -140,10 +140,9 @@ public class JarManageDataApiController {
 	 * @return ResultBean
 	 */
 	@GetMapping("/download")
-	public ResultBean download(@RequestParam("jarId")String jarId, 
+	public void download(@RequestParam("jarId")String jarId, 
 			@RequestParam(value = "fileType", required = false)String fileType, HttpServletResponse response){
 		jarManageDataApiService.download(jarId, fileType, response);
-		return ResultBean.ok("请求成功");
 	}
 	
 	/**

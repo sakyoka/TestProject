@@ -144,8 +144,7 @@ var JarManage = {
 		 */
 		downloadLog: function(jarId){
 			$.download({
-				url: JarUrl.getDownloadLog() + "?jarId=" + jarId ,
-				headers:{'token': localStorage.getItem("token")}
+				url: JarUrl.getDownloadLog() + "?jarId=" + jarId
 			});
 		},
 		

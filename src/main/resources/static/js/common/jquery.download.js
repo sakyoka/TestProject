@@ -61,7 +61,7 @@
 		xhr.open(medhod, requestUrl, async);
 		xhr.responseType = 'blob';
 		for (var k in headers){
-			xhr.setRequestHeader(k, headers[k]);setRequestHeader
+			xhr.setRequestHeader(k, headers[k]);
 		}
 		
 		if (onBeforeSend){

@@ -21,8 +21,7 @@ var buttonOption = {
 				isClose: true,
 				onclose: function(){
 					$.download({
-						url: JarUrl.getExportJarConfig(),
-						headers:{'token': localStorage.getItem("token")}
+						url: JarUrl.getExportJarConfig()
 					});
 				}
 			},{

@@ -47,8 +47,7 @@ function initAboutDetailData(){
  */
 function downloadFile(fileType){
 	$.download({
-		url: JarUrl.getDownload() + "?jarId=" + jarId + "&fileType=" + fileType ,
-		headers:{'token': localStorage.getItem("token")}
+		url: JarUrl.getDownload() + "?jarId=" + jarId + "&fileType=" + fileType 
 	});
 }
 
