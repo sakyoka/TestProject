@@ -3,7 +3,7 @@ package com.csy.test.webui.systemconfig.web;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.csy.test.webui.systemconfig.interceptor.JarManageInterceptor;
 
 /**
@@ -13,7 +13,7 @@ import com.csy.test.webui.systemconfig.interceptor.JarManageInterceptor;
  * @date 2022年1月14日 上午9:14:09
  */
 @Configuration
-public class WebConfig extends WebMvcConfigurerAdapter{
+public class WebConfig implements WebMvcConfigurer{
 
 	@Autowired
 	JarManageInterceptor jarManageInterceptor;
