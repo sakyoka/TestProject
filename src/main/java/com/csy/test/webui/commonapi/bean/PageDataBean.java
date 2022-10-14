@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.csy.test.commons.utils.Objects;
+
 import lombok.Data;
 
 /**
@@ -26,7 +27,8 @@ public class PageDataBean<T> {
 			Integer currentPage, List<T> datas){
 		PageDataBean<T> pageDataBean = new PageDataBean<T>();
 		pageDataBean.setCurrentPage(Objects.ifNullDefault(currentPage, 1));
-		pageDataBean.setDatas(Objects.ifNullDefault(datas, Collections.emptyList()));
+		List<T> defaultList = Collections.emptyList();
+		pageDataBean.setDatas(Objects.ifNullDefault(datas, defaultList));
 		pageDataBean.setRows(Objects.ifNullDefault(rows, 0));
 		return pageDataBean;
 	}

@@ -241,17 +241,5 @@
                 </includes>
             </resource>
         </resources>
-
-        <plugins>
-                <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                    <version>1.4.2.RELEASE</version>
-                    <configuration>
-                        <fork>true</fork>
-                        <mainClass>com.csy.test.App</mainClass>  
-                    </configuration>
-                </plugin>
-            </plugins>
     </build>
 </project>
