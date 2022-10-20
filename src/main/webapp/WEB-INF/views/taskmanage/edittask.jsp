@@ -69,6 +69,7 @@ textarea {height: 70px!important;}
 		                <td class="first-cols"><font color="red">*</font>任务调度类型：</td>
 		                <td style="text-align: left;">
 		                    <input type="radio" name="taskType" class="param-field" checked value="0"/>请求url
+		                    <input type="radio" name="taskType" class="param-field" value="1" disabled="disabled"/>jar包方法
 		                    <input type="radio" name="taskType" class="param-field" value="2"/>执行类方法
 		                    <!-- 1的上传jar类型需要单独页面上传 -->
 		                </td>

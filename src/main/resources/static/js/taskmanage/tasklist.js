@@ -4,7 +4,7 @@ $(function(){
 	var ref = urlObject.get('ref');
 	parent.setContentHeightWidth(ref);
 	
-	$.bootstrapTable({
+	var table = $.bootstrapTable({
 		id: 'taskTable',
 		queryParams:{},
 		data: function(pageObject, queryParams){
@@ -58,18 +58,28 @@ $(function(){
 		buttons: [{
 			name: '编辑任务',
 			handle: function(){
+				var datas = table.getSelectedDatas();
+				if (datas.length > 1){
+					AlertMessgaeUtils.alert({id:'tip', title:'提示', content: '仅可勾选一条进行编辑'});
+					return ;
+				}
 				AlertMessgaeUtils.alert({
 					target: $(top.document.body),
 					id:'editTask', 
 					title:'编辑任务',
-					url: root + '/view/taskmanage/edittask',
+					url: root + '/view/taskmanage/edittask?taskId=' 
+					           + (datas.length == 1 ? datas[0].taskId : ''),
 				    height: '450px'	
 				});
 			}
 		},{
 			name: '移除任务',
 			handle: function(){
-				
+				var datas = table.getSelectedDatas();
+				if (datas.length == 0){
+					AlertMessgaeUtils.alert({id:'tip', title:'提示', content: '请勾选数据'});
+					return ;
+				}
 			}
 		}]
 	});

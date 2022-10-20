@@ -35,15 +35,38 @@
 		}
 		
 		disposeBodyData(config, innerConfig);
+
+		$('body').on('click', '.check-parent', function(){
+			$('.check-sub').prop("checked", $(this).is(':checked'));
+		});
 		
 		this.load = function(queryParams){
 			config.queryParams = queryParams;
 			disposeBodyData(config, innerConfig);
 		}
 		
-		$('body').on('click', '.check-parent', function(){
-			$('.check-sub').prop("checked", $(this).is(':checked'));
-		});
+		this.getDatas = function(){
+			var datas = [];
+			for (var k in innerConfig.datas){
+				datas.push(innerConfig.datas[index]);
+			}
+			return datas;
+		}
+		
+		this.getSelectedDatas = function(){
+			var checkeds = $("input[class=check-sub]:checked");
+			var datas = [];
+			$.each(checkeds, function(){
+				var idx = $(this).attr("checkbox-index");
+				datas.push(innerConfig.datas[idx]);
+			});
+			return datas;
+		}
+		
+		this.getSelectedData = function(){
+			var idx = $("input[class=check-sub]:checked").eq(0).attr("checkbox-index");
+			return innerConfig.datas[idx];
+		}
 		
 		return this;
 	}
@@ -162,6 +185,7 @@
 	 */
 	var disposeDatas = function(config, datas, innerConfig){
 		
+		innerConfig.datas = {};
 		if (datas == undefined || datas.length == 0){
 			return '';
 		}
@@ -169,9 +193,12 @@
 		var headerFields = config.headerFields;
 		var headerFieldFormats = config.headerFieldFormats;
 		var bodyStr = '';
+		
 		$.each(datas, function(index){
 			var data = this;
 			bodyStr += '<tr class="data-td" style="display:table;width:100%;table-layout:fixed;" data-index='+ index +'>';
+			
+			innerConfig.datas[index] = data;
 			
 			if (config.checkBox === true){
 				bodyStr += '<td><input type="checkbox" class="check-sub" checkbox-index="'+ index +'" /></td>';				

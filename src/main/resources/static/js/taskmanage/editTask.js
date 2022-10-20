@@ -2,9 +2,39 @@ $(function(){
 	
 	radioListener();
 	
-	dispatchTypeControl(0);
-	taskTypeTypeControl(0);
+	var currentUrlObject = new URLBuilder(location.href);
+	var taskId = currentUrlObject.get("taskId");
+	initData(taskId);
 });
+
+function initData(taskId){
+	var dispatchType = 0;
+	var taskType = 0;
+	if (taskId != ''){
+		reqeustCommonApi({
+			async: false,
+			data: new ApiParams('taskManage', 'saveTaskInfo')
+		              .params('paramObject', paramObject)
+		              .build(),
+			success: function(res){
+				if (res.code == '200'){
+					AlertMessgaeUtils.alert({
+						id:'tip', 
+						title:'提示', 
+						content: '保存数据成功', 
+						onclose: function(){
+							closeDialog();
+					}});
+				}else{
+					AlertMessgaeUtils.alert({id:'tip', title:'提示', 
+						content: '保存失败: ' + validResult.msg});
+				}
+			}
+		});
+	}
+	dispatchTypeControl(dispatchType);
+	taskTypeTypeControl(taskType);
+}
 
 /**
  * 关闭
