@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -75,15 +77,99 @@ public class EntityUtils {
 	 * @param <T>
 	 * @param <E>
 	 * @param sourceEntity 数据源
-	 * @param clazz 目标对象
+	 * @param targetEntity 目标对象
 	 * @return Class object
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static <T , E> T sourceTranferTo(E sourceEntity , Class<T> toClazz) {
+	public static <T, E> T sourceTranferTo(E sourceEntity, T targetEntity) {
+		return sourceTranferTo(sourceEntity, targetEntity, null);
+	}
+	
+	/**
+	 * 描述：sourceEntity To Class object
+	 * <br>sourceEntity field annotation @EntityTranfer
+	 * @author csy
+	 * @date 2022年10月24日 上午9:27:04
+	 * @param sourceEntity 数据源对象
+	 * @param toClazz      目标对象的class
+	 * @param group        分组值
+	 * @return Class object
+	 */
+	public static <T, E> T sourceTranferTo(E sourceEntity, Class<T> toClazz, String group) {
 		T toEntity = ClassUtils.newInstance(toClazz);
-		Field[] fields = toClazz.getDeclaredFields();
-		new DefaultEntityTranferForEach(sourceEntity).entity(toEntity).fields(fields).foreach();
-		return toEntity;
+		return sourceTranferTo(sourceEntity, toEntity, group);
+	}
+	
+	/**
+	 * 描述：sourceEntity To Class object
+	 * <br>sourceEntity field annotation @EntityTranfer
+	 * @author csy
+	 * @date 2022年10月24日 上午9:27:04
+	 * @param sourceEntity 数据源对象
+	 * @param toClazz      目标对象的class
+	 * @return Class object
+	 */
+	public static <T, E> T sourceTranferTo(E sourceEntity, Class<T> toClazz) {
+		T toEntity = ClassUtils.newInstance(toClazz);
+		return sourceTranferTo(sourceEntity, toEntity, null);
+	}
+	
+	/**
+	 * 
+	 * 描述：sourceEntity 填充 targetEntity
+	 * @author csy
+	 * @date 2022年10月24日 上午9:30:08
+	 * @param sourceEntity 数据源对象
+	 * @param targetEntity 目标对象
+	 * @param group        分组值
+	 * @return targetEntity
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static <T, E> T sourceTranferTo(E sourceEntity, T targetEntity, String group) {
+		List<Field> fieldList = ClassUtils.getAllFields(targetEntity.getClass());
+		Field[] fields = new Field[fieldList.size()];
+		fieldList.toArray(fields);
+		new DefaultEntityTranferForEach(sourceEntity)
+		    .group(group)
+		    .entity(targetEntity)
+		    .fields(fields)
+		    .foreach();
+		return targetEntity;
+	}
+	
+	/**
+	 * 
+	 * 描述：集合转集合
+	 * @author csy
+	 * @date 2022年10月21日 下午3:50:45
+	 * @param sourceEntitys
+	 * @param toClazz
+	 * @return List<T>
+	 */
+	public static <T, E> List<T> sourceTranferTo(List<E> sourceEntitys , 
+			Class<T> toClazz){
+		return sourceTranferTo(sourceEntitys, toClazz, null);
+	}
+	
+	/**
+	 * 
+	 * 描述：集合转集合
+	 * @author csy
+	 * @date 2022年11月2日 下午2:16:53
+	 * @param sourceEntitys
+	 * @param toClazz
+	 * @param group 分组值
+	 * @return List<T>
+	 */
+	public static <T, E> List<T> sourceTranferTo(List<E> sourceEntitys , 
+			Class<T> toClazz, String group){
+		List<T> results = new ArrayList<T>(sourceEntitys.size());
+		if (sourceEntitys.isEmpty()){
+			return results;
+		}
+		for (E e:sourceEntitys){
+			results.add(sourceTranferTo(e, toClazz, group));
+		}
+		return results;
 	}
 	
 	/**

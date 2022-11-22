@@ -8,5 +8,13 @@ package com.csy.test.commons.entity.base;
  */
 public interface EntityTranferBase {
 
-	Object tranfer(Object source);
+	/**
+	 * 描述：转换值
+	 * @author csy 
+	 * @date 2022年6月17日 下午4:38:18
+	 * @param source
+	 * @param entity 
+	 * @return Object
+	 */
+	Object tranfer(Object source, Object entity);
 }

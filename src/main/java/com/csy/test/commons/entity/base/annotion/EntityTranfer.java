@@ -31,5 +31,24 @@ public @interface EntityTranfer {
 	 * @date 2021年1月23日 上午11:54:28
 	 * @return Class
 	 */
-	Class<? extends EntityTranferBase> entityTranferClazz() default DefaultEntityTranfer.class;
+	Class<? extends EntityTranferBase> entityTranferClazz() 
+	    default DefaultEntityTranfer.class;
+
+	/**
+	 * 
+	 * 描述：分组，默认空集合不分组
+	 * @author csy
+	 * @date 2022年10月24日 上午9:10:10
+	 * @return String[]
+	 */
+	String[] groups() default {};
+
+	/**
+	 * 
+	 * 描述：当不需要分组时候忽略此字段
+	 * @author csy
+	 * @date 2022年11月2日 下午2:25:15
+	 * @return true忽略，false不忽略
+	 */
+	boolean ignoreWhenGroupIsNull() default false;
 }
