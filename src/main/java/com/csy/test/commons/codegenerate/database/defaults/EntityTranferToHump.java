@@ -12,7 +12,7 @@ import com.csy.test.commons.utils.StrUtil;
 public class EntityTranferToHump implements EntityTranferBase{
 
 	@Override
-	public Object tranfer(Object source) {
+	public Object tranfer(Object source, Object entity) {
 		if (source == null)
 			return source;
 		

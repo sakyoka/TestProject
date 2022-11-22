@@ -11,7 +11,7 @@ import com.csy.test.commons.entity.base.EntityTranferBase;
 public class DefaultEntityTranfer implements EntityTranferBase{
 
 	@Override
-	public Object tranfer(Object source) {
+	public Object tranfer(Object source, Object entity) {
 		return source;
 	}
 

@@ -14,7 +14,7 @@ import com.csy.test.commons.entity.base.EntityTranferBase;
 public class EntityTranferToJavaType implements EntityTranferBase{
 
 	@Override
-	public Object tranfer(Object source) {
+	public Object tranfer(Object source, Object entity) {
 		if (source == null) {
 			throw new RuntimeException("数据类型为空");
 		}
