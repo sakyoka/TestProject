@@ -97,6 +97,20 @@ public class JarTaskUtils {
      * @param jarId
      */
     public synchronized static void start(String jarId){
+    	try {
+    		privateStart(jarId);
+		} finally {
+    		tryToStopExceptionApplications(jarId);
+		}
+    }
+    
+    /**
+     * 描述：启动线程执行jar
+     * @author csy 
+     * @date 2022年1月12日 下午2:51:04
+     * @param jarId
+     */
+    private static void privateStart(String jarId){
     	//获取jar配置
 		JarManageBean jarManageBean = JarEntityUtils.get(jarId);
 		Objects.notNullAssert(jarManageBean, PrintUtils.getFormatString("启动jarId失败，jarId:%s, 获取对象为空", jarId));
@@ -131,9 +145,6 @@ public class JarTaskUtils {
     		afterStopRefreshManageBean(jarManageBean);
     		JAR_STOP_MAP.put(jarId, true);
     		log.debug(PrintUtils.getFormatString("停止信息：%s" , exemsg));
-    		
-    		//上面代码执行，证明启动线程已经关闭了（也证明jar应用已经关闭），但是由于特殊jar应用关闭失败，所以尝试执行匹配关闭
-    		tryToStopExceptionApplications(jarManageBean);
     	});
 
     	log.debug(PrintUtils.getFormatString("已执行jarId:%s 启动，等待应用启动完毕。", jarId));
@@ -151,12 +162,18 @@ public class JarTaskUtils {
      * 描述：尝试关闭异常应用，仅当匹配上时候才执行kill
      * @author csy
      * @date 2023年3月3日 上午10:20:04
-     * @param jarManageBean
+     * @param jarId
+     * @param runtimeStatus 
      */
-    private static void tryToStopExceptionApplications(JarManageBean jarManageBean) {
+    private static void tryToStopExceptionApplications(String jarId) {
+		JarManageBean jarManageBean = JarEntityUtils.get(jarId);
+		//如果是运行着状态的，忽略
+		if (JarNumberEnum.RUNING
+				.equalValue(jarManageBean.getIsRuning())){
+			return ;
+		} 
 		Process process = null;
 		String pid = null;
-		String jarId = jarManageBean.getJarId();
 		try {
 			//执行java命令
 			Command command = Command.getBuilder();
