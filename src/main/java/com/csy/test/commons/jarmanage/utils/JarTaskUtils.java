@@ -1,11 +1,15 @@
 package com.csy.test.commons.jarmanage.utils;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.csy.test.commons.excel.utils.CollectionUtils;
 import com.csy.test.commons.jarmanage.base.impl.JarInstanceNameThreadFactory;
 import com.csy.test.commons.jarmanage.base.impl.JarLogNameThreadFactory;
 import com.csy.test.commons.jarmanage.bean.JarManageBean;
@@ -127,6 +131,9 @@ public class JarTaskUtils {
     		afterStopRefreshManageBean(jarManageBean);
     		JAR_STOP_MAP.put(jarId, true);
     		log.debug(PrintUtils.getFormatString("停止信息：%s" , exemsg));
+    		
+    		//上面代码执行，证明启动线程已经关闭了（也证明jar应用已经关闭），但是由于特殊jar应用关闭失败，所以尝试执行匹配关闭
+    		tryToStopExceptionApplications(jarManageBean);
     	});
 
     	log.debug(PrintUtils.getFormatString("已执行jarId:%s 启动，等待应用启动完毕。", jarId));
@@ -140,6 +147,52 @@ public class JarTaskUtils {
     }
     
     /**
+     * 
+     * 描述：尝试关闭异常应用，仅当匹配上时候才执行kill
+     * @author csy
+     * @date 2023年3月3日 上午10:20:04
+     * @param jarManageBean
+     */
+    private static void tryToStopExceptionApplications(JarManageBean jarManageBean) {
+		Process process = null;
+		String pid = null;
+		String jarId = jarManageBean.getJarId();
+		try {
+			//执行java命令
+			Command command = Command.getBuilder();
+			if (OsUtils.isWindow()){
+				command.commandStr("jps -l");
+			}else{
+				//或者直接指定jdk的jps , xxs/java/bin/jps -l
+				command.commandArr("/bin/sh", "-c", "cd / && source /etc/profile && jps -l");
+			}
+			List<String> printResults = command.toListContets();
+			if (CollectionUtils.isEmpty(printResults)){
+				return ;
+			}
+			for (String applicationMessage:printResults){
+				String[] arr = applicationMessage.split(" ");
+				if (Objects.notNull(arr) && arr.length > 1){
+					pid = arr[0];
+					//匹配启动路径
+					if (StringUtils.isNotBlank(arr[1]) &&
+							arr[1].equals(jarManageBean.getJarPath())){
+						//关闭进程
+						kill(jarId, pid);
+					}
+				}
+			}
+			process = command.getProcess();
+		}catch(Exception e){
+			log.error(PrintUtils.getFormatString("尝试关闭jar应用失败, jarId:%s, pid:%s", jarId, pid), e);
+		} finally {
+			if (process != null){
+				process.destroy();
+			}
+		}	
+	}
+
+	/**
      * 描述：处理pid
      * @author csy 
      * @date 2022年6月7日 下午5:55:56
@@ -180,7 +233,19 @@ public class JarTaskUtils {
      * @param jarId 
      */
     public static void kill(String jarId){
-		String pid = JarProcessUtils.get(jarId);
+    	String pid = JarProcessUtils.get(jarId);
+    	kill(jarId, pid);
+    }
+    
+    /**
+     * 
+     * 描述：关闭进程
+     * @author csy
+     * @date 2023年3月3日 上午10:13:50
+     * @param jarId
+     * @param pid
+     */
+    public static void kill(String jarId, String pid){
 		String killCmd = PrintUtils.getFormatString((OsUtils.isWindow() ? "taskkill /pid %s /f" : "kill -9 %s"), pid);
 		log.debug(PrintUtils.getFormatString("kill cmd >> %s , jarId: %s", killCmd, jarId));
 		Command command = Command.getBuilder().commandStr(killCmd).isPrint(true);
