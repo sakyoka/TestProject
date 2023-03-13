@@ -58,6 +58,8 @@ public class TypeNameDicConstants {
 		this.put("DECIMAL",Types.INTEGER);
 		this.put("INTEGER", Types.INTEGER);
 		this.put("FLOAT", Types.FLOAT);
+		this.put("TIMESTAMP", Types.DATE);
+		this.put("TIMESTAMP(6)", Types.DATE);
 	}};
 	
 	public static Integer getJavaType(String dataBaseType) {

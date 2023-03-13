@@ -93,7 +93,9 @@ public class MapperMethodCommonImpl implements MethodTemplateGenerate{
  		String findListSql = getBuilder.toString();
  		String getOneSql = getBuilder.append(LineConstants.WRAP)
  				.append(LineConstants.BLANK_SPACE_FOUR).append(LineConstants.BLANK_SPACE_FOUR)
- 				.append(whereSql.toString().replace(primaryKey, shortTableName + "." + primaryKey)).toString();
+ 				.append(" where ").append(shortTableName + "." + primaryKey)
+ 				.append(" = ").append("#{").append(StrUtil.toCamelCase(primaryKey)).append("}")
+ 				.toString();
  		
  		String deleteSql = "delete from "+ tableMessage.getTableName() + whereSql.toString();
  		
