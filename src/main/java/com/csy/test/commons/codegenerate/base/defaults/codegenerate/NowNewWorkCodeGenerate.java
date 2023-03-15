@@ -68,8 +68,12 @@ public class NowNewWorkCodeGenerate implements CodeGenerateBase {
 			} catch (IOException e) {
 				throw new RuntimeException("创建路径失败:" + path, e);
 			}
+			//文件名字
+			String fileName = StringUtils.isNotBlank(codeGenerateParams.getPrefixClassName()) ? 
+					codeGenerateParams.getPrefixClassName() : StrUtil.upperFirst(StrUtil.toCamelCase(tableName));
+			//文件路径
 			path = stringBuilder
-					.append(StrUtil.upperFirst(StrUtil.toCamelCase(tableName)))
+					.append(fileName)
 					.append(codeGenerateParams.getFileSuffixNameMap().get(fileSuffixEnum.getFileType()))
 					.append(".").append(fileSuffixEnum.getSuffixName()).toString();
 			FileUtils.writeFile(path , contents);

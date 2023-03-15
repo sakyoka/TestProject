@@ -99,7 +99,6 @@ public class NowNewWorkTransferFile implements TranferFileBase{
 		            }
 		            Path targetPath = Paths.get(finallyPath);
 		            File targetFile = targetPath.toFile();
-		            System.out.println();
 		            FileUtils.ifNotExistsCreate(targetFile.getAbsolutePath());
 		            FileUtils.coppyTo(file.toFile() , targetFile);
 					return FileVisitResult.CONTINUE;

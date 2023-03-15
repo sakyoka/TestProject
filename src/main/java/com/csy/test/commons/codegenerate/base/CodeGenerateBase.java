@@ -104,7 +104,8 @@ public interface CodeGenerateBase {
 		
 		String tableName = dataMetaBase.getTableMessage().getTableName();
 		
-		String beanName = StrUtil.upperFirst(StrUtil.toCamelCase(tableName));
+		String beanName = StringUtils.isNotBlank(codeGenerateParams.getPrefixClassName()) 
+				? codeGenerateParams.getPrefixClassName() : StrUtil.upperFirst(StrUtil.toCamelCase(tableName));
 		
 		String basePackage = codeGenerateParams.getBasePackageMap().get(tableName);
 		String initPackageName = codeGenerateParams.getExtraInitPackageNameMap().get(tableName);

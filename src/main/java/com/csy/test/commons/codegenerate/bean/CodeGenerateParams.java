@@ -62,6 +62,9 @@ public class CodeGenerateParams {
 	
 	private Map<String, String> extraInitPackageNameMap;
 	
+	/**前缀类名*/
+	private String prefixClassName;
+	
 	private Map<FileSuffixEnum, List<MethodTemplateGenerate>> classGenerateMethodsMap;
 	
 	@SuppressWarnings("serial")
@@ -402,6 +405,19 @@ public class CodeGenerateParams {
 		this.classGenerateMethodsMap.putAll(classGenerateMethodsMap);
 		return this;
 	}
+	
+	/**
+	 * 
+	 * 描述：类前缀名（为空时，使用表名转成类名）
+	 * @author csy
+	 * @date 2023年3月15日 下午7:57:27
+	 * @param prefixClassName
+	 * @return CodeGenerateParams
+	 */
+	public CodeGenerateParams prefixClassName(String prefixClassName){
+		this.prefixClassName = prefixClassName;
+		return this;
+	}
 		
 	/**
 	 * 
@@ -529,5 +545,9 @@ public class CodeGenerateParams {
 
 	public Map<FileSuffixEnum, List<MethodTemplateGenerate>> getClassGenerateMethodsMap() {
 		return classGenerateMethodsMap;
+	}
+
+	public String getPrefixClassName() {
+		return prefixClassName;
 	}
 }
