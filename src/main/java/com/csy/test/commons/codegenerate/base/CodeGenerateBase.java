@@ -18,7 +18,6 @@ import com.csy.test.commons.codegenerate.constants.FileSuffixEnum;
 import com.csy.test.commons.codegenerate.constants.LineConstants;
 import com.csy.test.commons.codegenerate.database.bean.base.DataMetaBase;
 import com.csy.test.commons.utils.Objects;
-import com.csy.test.commons.utils.StrUtil;
 
 /**
  * 
@@ -104,8 +103,7 @@ public interface CodeGenerateBase {
 		
 		String tableName = dataMetaBase.getTableMessage().getTableName();
 		
-		String beanName = StringUtils.isNotBlank(codeGenerateParams.getPrefixClassName()) 
-				? codeGenerateParams.getPrefixClassName() : StrUtil.upperFirst(StrUtil.toCamelCase(tableName));
+		String beanName = codeGenerateParams.getPreFixClassNameMap().get(tableName);
 		
 		String basePackage = codeGenerateParams.getBasePackageMap().get(tableName);
 		String initPackageName = codeGenerateParams.getExtraInitPackageNameMap().get(tableName);

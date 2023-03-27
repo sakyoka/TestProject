@@ -5,13 +5,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.csy.test.commons.codegenerate.base.WriteFileBase;
 import com.csy.test.commons.codegenerate.bean.CodeGenerateParams;
 import com.csy.test.commons.codegenerate.constants.ClassifyConstants;
 import com.csy.test.commons.codegenerate.constants.FileSuffixEnum;
-import com.csy.test.commons.utils.StrUtil;
 import com.csy.test.commons.utils.file.FileUtils;
 
 /**
@@ -66,8 +63,7 @@ public class WriteFileNowWork implements WriteFileBase{
 			throw new RuntimeException("创建路径失败:" + path, e);
 		}
 		//文件名字
-		String fileName = StringUtils.isNotBlank(codeGenerateParams.getPrefixClassName()) ? 
-				codeGenerateParams.getPrefixClassName() : StrUtil.upperFirst(StrUtil.toCamelCase(tableName));
+		String fileName = codeGenerateParams.getPreFixClassNameMap().get(tableName);
 		//文件路径
 		path = stringBuilder
 				.append(fileName)

@@ -26,6 +26,8 @@ import com.csy.test.commons.valid.base.defaults.NullValid;
 import com.csy.test.commons.valid.bean.ParamValidResult;
 import com.csy.test.commons.valid.utils.ValidUtils;
 
+import cn.hutool.core.util.StrUtil;
+
 /**
  * 
  * 描述：配置对象
@@ -61,9 +63,9 @@ public class CodeGenerateParams {
 	private TranferFileBase tranferFileBase;
 	
 	private Map<String, String> extraInitPackageNameMap;
-	
+
 	/**前缀类名*/
-	private String prefixClassName;
+	private Map<String, String> preFixClassNameMap;
 	
 	private Map<FileSuffixEnum, List<MethodTemplateGenerate>> classGenerateMethodsMap;
 	
@@ -335,6 +337,26 @@ public class CodeGenerateParams {
 	}
 	
 	/**
+	 * 描述：设置tableName 对应的项目路径、包路径
+	 * @author csy 
+	 * @date 2021年10月20日 上午10:04:33
+	 * @param tableName            数据库表
+	 * @param baseProjectPath      项目包目录
+	 * @param packageName          项目目录下级
+	 * @param initPackageName      代码目录
+	 * @param beanName             bean name
+	 * @return CodeGenerateParams
+	 */
+	public CodeGenerateParams baseProjectPathAndPackageAndInitPackageAndBeanNameMap(String tableName, 
+			String baseProjectPath, String packageName, String initPackageName, String beanName) {
+		return this.basePackageMap(tableName , packageName)
+		           .baseProjectPathMap(tableName , baseProjectPath)
+		           .extraInitPackageNameMap(tableName, initPackageName)
+		           .preFixClassNameMap(tableName, beanName);
+				   
+	}
+	
+	/**
 	 * 描述：类对应的类内部方法生成器
 	 * @author csy 
 	 * @date 2022年3月15日 下午5:30:11
@@ -414,8 +436,11 @@ public class CodeGenerateParams {
 	 * @param prefixClassName
 	 * @return CodeGenerateParams
 	 */
-	public CodeGenerateParams prefixClassName(String prefixClassName){
-		this.prefixClassName = prefixClassName;
+	public CodeGenerateParams preFixClassNameMap(String tableName, String preFixClassName){
+		if (Objects.isNull(this.preFixClassNameMap)){
+			this.preFixClassNameMap = new HashMap<String, String>(12);
+		}
+		this.preFixClassNameMap.put(tableName.toLowerCase(), preFixClassName);
 		return this;
 	}
 		
@@ -484,6 +509,17 @@ public class CodeGenerateParams {
 		if (!this.classGenerateMethodsMap.containsKey(FileSuffixEnum.MAPPER)){
 			this.classGenerateMethodsMap(FileSuffixEnum.MAPPER, new MapperMethodCommonImpl());
 		}
+		
+		if (Objects.isNull(this.preFixClassNameMap)){
+			this.preFixClassNameMap = new HashMap<String, String>(this.basePackageMap.size());
+		}
+		
+		this.basePackageMap.forEach((k, v) -> {
+			if (!this.preFixClassNameMap.containsKey(k)){
+				this.preFixClassNameMap.put(k, StrUtil.upperFirst(k.replace("_", "").toLowerCase()));
+			}
+		});
+		
 		return this;
 	}
 	
@@ -546,8 +582,8 @@ public class CodeGenerateParams {
 	public Map<FileSuffixEnum, List<MethodTemplateGenerate>> getClassGenerateMethodsMap() {
 		return classGenerateMethodsMap;
 	}
-
-	public String getPrefixClassName() {
-		return prefixClassName;
+	
+	public Map<String, String> getPreFixClassNameMap() {
+		return preFixClassNameMap;
 	}
 }

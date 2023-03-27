@@ -5,12 +5,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.csy.test.commons.codegenerate.base.WriteFileBase;
 import com.csy.test.commons.codegenerate.bean.CodeGenerateParams;
 import com.csy.test.commons.codegenerate.constants.FileSuffixEnum;
-import com.csy.test.commons.utils.StrUtil;
 import com.csy.test.commons.utils.file.FileUtils;
 
 /**
@@ -31,8 +28,7 @@ public class WriteFileGeneralDefault implements WriteFileBase{
 			throw new RuntimeException("创建路径失败:" + path, e);
 		}
 		
-		String fileName = StringUtils.isNotBlank(codeGenerateParams.getPrefixClassName()) ? 
-				codeGenerateParams.getPrefixClassName() : StrUtil.upperFirst(StrUtil.toCamelCase(tableName));
+		String fileName = codeGenerateParams.getPreFixClassNameMap().get(tableName);
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(path)
 					 .append(File.separator)
