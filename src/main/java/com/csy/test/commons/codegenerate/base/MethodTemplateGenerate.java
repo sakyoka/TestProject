@@ -85,6 +85,12 @@ public interface MethodTemplateGenerate {
 		String daoName = codeGenerateBaseInitParams.getFullDaoName();
 		tempValueMap.put("daoObject", daoName);
 		tempValueMap.put("daoObjectParam", StrUtil.lowerFirst(daoName));
+		
+		String serviceName = codeGenerateBaseInitParams.getFullServiceName();
+		tempValueMap.put("serviceObject", serviceName);
+		tempValueMap.put("serviceObjectParam", StrUtil.lowerFirst(serviceName));
+		
+		tempValueMap.put("tableRemarks", tableMessage.getRemarks());
 		return tempValueMap;
 	}
 }

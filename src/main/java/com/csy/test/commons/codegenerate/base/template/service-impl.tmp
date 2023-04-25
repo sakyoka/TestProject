@@ -1,21 +1,21 @@
+
 	@Autowired
 	${daoObject} ${daoObjectParam};
 	
-	@SuppressWarnings("unchecked")
 	@Override
-	public PageDataModel<${voObject}> getPageData(PageModel pageModel,
+	public List<${voObject}> getPageData(PageModel pageModel,
 			${queryObject} ${queryObjectParam}) {
 		pageModel.initPage();
 		List<${voObject}> ${voObjectParam}s = 
-				this.findList(${queryObjectParam});
-		return pageModel.loadData(${voObjectParam}s);
+				this.list(${queryObjectParam});
+		return ${voObjectParam}s;
 	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public void saveOrUpdate(${dtoObject} ${dtoObjectParam}) {
 		${modelObject} ${modelObjectParam} = ${modelObject}.builder().build();
-		BeanUtil.sourceToTarget(${dtoObjectParam}, ${modelObjectParam});
+		EntityUtils.sourceTranferTo(${dtoObjectParam}, ${modelObjectParam});
 		if (StringUtils.isNotBlank(${modelObjectParam}.${primaryKeyGet}())){
 			${daoObjectParam}.update(${modelObjectParam});
 		}else{
@@ -36,15 +36,14 @@
 	@Override
 	public ${voObject} get(String ${primaryKey}) {
 		${modelObject} ${modelObjectParam} = ${daoObjectParam}.get(${primaryKey});
-		return BeanUtil.sourceToTarget(${modelObjectParam}, ${voObject}.class);
+		return EntityUtils.sourceTranferTo(${modelObjectParam}, ${voObject}.class);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public List<${voObject}> findList(${queryObject} ${queryObjectParam}){
+	public List<${voObject}> list(${queryObject} ${queryObjectParam}){
 		List<${modelObject}> ${modelObjectParam}s = 
 				${daoObjectParam}.findList(${queryObjectParam});
 		List<${voObject}> ${voObjectParam}s = 
-				BeanUtil.sourceToTarget(${modelObjectParam}s, ${voObject}.class);
-		return Objects.ifNullDefault(${voObjectParam}s, Collections.EMPTY_LIST);
+				EntityUtils.sourceTranferTo(${modelObjectParam}s, ${voObject}.class);
+		return Optional.ofNullable(${voObjectParam}s).orElse(Collections.emptyList());
 	}

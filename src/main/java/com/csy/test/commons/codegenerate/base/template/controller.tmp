@@ -1,0 +1,42 @@
+
+	@Autowired
+	${serviceObject} ${serviceObjectParam};
+	
+	@GetMapping("/getPageData")
+	@ApiOperation(value = "${tableRemarks}分页接口")
+	public ResultBean<List<${voObject}>> getPageData(PageModel pageModel,
+			${queryObject} ${queryObjectParam}) {
+		List<${voObject}> ${voObjectParam}s = 
+				${serviceObjectParam}.getPageData(pageModel, ${queryObjectParam});
+		return ${voObjectParam}s;
+	}
+	
+	@PostMapping("/saveOrUpdate")
+	@ApiOperation(value = "保存/修改${tableRemarks}接口")
+	public ResultBean<String> saveOrUpdate(${dtoObject} ${dtoObjectParam}) {
+		${serviceObjectParam}.saveOrUpdate(${dtoObjectParam});
+		return ResultBean.ok("");
+	}
+
+	@PostMapping("/deletes")
+	@ApiOperation(value = "删除${tableRemarks}接口")
+	@ApiImplicitParam(name = "${primaryKey}s", value = "主键值", required = true)
+	public ResultBean<String> deletes(@RequestParam("${primaryKey}s")String ${primaryKey}s) {
+		${serviceObjectParam}.deletes(${primaryKey}s);
+		return ResultBean.ok("");
+	}
+
+    @GetMapping("/get")
+	@ApiOperation(value = "获取一条${tableRemarks}接口")
+	@ApiImplicitParam(name = "${primaryKey}", value = "主键值", required = true)
+	public ${voObject} get(@RequestParam("${primaryKey}")String ${primaryKey}) {
+		${voObject} ${voObjectParam} = ${serviceObjectParam}.get(${primaryKey});
+		return ResultBean.ok("");
+	}
+
+    @GetMapping("/list")
+	@ApiOperation(value = "获取${tableRemarks}集合接口")
+	public List<${voObject}> list(${queryObject} ${queryObjectParam}){
+		List<${modelObject}> ${modelObjectParam}s = ${serviceObjectParam}.list(${queryObjectParam});
+		return ResultBean.ok(${modelObjectParam}s);
+	}

@@ -38,8 +38,6 @@ public class ServiceMethodTemplateImpl implements MethodTemplateGenerate{
 		methodGenerateRecord.setMethodContent(content);
 		List<String> impportBeans = new ArrayList<String>();
 		impportBeans.add("java.util.List");
-		impportBeans.add("com.minstone.common.model.page.PageDataModel");
-		impportBeans.add("com.minstone.common.model.page.PageModel");
 		
 		String beanPath = codeGenerateBaseInitParams.getBeanPath();
 		String beanName = codeGenerateBaseInitParams.getBeanName();

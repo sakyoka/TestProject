@@ -1,3 +1,4 @@
+
 	/**
 	 * 描述：获取${tableRemarks}分页数据
 	 * @author ${author}
@@ -6,7 +7,7 @@
 	 * @param ${queryObjectParam}
 	 * @return PageDataModel<${voObject}>
 	 */
-	PageDataModel<${voObject}> getPageData(PageModel pageModel, 
+	List<${voObject}> getPageData(PageModel pageModel, 
 			${queryObject} ${queryObjectParam});
 	
 	/**
@@ -41,5 +42,5 @@
 	 * @param ${queryObjectParam}
 	 * @return List<${voObject}> 
 	 */
-	List<${voObject}> findList(
+	List<${voObject}> list(
 			${queryObject} ${queryObjectParam});

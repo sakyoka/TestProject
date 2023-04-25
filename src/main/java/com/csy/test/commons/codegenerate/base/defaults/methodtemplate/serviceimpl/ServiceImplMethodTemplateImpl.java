@@ -38,8 +38,7 @@ public class ServiceImplMethodTemplateImpl implements MethodTemplateGenerate{
 		methodGenerateRecord.setMethodContent(content);
 		List<String> impportBeans = new ArrayList<String>();
 		impportBeans.add("java.util.List");
-		impportBeans.add("com.minstone.common.model.page.PageDataModel");
-		impportBeans.add("com.minstone.common.model.page.PageModel");
+		impportBeans.add("java.util.Optional");
 		String beanPath = codeGenerateBaseInitParams.getBeanPath();
 		
 		String beanName = codeGenerateBaseInitParams.getBeanName();
@@ -60,9 +59,6 @@ public class ServiceImplMethodTemplateImpl implements MethodTemplateGenerate{
 		impportBeans.add("org.apache.commons.lang.StringUtils");
 		impportBeans.add("org.springframework.beans.factory.annotation.Autowired");
 		impportBeans.add("org.springframework.transaction.annotation.Transactional");
-		impportBeans.add("com.minstone.common.utils.check.Objects");
-		impportBeans.add("com.minstone.common.utils.exchange.BeanUtil");
-		impportBeans.add("com.minstone.common.utils.uuid.UUIDUtil");
 		methodGenerateRecord.setImpportBeans(impportBeans);
 		return methodGenerateRecord;
 	}
