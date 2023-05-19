@@ -182,7 +182,7 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 			stringBuilder.append(methodGenerateRecord.getMethodContent());
 		}
 
-		return stringBuilder.append(LineConstants.WRAP).append(LineConstants.WRAP).toString();
+		return stringBuilder.toString();
 	}
 	
 	/**
@@ -218,7 +218,7 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 			stringBuilder.append(methodGenerateRecord.getMethodContent());
 		}
 		
-		stringBuilder.append(LineConstants.WRAP).append("}");
+		stringBuilder.append("}");
 		return stringBuilder.toString();
 	}
 	
@@ -262,7 +262,7 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 			stringBuilder.append(methodGenerateRecord.getMethodContent());
 		}
 		
-		stringBuilder.append(LineConstants.WRAP).append(LineConstants.WRAP).append("}");
+		stringBuilder.append(LineConstants.WRAP).append("}");
 		return stringBuilder.toString();
 	}
 	
@@ -299,7 +299,7 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 			stringBuilder.append(methodGenerateRecord.getMethodContent());
 		}
 		
-		stringBuilder.append(LineConstants.WRAP).append(LineConstants.WRAP).append("}");
+		stringBuilder.append(LineConstants.WRAP).append("}");
 		return stringBuilder.toString();
 	}
 	
@@ -335,7 +335,7 @@ public class DefaultCodeGenerate implements CodeGenerateBase{
 			stringBuilder.append(methodGenerateRecord.getMethodContent());
 		}
 		
-		stringBuilder.append(LineConstants.WRAP).append(LineConstants.WRAP).append("}");
+		stringBuilder.append(LineConstants.WRAP).append("}");
 		return stringBuilder.toString();
 	}
 	

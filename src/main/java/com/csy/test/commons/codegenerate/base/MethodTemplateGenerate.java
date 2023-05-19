@@ -28,7 +28,9 @@ public interface MethodTemplateGenerate {
 	 * @date 2022年7月5日 上午10:40:05
 	 * @return
 	 */
-	int order();
+	default int order() {
+		return Integer.MAX_VALUE;
+	};
 	
 	/**
 	 * 描述：方法模板生成
