@@ -102,6 +102,12 @@
             <artifactId>ojdbc6</artifactId>
             <version>12.1.0.1-atlassian-hosted</version>
         </dependency>
+        
+		<dependency>
+		      <groupId>com.kingbase8</groupId>
+		      <artifactId>kingbase8</artifactId>
+		      <version>8.2.0</version>
+		</dependency>
 		<!-- database end -->
 		
 		<!-- utils start -->

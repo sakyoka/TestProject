@@ -155,13 +155,14 @@ public class DataBase {
 			TableMessage tableMessage = null;
 			while (rs.next()) {
 				if(rs.getString("TABLE_NAME").equalsIgnoreCase(tableName)){
-					primaryRs = databaseMetaData.getPrimaryKeys(null, "%", rs.getString("TABLE_NAME"));
+					primaryRs = databaseMetaData.getPrimaryKeys(null, null, rs.getString("TABLE_NAME"));
 					primaryRs.next();
 					String primaryKey = null;
-					
 					try {
 						primaryKey = primaryRs.getString("COLUMN_NAME");
+						System.out.println("primaryKey:" + primaryKey);
 					} catch (SQLException e) {
+						e.printStackTrace();
 						if (needCheckPrimaryKey){
 							throw new RuntimeException("获取表" + tableName + "主键字段失败,请检查表是否有设置主键");
 						}

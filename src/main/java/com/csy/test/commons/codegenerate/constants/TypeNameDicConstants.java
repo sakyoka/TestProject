@@ -45,6 +45,7 @@ public class TypeNameDicConstants {
 		this.put("BIT", Types.BIT);
 		//mysql end
 		
+		//oracle start
 		this.put("CHAR", Types.CHAR);
 		this.put("VARCHAR2", Types.VARCHAR);
 		this.put("NCHAR", Types.VARCHAR);
@@ -60,6 +61,20 @@ public class TypeNameDicConstants {
 		this.put("FLOAT", Types.FLOAT);
 		this.put("TIMESTAMP", Types.DATE);
 		this.put("TIMESTAMP(6)", Types.DATE);
+		//oracle end
+		
+		//kingbase start
+		this.put("CHARACTER VARYING", Types.VARCHAR);
+		this.put("TEXT", Types.VARCHAR);
+		this.put("CHAR", Types.VARCHAR);
+		this.put("CLOB", Types.VARCHAR);
+		this.put("NUMERIC", Types.INTEGER);
+		this.put("ABSTIME", Types.DATE);
+		this.put("TIME WITH TIME ZONE", Types.DATE);
+		this.put("TIME WITHOUT TIME ZONE", Types.DATE);
+		this.put("TIME", Types.DATE);
+		this.put("DATE", Types.DATE);
+		//kingbase end
 	}};
 	
 	public static Integer getJavaType(String dataBaseType) {
