@@ -22,7 +22,7 @@ public @interface EntityTranfer {
 	 * @date 2021年1月23日 上午11:28:23
 	 * @return 字段名
 	 */
-	String sourceFieldName() default "";
+	String[] sourceFieldName() default "";
 
 	/**
 	 * 描述：转换器

@@ -18,10 +18,12 @@ import com.csy.test.commons.entity.base.TransformBase;
 import com.csy.test.commons.entity.base.annotion.FieldForeach;
 import com.csy.test.commons.entity.base.annotion.FieldProperty;
 import com.csy.test.commons.entity.base.defaults.DefaultEntityTranferForEach;
+import com.csy.test.commons.entity.base.defaults.DefaultEntityTranferForEach.EntityTranferConfiguration;
 import com.csy.test.commons.entity.base.defaults.DefaultFieldForEach;
 import com.csy.test.commons.entity.base.defaults.DefaultHeaderForEach;
 import com.csy.test.commons.entity.exception.InitForeachException;
 import com.csy.test.commons.utils.ClassUtils;
+import com.csy.test.commons.utils.Objects;
 
 /**
  * 
@@ -81,7 +83,7 @@ public class EntityUtils {
 	 * @return Class object
 	 */
 	public static <T, E> T sourceTranferTo(E sourceEntity, T targetEntity) {
-		return sourceTranferTo(sourceEntity, targetEntity, null);
+		return sourceTranferTo(sourceEntity, targetEntity, null, null);
 	}
 	
 	/**
@@ -110,7 +112,7 @@ public class EntityUtils {
 	 */
 	public static <T, E> T sourceTranferTo(E sourceEntity, Class<T> toClazz) {
 		T toEntity = ClassUtils.newInstance(toClazz);
-		return sourceTranferTo(sourceEntity, toEntity, null);
+		return sourceTranferTo(sourceEntity, toEntity, null, null);
 	}
 	
 	/**
@@ -123,18 +125,51 @@ public class EntityUtils {
 	 * @param group        分组值
 	 * @return targetEntity
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static <T, E> T sourceTranferTo(E sourceEntity, T targetEntity, String group) {
-		List<Field> fieldList = ClassUtils.getAllFields(targetEntity.getClass());
-		Field[] fields = new Field[fieldList.size()];
-		fieldList.toArray(fields);
-		new DefaultEntityTranferForEach(sourceEntity)
-		    .group(group)
-		    .entity(targetEntity)
-		    .fields(fields)
-		    .foreach();
-		return targetEntity;
+        return sourceTranferTo(sourceEntity, targetEntity, group, null);
 	}
+	
+	/**
+	 * 
+	 * 描述：sourceEntity 填充 targetEntity
+	 * @author csy
+	 * @date 2024年8月31日 下午3:11:42
+	 * @param sourceEntity
+	 * @param targetEntity
+	 * @param group
+	 * @param targetRefSourceFieldNameMap
+	 * @return T
+	 */
+    public static <T, E> T sourceTranferTo(E sourceEntity, T targetEntity, String group, 
+    		Map<String, String> targetRefSourceFieldNameMap) {
+        return sourceTranferTo(sourceEntity, targetEntity, EntityTranferConfiguration.builder()
+        		.group(group).targetRefSourceFieldNameMap(targetRefSourceFieldNameMap).build());
+    }
+	
+    /**
+     * 
+     * 描述：sourceEntity 填充 targetEntity
+     * @author csy
+     * @date 2024年8月31日 下午3:11:53
+     * @param sourceEntity
+     * @param targetEntity
+     * @param configuration
+     * @return T
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	public static <T, E> T sourceTranferTo(E sourceEntity, T targetEntity, EntityTranferConfiguration configuration) {
+    	if (Objects.isNull(sourceEntity)){
+    		return targetEntity;
+    	}
+        List<Field> fieldList = ClassUtils.getAllFields(targetEntity.getClass());
+        Field[] fields = new Field[fieldList.size()];
+        fieldList.toArray(fields);
+        new DefaultEntityTranferForEach(sourceEntity, configuration)
+                   .entity(targetEntity)
+                   .fields(fields)
+                   .foreach();
+        return targetEntity;
+    }
 	
 	/**
 	 * 
