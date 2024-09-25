@@ -1,6 +1,7 @@
 package com.csy.test.commons.entity.base.defaults;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -94,9 +95,16 @@ public class DefaultEntityTranferForEach<T , W> extends AbstractFieldForEach<T>{
             return ClassUtils.getFieldByFieldName(this.sourceEntity.getClass(), sourceFieldName);
     	}
     	
-    	//判断sourceFieldName有没有配置，没有默认使用field.getName()作为fieldName
-        String[] sourceFieldNames = entityTranfer.sourceFieldName().length == 0 
-        		? new String[]{targetField.getName()} : entityTranfer.sourceFieldName();
+    	List<String> sourceFieldNames = new ArrayList<String>(entityTranfer.sourceFieldName().length + 1);
+    	//首先设置sourceFieldName
+    	for(String fieldName:entityTranfer.sourceFieldName()){
+    		if (!Objects.EMPTY_STRING.equals(fieldName)){
+    			sourceFieldNames.add(fieldName);
+    		}
+    	}
+    	//再设置
+    	sourceFieldNames.add(targetField.getName());
+    	
         for (String sourceFieldName:sourceFieldNames){
             try {
                 return ClassUtils.getFieldByFieldName(this.sourceEntity.getClass(), sourceFieldName);
